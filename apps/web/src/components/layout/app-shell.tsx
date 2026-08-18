@@ -7,6 +7,7 @@ import { canPerform, type Permission, type UserRole } from '@pos/shared';
 import { api } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/button';
+import { RealtimeIndicator } from '@/components/realtime/realtime-indicator';
 import { useAuthStore } from '@/stores/auth-store';
 
 const NAV: { href: string; label: string; perm: Permission }[] = [
@@ -69,6 +70,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <RealtimeIndicator />
           {user ? (
             <div className="text-right leading-tight">
               <div className="text-sm font-semibold text-slate-800">{user.name}</div>

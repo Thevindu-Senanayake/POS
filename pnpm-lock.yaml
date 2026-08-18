@@ -169,6 +169,9 @@ importers:
       react-hook-form:
         specifier: ^7.54.2
         version: 7.85.0(react@18.3.1)
+      socket.io-client:
+        specifier: ^4.8.1
+        version: 4.8.3
       zod:
         specifier: ^3.24.1
         version: 3.25.76
