@@ -9,6 +9,8 @@ import { UsersModule } from './modules/users/users.module';
 import { IngredientsModule } from './modules/ingredients/ingredients.module';
 import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
+import { MenuModule } from './modules/menu/menu.module';
+import { ServiceChargeModule } from './modules/service-charge/service-charge.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -29,6 +31,8 @@ import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.
     IngredientsModule,
     SuppliersModule,
     PurchaseOrdersModule,
+    MenuModule,
+    ServiceChargeModule,
   ],
 })
 export class AppModule {}
