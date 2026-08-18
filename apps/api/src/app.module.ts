@@ -17,6 +17,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { TablesModule } from './modules/tables/tables.module';
 import { RoomsModule } from './modules/rooms/rooms.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { PrintingModule } from './modules/printing/printing.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -45,6 +46,7 @@ import { BookingsModule } from './modules/bookings/bookings.module';
     TablesModule,
     RoomsModule,
     BookingsModule,
+    PrintingModule,
   ],
 })
 export class AppModule {}

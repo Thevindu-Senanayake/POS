@@ -260,7 +260,26 @@ export interface PrintJobDTO {
   attempts: number;
   maxAttempts: number;
   lastError: string | null;
+  orderId: string | null;
+  billId: string | null;
+  nextAttemptAt: string;
+  claimedBy: string | null;
+  printedAt: string | null;
   createdAt: string;
+}
+
+/**
+ * A claimed job as handed to the print-agent (spec §3): carries the render
+ * `payload` (KOT or bill shape) the agent turns into ESC/POS. Distinct from
+ * {@link PrintJobDTO}, which is the admin queue/health view without the payload.
+ */
+export interface PrintJobAgentDTO {
+  id: string;
+  type: PrintJobType;
+  station: Station | null;
+  attempts: number;
+  maxAttempts: number;
+  payload: unknown;
 }
 
 export interface PrinterDTO {
@@ -269,6 +288,8 @@ export interface PrinterDTO {
   name: string;
   ip: string | null;
   port: number;
+  /** ESC/POS profile the agent renders with (e.g. `epson`, `star`). */
+  type: string;
   online: boolean;
   lastSeenAt: string | null;
   lastError: string | null;
