@@ -8,6 +8,7 @@ import { api } from '@/lib/api-client';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/button';
 import { RealtimeIndicator } from '@/components/realtime/realtime-indicator';
+import { SyncIndicator } from '@/components/realtime/sync-indicator';
 import { useAuthStore } from '@/stores/auth-store';
 
 const NAV: { href: string; label: string; perm: Permission }[] = [
@@ -70,6 +71,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           })}
         </nav>
         <div className="ml-auto flex items-center gap-3">
+          <SyncIndicator />
           <RealtimeIndicator />
           {user ? (
             <div className="text-right leading-tight">

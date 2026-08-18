@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import type { Channel } from '@pos/shared';
 import { ApiError } from '@/lib/api-client';
+import { enqueueSend } from '@/lib/offline/sync';
+import { useOfflineStore } from '@/lib/offline/store';
 import { Button } from '@/components/ui/button';
 import { FullscreenSpinner } from '@/components/ui/spinner';
 import {
@@ -49,6 +51,10 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
   const cartKey = tableId ? `table:${tableId}` : `order:${orderId}`;
   const cart = useCartStore((s) => s.carts[cartKey] ?? EMPTY_CART);
   const clearCart = useCartStore((s) => s.clear);
+
+  const online = useOfflineStore((s) => s.online);
+  const setOnline = useOfflineStore((s) => s.setOnline);
+  const queuedForCart = useOfflineStore((s) => s.entries).filter((e) => e.cartKey === cartKey);
 
   const createOrder = useCreateOrder();
   const addItems = useAddItems();
@@ -100,8 +106,28 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
       qty: l.qty,
       notes: l.notes.trim() ? l.notes.trim() : undefined,
     }));
+    // Metadata carried on a queued round so replay can recreate/attach the order.
+    const queueBase = {
+      cartKey,
+      label: tableId ? table?.name ?? 'Table' : CHANNEL_LABELS[channel],
+      channel,
+      tableId,
+      tableSessionId: table?.activeSessionId ?? undefined,
+    };
+
+    // Known offline: durably queue the whole round without hitting the network.
+    // Stock deduction / KOT will only fire when this replays and the server
+    // accepts it (spec §9) — never from this local draft.
+    if (!online) {
+      await enqueueSend({ ...queueBase, orderId: effectiveOrderId ?? undefined, items: inputs });
+      clearCart(cartKey);
+      setSending(false);
+      return;
+    }
+
+    let targetId = effectiveOrderId ?? null;
+    let committedItems = false; // items already accepted by the server this attempt
     try {
-      let targetId = effectiveOrderId ?? null;
       if (!targetId) {
         const created = await createOrder.mutateAsync({
           channel,
@@ -110,14 +136,30 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
         });
         targetId = created.id;
         setCreatedOrderId(created.id);
+        committedItems = true;
       } else {
         await addItems.mutateAsync({ orderId: targetId, items: inputs });
+        committedItems = true;
       }
       // Sweep every draft line (the round we just added) to the kitchen/bar.
       await sendToKitchen.mutateAsync({ orderId: targetId });
       clearCart(cartKey);
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not send the order');
+      if (e instanceof ApiError) {
+        // Server reachable, genuine rejection — surface it and keep the cart.
+        setError(e.message);
+      } else {
+        // Network failure — durably queue so nothing is lost, and mark offline.
+        setOnline(false);
+        if (committedItems && targetId) {
+          // The create/add already landed; only the kitchen send didn't — queue
+          // a send-only round so replay just fires the KOT (no duplicate items).
+          await enqueueSend({ ...queueBase, orderId: targetId, items: [] });
+        } else {
+          await enqueueSend({ ...queueBase, orderId: targetId ?? undefined, items: inputs });
+        }
+        clearCart(cartKey);
+      }
     } finally {
       setSending(false);
     }
@@ -159,6 +201,14 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
       {error ? (
         <div className="border-b border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700">
           {error}
+        </div>
+      ) : null}
+
+      {queuedForCart.length > 0 ? (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
+          {queuedForCart.length} round{queuedForCart.length === 1 ? '' : 's'} queued offline —{' '}
+          {online ? 'syncing…' : 'will send when the connection returns'}. Stock and the KOT fire only
+          after the server confirms.
         </div>
       ) : null}
 
