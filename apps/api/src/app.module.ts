@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { IngredientsModule } from './modules/ingredients/ingredients.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -23,6 +24,7 @@ import { UsersModule } from './modules/users/users.module';
     HealthModule,
     AuthModule,
     UsersModule,
+    IngredientsModule,
   ],
 })
 export class AppModule {}

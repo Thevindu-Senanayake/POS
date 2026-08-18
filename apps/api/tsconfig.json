@@ -4,7 +4,10 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./",
-    "types": ["node"]
+    "types": ["node"],
+    // Disabled: incremental + nest's deleteOutDir leaves a stale tsbuildinfo that
+    // skips re-emitting unchanged entrypoints (e.g. main.js) after dist is wiped.
+    "incremental": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts", "**/*.e2e-spec.ts"]
