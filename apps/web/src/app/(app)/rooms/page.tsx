@@ -1,5 +1,5 @@
-import { ComingSoon } from '@/components/layout/coming-soon';
+import { RoomsBoard } from '@/features/rooms/rooms-board';
 
 export default function RoomsPage() {
-  return <ComingSoon title="Room Service" note="Room board and guest folios arrive next." />;
+  return <RoomsBoard />;
 }

@@ -13,8 +13,14 @@ export const qk = {
   order: (id: string) => ['orders', id] as const,
   bills: (orderId: string) => ['orders', orderId, 'bills'] as const,
   serviceCharges: ['service-charges'] as const,
-  bookings: (status?: string) => ['bookings', status ?? 'all'] as const,
+  // Everything under `['bookings']` so a single realtime invalidation refreshes
+  // every booking view (lists, per-room lookup, single booking).
+  bookings: (status?: string) => ['bookings', 'list', status ?? 'all'] as const,
+  bookingsForRoom: (roomId: string) => ['bookings', 'room', roomId] as const,
+  booking: (id: string) => ['bookings', 'id', id] as const,
   rooms: ['rooms'] as const,
+  room: (id: string) => ['rooms', id] as const,
+  roomCategories: ['room-categories'] as const,
   ingredients: ['ingredients'] as const,
   printers: ['printers'] as const,
 } as const;
