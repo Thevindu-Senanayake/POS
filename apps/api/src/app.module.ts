@@ -7,6 +7,8 @@ import { HealthModule } from './health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { IngredientsModule } from './modules/ingredients/ingredients.module';
+import { SuppliersModule } from './modules/suppliers/suppliers.module';
+import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -25,6 +27,8 @@ import { IngredientsModule } from './modules/ingredients/ingredients.module';
     AuthModule,
     UsersModule,
     IngredientsModule,
+    SuppliersModule,
+    PurchaseOrdersModule,
   ],
 })
 export class AppModule {}
