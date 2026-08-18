@@ -33,3 +33,6 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# claude code local tooling (browser-preview launch config, etc.)
+.claude/
