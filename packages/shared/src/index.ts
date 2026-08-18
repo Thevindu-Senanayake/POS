@@ -1,6 +1,7 @@
 export * from './enums.js';
 export * from './permissions.js';
 export * from './money.js';
+export * from './order-totals.js';
 export * from './api-types.js';
 export * from './realtime.js';
 
