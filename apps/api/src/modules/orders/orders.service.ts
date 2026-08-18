@@ -9,6 +9,7 @@ import type {
   BillDTO,
   Channel,
   KotCreatedEvent,
+  LowStockEvent,
   OrderDTO,
   OrderStatus,
   PaymentMethod,
@@ -188,6 +189,7 @@ export class OrdersService {
     userId: string,
   ): Promise<OrderDTO> {
     const kotEvents: KotCreatedEvent[] = [];
+    const lowStockEvents: LowStockEvent[] = [];
     await this.prisma.$transaction(async (tx) => {
       const order = await tx.order.findUnique({
         where: { id },
@@ -210,12 +212,19 @@ export class OrdersService {
         draft.map((it) => it.menuItemId),
       );
 
+      // Pre-deduction stock per ingredient (captured on first sighting, so it
+      // reflects the level before any of this send's deductions) — used below
+      // to flag reorder-level crossings.
+      const preStock = new Map<string, number>();
       for (const item of draft) {
         const recipes = recipesByMenu.get(item.menuItemId) ?? [];
         for (const recipe of recipes) {
           const ingredient = await tx.ingredient.findUniqueOrThrow({
             where: { id: recipe.ingredientId },
           });
+          if (!preStock.has(ingredient.id)) {
+            preStock.set(ingredient.id, decToNum(ingredient.currentStock));
+          }
           const deduction = new Prisma.Decimal(recipe.quantity).times(item.qty);
           await this.ledger.applyMovement(tx, {
             ingredientId: recipe.ingredientId,
@@ -231,6 +240,31 @@ export class OrdersService {
           where: { id: item.id },
           data: { status: 'sent_to_kitchen', sentAt: new Date() },
         });
+      }
+
+      // Low-stock crossings (spec §2.8): re-read affected ingredients and flag
+      // any that fell to/below their reorder level as a result of this send.
+      // Only the crossing edge is reported (was above, now at/below) so an
+      // already-low ingredient doesn't re-alert on every subsequent send.
+      const affectedIds = [...preStock.keys()];
+      if (affectedIds.length > 0) {
+        const after = await tx.ingredient.findMany({
+          where: { id: { in: affectedIds } },
+        });
+        for (const ing of after) {
+          const before = preStock.get(ing.id)!;
+          const reorder = decToNum(ing.reorderLevel);
+          const current = decToNum(ing.currentStock);
+          if (reorder > 0 && current <= reorder && before > reorder) {
+            lowStockEvents.push({
+              ingredientId: ing.id,
+              name: ing.name,
+              currentStock: current,
+              reorderLevel: reorder,
+              unit: ing.baseUnit,
+            });
+          }
+        }
       }
 
       await tx.order.update({
@@ -271,8 +305,10 @@ export class OrdersService {
       }
     });
 
-    // Post-commit: broadcast one KOT per station (drives the KDS) then the order.
+    // Post-commit: broadcast one KOT per station (drives the KDS), any low-stock
+    // crossings (drives the admin alert), then the order.
     for (const event of kotEvents) this.realtime.emitKotCreated(event);
+    for (const event of lowStockEvents) this.realtime.emitLowStock(event);
     return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 

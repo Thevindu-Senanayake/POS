@@ -8,7 +8,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { WS_EVENTS } from '@pos/shared';
-import type { KotCreatedEvent, OrderDTO, PrinterHealthEvent } from '@pos/shared';
+import type { KotCreatedEvent, LowStockEvent, OrderDTO, PrinterHealthEvent } from '@pos/shared';
 import type { Server, Socket } from 'socket.io';
 import type { AuthenticatedUser, JwtPayload } from '../../common/types';
 
@@ -82,6 +82,11 @@ export class RealtimeGateway implements OnGatewayConnection, OnGatewayDisconnect
 
   emitPrinterHealth(event: PrinterHealthEvent): void {
     this.server?.emit(WS_EVENTS.printerHealth, event);
+  }
+
+  /** `stock:low` — an ingredient crossed its reorder level after a deduction (spec §2.8). */
+  emitLowStock(event: LowStockEvent): void {
+    this.server?.emit(WS_EVENTS.lowStock, event);
   }
 
   // --- Helpers -----------------------------------------------------------
