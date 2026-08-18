@@ -13,6 +13,7 @@ import { AuditService } from '../audit/audit.service';
 import { StockLedgerService } from '../stock/stock-ledger.service';
 import { CreatePurchaseOrderDto } from './dto/create-purchase-order.dto';
 import { UpdatePurchaseOrderDto } from './dto/update-purchase-order.dto';
+import { weightedAverageCost } from './weighted-average';
 
 const PO_INCLUDE = {
   supplier: { select: { name: true } },
@@ -160,21 +161,14 @@ export class PurchaseOrdersService {
           where: { id: item.ingredientId },
         });
 
-        const currentStock = new Prisma.Decimal(ingredient.currentStock);
-        const oldStock = currentStock.lessThan(0)
-          ? new Prisma.Decimal(0)
-          : currentStock;
-        const oldCost = new Prisma.Decimal(ingredient.costPerUnit);
         const qty = new Prisma.Decimal(item.qty);
         const unitCost = new Prisma.Decimal(item.unitCost);
-
-        const denominator = oldStock.plus(qty);
-        const newCost = denominator.isZero()
-          ? unitCost
-          : oldStock
-              .times(oldCost)
-              .plus(qty.times(unitCost))
-              .dividedBy(denominator);
+        const newCost = weightedAverageCost(
+          ingredient.currentStock,
+          ingredient.costPerUnit,
+          qty,
+          unitCost,
+        );
 
         await this.ledger.applyMovement(tx, {
           ingredientId: item.ingredientId,
