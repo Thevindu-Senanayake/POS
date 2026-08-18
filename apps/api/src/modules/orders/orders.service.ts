@@ -8,6 +8,7 @@ import { Prisma } from '@pos/db';
 import type {
   BillDTO,
   Channel,
+  KotCreatedEvent,
   OrderDTO,
   OrderStatus,
   PaymentMethod,
@@ -17,6 +18,7 @@ import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { BookingsService } from '../bookings/bookings.service';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { ServiceChargeService } from '../service-charge/service-charge.service';
 import { StockLedgerService } from '../stock/stock-ledger.service';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
@@ -65,6 +67,7 @@ export class OrdersService {
     private readonly audit: AuditService,
     private readonly serviceCharge: ServiceChargeService,
     private readonly bookings: BookingsService,
+    private readonly realtime: RealtimeGateway,
   ) {}
 
   // --- Reads -------------------------------------------------------------
@@ -121,7 +124,8 @@ export class OrdersService {
       },
       include: ORDER_INCLUDE,
     });
-    return this.orderDTO(order);
+    if (order.tableSessionId) this.realtime.emitTablesUpdated();
+    return this.emitOrderDTO(order);
   }
 
   async addItems(
@@ -135,7 +139,7 @@ export class OrdersService {
     await this.prisma.orderItem.createMany({
       data: data.map((d) => ({ ...d, orderId: id })),
     });
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   async updateItem(
@@ -155,7 +159,7 @@ export class OrdersService {
         ...(dto.notes !== undefined ? { notes: dto.notes } : {}),
       },
     });
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   async removeDraftItem(id: string, itemId: string): Promise<OrderDTO> {
@@ -167,7 +171,7 @@ export class OrdersService {
       );
     }
     await this.prisma.orderItem.delete({ where: { id: itemId } });
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   // --- Kitchen lifecycle -------------------------------------------------
@@ -183,6 +187,7 @@ export class OrdersService {
     itemIds: string[] | undefined,
     userId: string,
   ): Promise<OrderDTO> {
+    const kotEvents: KotCreatedEvent[] = [];
     await this.prisma.$transaction(async (tx) => {
       const order = await tx.order.findUnique({
         where: { id },
@@ -252,10 +257,23 @@ export class OrdersService {
             ),
           },
         });
+        kotEvents.push({
+          orderId: order.id,
+          channel: order.channel,
+          station,
+          tableName,
+          items: stationItems.map((it) => ({
+            name: it.menuItem.name,
+            qty: it.qty,
+            notes: it.notes,
+          })),
+        });
       }
     });
 
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    // Post-commit: broadcast one KOT per station (drives the KDS) then the order.
+    for (const event of kotEvents) this.realtime.emitKotCreated(event);
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   /** Mark sent lines as served; when every active line is served, so is the order. */
@@ -293,7 +311,7 @@ export class OrdersService {
       }
     });
 
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   async requestBill(id: string, _userId: string): Promise<OrderDTO> {
@@ -307,7 +325,7 @@ export class OrdersService {
       where: { id },
       data: { status: 'bill_requested' },
     });
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   // --- Void / cancel -----------------------------------------------------
@@ -357,7 +375,7 @@ export class OrdersService {
       );
     });
 
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   /** Cancel a whole order: reverse stock for every sent/served line, audit it. */
@@ -400,7 +418,8 @@ export class OrdersService {
       await this.maybeCloseSession(tx, order.tableSessionId);
     });
 
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    if (order.tableSessionId) this.realtime.emitTablesUpdated();
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   // --- Discounts ---------------------------------------------------------
@@ -469,7 +488,7 @@ export class OrdersService {
       );
     });
 
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   async removeDiscount(id: string, discountId: string): Promise<OrderDTO> {
@@ -481,7 +500,7 @@ export class OrdersService {
       throw new NotFoundException('Discount not found on this order');
     }
     await this.prisma.discount.delete({ where: { id: discountId } });
-    return this.orderDTO(await this.loadOrderOrThrow(id));
+    return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
   // --- Payment -----------------------------------------------------------
@@ -548,6 +567,7 @@ export class OrdersService {
       return created;
     });
 
+    await this.emitAfterSettlement(id);
     return this.toBillDTO(bill);
   }
 
@@ -626,6 +646,7 @@ export class OrdersService {
       return created;
     });
 
+    await this.emitAfterSettlement(id, { rooms: true });
     return this.toBillDTO(bill);
   }
 
@@ -753,6 +774,7 @@ export class OrdersService {
       return created;
     });
 
+    await this.emitAfterSettlement(id);
     return bills.map((b) => this.toBillDTO(b));
   }
 
@@ -1077,6 +1099,32 @@ export class OrdersService {
   private async orderDTO(order: OrderWithRelations): Promise<OrderDTO> {
     const pct = await this.serviceCharge.percentageFor(order.channel);
     return this.toOrderDTO(order, pct);
+  }
+
+  /**
+   * Compute the DTO for a just-mutated order, broadcast `order:updated`, and
+   * return it. Used by every mutating path so connected POS/KDS screens react
+   * live; reads (`get`/`list`) use {@link orderDTO} and stay silent.
+   */
+  private async emitOrderDTO(order: OrderWithRelations): Promise<OrderDTO> {
+    const dto = await this.orderDTO(order);
+    this.realtime.emitOrderUpdated(dto);
+    return dto;
+  }
+
+  /**
+   * Post-settlement broadcast shared by pay / charge-to-room / split: the order
+   * is now paid (`order:updated`), and its table session may have closed
+   * (`tables:updated`). Charge-to-room also writes a folio (`rooms:updated`).
+   */
+  private async emitAfterSettlement(
+    id: string,
+    opts: { rooms?: boolean } = {},
+  ): Promise<void> {
+    const order = await this.loadOrderOrThrow(id);
+    this.realtime.emitOrderUpdated(await this.orderDTO(order));
+    if (order.tableSessionId) this.realtime.emitTablesUpdated();
+    if (opts.rooms) this.realtime.emitRoomsUpdated();
   }
 
   private async serviceChargePctByChannel(

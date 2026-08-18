@@ -7,6 +7,7 @@ import { Prisma } from '@pos/db';
 import type { RoomCategoryDTO, RoomDTO, RoomStatus } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { CreateRoomCategoryDto } from './dto/create-room-category.dto';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomCategoryDto } from './dto/update-room-category.dto';
@@ -35,7 +36,10 @@ export function effectiveRate(
  */
 @Injectable()
 export class RoomsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtime: RealtimeGateway,
+  ) {}
 
   // --- Room categories ---------------------------------------------------
 
@@ -50,6 +54,7 @@ export class RoomsService {
     const category = await this.prisma.roomCategory.create({
       data: { name: dto.name, defaultRate: new Prisma.Decimal(dto.defaultRate) },
     });
+    this.realtime.emitRoomsUpdated();
     return this.toCategoryDTO(category);
   }
 
@@ -64,6 +69,7 @@ export class RoomsService {
           : {}),
       },
     });
+    this.realtime.emitRoomsUpdated();
     return this.toCategoryDTO(category);
   }
 
@@ -77,6 +83,7 @@ export class RoomsService {
       throw new ConflictException('Category still has rooms; reassign or remove them first');
     }
     await this.prisma.roomCategory.delete({ where: { id } });
+    this.realtime.emitRoomsUpdated();
   }
 
   // --- Rooms -------------------------------------------------------------
@@ -117,6 +124,7 @@ export class RoomsService {
       },
       include: ROOM_INCLUDE,
     });
+    this.realtime.emitRoomsUpdated();
     return this.toRoomDTO(room);
   }
 
@@ -149,6 +157,7 @@ export class RoomsService {
       },
       include: ROOM_INCLUDE,
     });
+    this.realtime.emitRoomsUpdated();
     return this.toRoomDTO(room);
   }
 
@@ -164,6 +173,7 @@ export class RoomsService {
       );
     }
     await this.prisma.room.delete({ where: { id } });
+    this.realtime.emitRoomsUpdated();
   }
 
   // --- Helpers -----------------------------------------------------------

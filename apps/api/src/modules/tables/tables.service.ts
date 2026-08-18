@@ -8,6 +8,7 @@ import { Prisma } from '@pos/db';
 import type { DiningTableDTO, TableArea, TableSessionDTO } from '@pos/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 
@@ -57,6 +58,7 @@ export class TablesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly realtime: RealtimeGateway,
   ) {}
 
   // --- Table reads / config ---------------------------------------------
@@ -88,6 +90,7 @@ export class TablesService {
       },
       include: TABLE_INCLUDE,
     });
+    this.realtime.emitTablesUpdated();
     return this.toTableDTO(table);
   }
 
@@ -102,6 +105,7 @@ export class TablesService {
       },
       include: TABLE_INCLUDE,
     });
+    this.realtime.emitTablesUpdated();
     return this.toTableDTO(table);
   }
 
@@ -118,6 +122,7 @@ export class TablesService {
       );
     }
     await this.prisma.diningTable.delete({ where: { id } });
+    this.realtime.emitTablesUpdated();
   }
 
   /** Return a cleaned table to service (needs_cleaning -> free). */
@@ -139,6 +144,7 @@ export class TablesService {
       where: { id },
       data: { status: 'free' },
     });
+    this.realtime.emitTablesUpdated();
     return this.getTable(id);
   }
 
@@ -191,6 +197,7 @@ export class TablesService {
       });
       return created;
     });
+    this.realtime.emitTablesUpdated();
     return this.toSessionDTO(session);
   }
 
@@ -227,6 +234,7 @@ export class TablesService {
         include: SESSION_INCLUDE,
       });
     });
+    this.realtime.emitTablesUpdated();
     return this.toSessionDTO(session);
   }
 
@@ -294,6 +302,7 @@ export class TablesService {
         include: SESSION_INCLUDE,
       });
     });
+    this.realtime.emitTablesUpdated();
     return this.toSessionDTO(session);
   }
 
@@ -407,6 +416,7 @@ export class TablesService {
         include: SESSION_INCLUDE,
       });
     });
+    this.realtime.emitTablesUpdated();
     return this.toSessionDTO(session);
   }
 

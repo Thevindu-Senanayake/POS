@@ -15,6 +15,7 @@ import type {
 import { round2, sumMoney } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
+import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { effectiveRate } from '../rooms/rooms.service';
 import { AddFolioChargeDto } from './dto/add-folio-charge.dto';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -53,7 +54,10 @@ function folioSourceForChannel(channel: Channel): FolioSource {
  */
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly realtime: RealtimeGateway,
+  ) {}
 
   // --- Reads -------------------------------------------------------------
 
@@ -107,6 +111,7 @@ export class BookingsService {
       },
       include: BOOKING_INCLUDE,
     });
+    this.realtime.emitRoomsUpdated();
     return this.toBookingDTO(booking);
   }
 
@@ -128,6 +133,7 @@ export class BookingsService {
         include: BOOKING_INCLUDE,
       });
     });
+    this.realtime.emitRoomsUpdated();
     return this.toBookingDTO(booking);
   }
 
@@ -149,6 +155,7 @@ export class BookingsService {
         include: BOOKING_INCLUDE,
       });
     });
+    this.realtime.emitRoomsUpdated();
     return this.toBookingDTO(booking);
   }
 
@@ -165,6 +172,7 @@ export class BookingsService {
       data: { status: 'cancelled' },
       include: BOOKING_INCLUDE,
     });
+    this.realtime.emitRoomsUpdated();
     return this.toBookingDTO(booking);
   }
 
@@ -183,6 +191,7 @@ export class BookingsService {
         createdById: userId,
       },
     });
+    this.realtime.emitRoomsUpdated();
     return this.toBookingDTO(await this.loadOrThrow(id));
   }
 
