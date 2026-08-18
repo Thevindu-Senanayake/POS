@@ -12,6 +12,7 @@ import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.
 import { MenuModule } from './modules/menu/menu.module';
 import { ServiceChargeModule } from './modules/service-charge/service-charge.module';
 import { RecipesModule } from './modules/recipes/recipes.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -35,6 +36,7 @@ import { RecipesModule } from './modules/recipes/recipes.module';
     MenuModule,
     ServiceChargeModule,
     RecipesModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}
