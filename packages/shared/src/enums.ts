@@ -78,6 +78,7 @@ export const TABLE_STATUSES = TableStatusSchema.options;
 
 export const RoomStatusSchema = z.enum(['vacant', 'occupied', 'maintenance']);
 export type RoomStatus = z.infer<typeof RoomStatusSchema>;
+export const ROOM_STATUSES = RoomStatusSchema.options;
 
 export const BoardPlanSchema = z.enum([
   'room_only',
@@ -95,6 +96,7 @@ export const BookingStatusSchema = z.enum([
   'cancelled',
 ]);
 export type BookingStatus = z.infer<typeof BookingStatusSchema>;
+export const BOOKING_STATUSES = BookingStatusSchema.options;
 
 export const FolioSourceSchema = z.enum([
   'room_service_order',
@@ -104,6 +106,7 @@ export const FolioSourceSchema = z.enum([
   'misc',
 ]);
 export type FolioSource = z.infer<typeof FolioSourceSchema>;
+export const FOLIO_SOURCES = FolioSourceSchema.options;
 
 export const PaymentMethodSchema = z.enum(['cash', 'card', 'charge_to_room']);
 export type PaymentMethod = z.infer<typeof PaymentMethodSchema>;

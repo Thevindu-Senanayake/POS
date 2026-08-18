@@ -14,6 +14,7 @@ import { CurrentUser, ManagerApprover } from '../../common/decorators/current-us
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
 import { AddItemsDto } from './dto/add-items.dto';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
+import { ChargeToRoomDto } from './dto/charge-to-room.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ItemSelectionDto } from './dto/item-selection.dto';
 import { PayDto } from './dto/pay.dto';
@@ -151,6 +152,16 @@ export class OrdersController {
     @CurrentUser('userId') userId: string,
   ) {
     return this.orders.pay(id, dto, userId);
+  }
+
+  @Post(':id/charge-to-room')
+  @RequirePermission('take_payment')
+  chargeToRoom(
+    @Param('id') id: string,
+    @Body() dto: ChargeToRoomDto,
+    @CurrentUser('userId') userId: string,
+  ) {
+    return this.orders.chargeToRoom(id, dto, userId);
   }
 
   @Post(':id/split')

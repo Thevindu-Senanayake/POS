@@ -14,6 +14,8 @@ import { ServiceChargeModule } from './modules/service-charge/service-charge.mod
 import { RecipesModule } from './modules/recipes/recipes.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { TablesModule } from './modules/tables/tables.module';
+import { RoomsModule } from './modules/rooms/rooms.module';
+import { BookingsModule } from './modules/bookings/bookings.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -39,6 +41,8 @@ import { TablesModule } from './modules/tables/tables.module';
     RecipesModule,
     OrdersModule,
     TablesModule,
+    RoomsModule,
+    BookingsModule,
   ],
 })
 export class AppModule {}

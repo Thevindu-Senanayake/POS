@@ -16,9 +16,11 @@ import { DEFAULT_CURRENCY_SYMBOL, round2, sumMoney } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
+import { BookingsService } from '../bookings/bookings.service';
 import { ServiceChargeService } from '../service-charge/service-charge.service';
 import { StockLedgerService } from '../stock/stock-ledger.service';
 import { ApplyDiscountDto } from './dto/apply-discount.dto';
+import { ChargeToRoomDto } from './dto/charge-to-room.dto';
 import { CreateOrderDto, OrderItemInput } from './dto/create-order.dto';
 import { PayDto } from './dto/pay.dto';
 import { SplitBillDto } from './dto/split-bill.dto';
@@ -62,6 +64,7 @@ export class OrdersService {
     private readonly ledger: StockLedgerService,
     private readonly audit: AuditService,
     private readonly serviceCharge: ServiceChargeService,
+    private readonly bookings: BookingsService,
   ) {}
 
   // --- Reads -------------------------------------------------------------
@@ -540,6 +543,84 @@ export class OrdersService {
       });
 
       await tx.order.update({ where: { id }, data: { status: 'paid' } });
+      await this.enqueueBillPrint(tx, order.channel, created);
+      await this.maybeCloseSession(tx, order.tableSessionId);
+      return created;
+    });
+
+    return this.toBillDTO(bill);
+  }
+
+  /**
+   * Settle an order to a guest's room folio instead of taking payment (spec §2.7).
+   * Produces the same itemized bill + bill print as {@link pay}, but records a
+   * FolioCharge (via the bookings module) rather than Payment rows. The booking is
+   * taken from the order (room-service orders carry one) or from the request body
+   * for a dine-in order a guest wants on their room. A covered board-plan meal
+   * folios at ₨0 — see {@link BookingsService.recordOrderCharge}.
+   */
+  async chargeToRoom(id: string, dto: ChargeToRoomDto, userId: string): Promise<BillDTO> {
+    const bill = await this.prisma.$transaction(async (tx) => {
+      const order = await tx.order.findUnique({
+        where: { id },
+        include: ORDER_INCLUDE,
+      });
+      if (!order) throw new NotFoundException('Order not found');
+      if (order.status === 'paid') {
+        throw new ConflictException('Order is already paid');
+      }
+      if (!PAYABLE_STATUSES.includes(order.status)) {
+        throw new ConflictException(`Cannot settle a ${order.status} order`);
+      }
+      const activeItems = order.items.filter((it) => it.status !== 'cancelled');
+      if (activeItems.length === 0) {
+        throw new BadRequestException('Order has no billable items');
+      }
+
+      const bookingId = order.bookingId ?? dto.bookingId ?? null;
+      if (!bookingId) {
+        throw new BadRequestException(
+          'No booking to charge; pass bookingId or attach the order to a booking',
+        );
+      }
+
+      const pct = await this.serviceCharge.percentageFor(order.channel);
+      const totals = this.computeTotals(order, pct);
+
+      const created = await tx.bill.create({
+        data: {
+          orderId: id,
+          label: dto.label ?? null,
+          subtotal: new Prisma.Decimal(totals.subtotal),
+          discountTotal: new Prisma.Decimal(totals.discountTotal),
+          serviceCharge: new Prisma.Decimal(totals.serviceCharge),
+          total: new Prisma.Decimal(totals.total),
+          items: {
+            create: activeItems.map((it) => ({
+              orderItemId: it.id,
+              description: it.menuItem.name,
+              qty: new Prisma.Decimal(it.qty),
+              unitPrice: new Prisma.Decimal(it.unitPrice),
+              lineTotal: new Prisma.Decimal(lineTotalOf({
+                qty: it.qty,
+                unitPrice: decToNum(it.unitPrice),
+              })),
+            })),
+          },
+        },
+        include: BILL_INCLUDE,
+      });
+
+      await this.bookings.recordOrderCharge(tx, {
+        bookingId,
+        channel: order.channel,
+        orderId: id,
+        orderTotal: totals.total,
+        comp: dto.comp ?? false,
+        createdById: userId,
+      });
+
+      await tx.order.update({ where: { id }, data: { status: 'paid', bookingId } });
       await this.enqueueBillPrint(tx, order.channel, created);
       await this.maybeCloseSession(tx, order.tableSessionId);
       return created;
