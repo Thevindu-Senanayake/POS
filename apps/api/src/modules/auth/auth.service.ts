@@ -15,6 +15,7 @@ type UserForDTO = {
   username: string;
   role: UserRole;
   pinHash: string | null;
+  isActive: boolean;
 };
 
 @Injectable()
@@ -87,6 +88,7 @@ export class AuthService {
       username: user.username,
       role: user.role,
       hasPin: user.pinHash != null,
+      isActive: user.isActive,
     };
   }
 

@@ -31,6 +31,7 @@ export interface AuthUserDTO {
   username: string;
   role: UserRole;
   hasPin: boolean;
+  isActive: boolean;
 }
 
 export interface LoginResponseDTO {
