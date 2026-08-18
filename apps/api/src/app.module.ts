@@ -13,6 +13,7 @@ import { MenuModule } from './modules/menu/menu.module';
 import { ServiceChargeModule } from './modules/service-charge/service-charge.module';
 import { RecipesModule } from './modules/recipes/recipes.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { TablesModule } from './modules/tables/tables.module';
 
 /**
  * Composition root. Feature modules are registered here as they are added
@@ -37,6 +38,7 @@ import { OrdersModule } from './modules/orders/orders.module';
     ServiceChargeModule,
     RecipesModule,
     OrdersModule,
+    TablesModule,
   ],
 })
 export class AppModule {}

@@ -74,6 +74,7 @@ export const TABLE_AREAS = TableAreaSchema.options;
 
 export const TableStatusSchema = z.enum(['free', 'occupied', 'reserved', 'needs_cleaning']);
 export type TableStatus = z.infer<typeof TableStatusSchema>;
+export const TABLE_STATUSES = TableStatusSchema.options;
 
 export const RoomStatusSchema = z.enum(['vacant', 'occupied', 'maintenance']);
 export type RoomStatus = z.infer<typeof RoomStatusSchema>;

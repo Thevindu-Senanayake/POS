@@ -131,6 +131,17 @@ export interface DiningTableDTO {
   activeOrderId: string | null;
 }
 
+export interface TableSessionDTO {
+  id: string;
+  tableId: string;
+  tableName: string;
+  area: TableArea;
+  waiterId: string | null;
+  openedAt: string;
+  closedAt: string | null;
+  orderIds: string[];
+}
+
 export interface OrderItemDTO {
   id: string;
   menuItemId: string;
