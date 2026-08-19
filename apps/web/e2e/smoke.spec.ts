@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
  * takeaway order, send it to the kitchen, then settle it in full.
  *
  * Takeaway is used deliberately — it needs no table/session state, so the test
- * is repeatable without re-seeding, and "Chicken Biryani" carries a takeaway
+ * is repeatable without re-seeding, and "Sausage Fried Rice" carries a takeaway
  * price in the seed so it appears on the (default) food menu tab. Settling a
  * takeaway order navigates back to the floor; that return is the app's
  * "bill done" signal — the printed bill itself is a backend PrintJob, not an
@@ -29,7 +29,7 @@ test('sign in → takeaway order → send → pay settles the bill', async ({ pa
 
   // 3. Add a seeded menu item (has a takeaway price) to the current round.
   await expect(page).toHaveURL(/\/pos\/order\//);
-  const menuCard = page.getByRole('button', { name: /Chicken Biryani/ });
+  const menuCard = page.getByRole('button', { name: /Sausage Fried Rice/ });
   await expect(menuCard).toBeVisible();
   await menuCard.click();
 

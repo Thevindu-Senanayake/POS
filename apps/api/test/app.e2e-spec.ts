@@ -36,6 +36,13 @@ describe('POS critical path (e2e)', () => {
   const bearer = () => `Bearer ${token}`;
   const server = () => app.getHttpServer();
 
+  // A real seeded kitchen dish and one of its recipe ingredients, used to assert
+  // stock deduction. Sausage Fried Rice → 330 g Rice (+ egg + sausage) and is
+  // priced on dine_in_restaurant, so the 10% service-charge assertion holds.
+  const DISH_NAME = 'Sausage Fried Rice';
+  const DISH_INGREDIENT = 'Rice';
+  const DISH_INGREDIENT_QTY = 330; // g of Rice deducted per dish
+
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
     app = moduleRef.createNestApplication();
@@ -101,14 +108,14 @@ describe('POS critical path (e2e)', () => {
         .expect(201)
     ).body as TableSessionDTO;
 
-    const biryani = await findMenuItem((m) => m.name === 'Chicken Biryani');
-    const restPrice = biryani.prices.find((p) => p.channel === 'dine_in_restaurant');
+    const dish = await findMenuItem((m) => m.name === DISH_NAME);
+    const restPrice = dish.prices.find((p) => p.channel === 'dine_in_restaurant');
     expect(restPrice).toBeDefined();
 
-    const chicken = await findIngredient('Chicken Breast');
-    const stockBefore = await stockOf(chicken.id);
+    const ingredient = await findIngredient(DISH_INGREDIENT);
+    const stockBefore = await stockOf(ingredient.id);
 
-    // Draft order with one biryani.
+    // Draft order with one dish.
     let order = (
       await request(server())
         .post('/api/orders')
@@ -116,7 +123,7 @@ describe('POS critical path (e2e)', () => {
         .send({
           channel: 'dine_in_restaurant',
           tableSessionId: session.id,
-          items: [{ menuItemId: biryani.id, qty: 1 }],
+          items: [{ menuItemId: dish.id, qty: 1 }],
         })
         .expect(201)
     ).body as OrderDTO;
@@ -134,19 +141,19 @@ describe('POS critical path (e2e)', () => {
     expect(order.status).toBe('sent_to_kitchen');
     expect(order.items[0].status).toBe('sent_to_kitchen');
 
-    // Stock deducted by the recipe qty (Chicken Biryani → 200 g Chicken Breast).
-    expect(await stockOf(chicken.id)).toBeCloseTo(stockBefore - 200, 5);
+    // Stock deducted by the recipe qty (Sausage Fried Rice → 330 g Rice).
+    expect(await stockOf(ingredient.id)).toBeCloseTo(stockBefore - DISH_INGREDIENT_QTY, 5);
 
     // A `sale` StockMovement was written against an order item.
     const moves = (
       await request(server())
-        .get(`/api/ingredients/${chicken.id}/movements`)
+        .get(`/api/ingredients/${ingredient.id}/movements`)
         .set('Authorization', bearer())
         .expect(200)
     ).body as StockMovementDTO[];
     const sale = moves.find((m) => m.reason === 'sale' && m.refType === 'order_item');
     expect(sale).toBeDefined();
-    expect(sale!.changeQty).toBeCloseTo(-200, 5);
+    expect(sale!.changeQty).toBeCloseTo(-DISH_INGREDIENT_QTY, 5);
 
     // A KOT print job was enqueued for this order.
     const jobs = (
@@ -242,9 +249,9 @@ describe('POS critical path (e2e)', () => {
         .expect(201)
     ).body as TableSessionDTO;
 
-    const biryani = await findMenuItem((m) => m.name === 'Chicken Biryani');
-    const chicken = await findIngredient('Chicken Breast');
-    const before = await stockOf(chicken.id);
+    const dish = await findMenuItem((m) => m.name === DISH_NAME);
+    const ingredient = await findIngredient(DISH_INGREDIENT);
+    const before = await stockOf(ingredient.id);
 
     const order = (
       await request(server())
@@ -253,7 +260,7 @@ describe('POS critical path (e2e)', () => {
         .send({
           channel: 'dine_in_restaurant',
           tableSessionId: session.id,
-          items: [{ menuItemId: biryani.id, qty: 2 }],
+          items: [{ menuItemId: dish.id, qty: 2 }],
         })
         .expect(201)
     ).body as OrderDTO;
@@ -263,8 +270,8 @@ describe('POS critical path (e2e)', () => {
       .set('Authorization', bearer())
       .send({})
       .expect(201);
-    // 2 × 200 g deducted.
-    expect(await stockOf(chicken.id)).toBeCloseTo(before - 400, 5);
+    // 2 × 330 g deducted.
+    expect(await stockOf(ingredient.id)).toBeCloseTo(before - 2 * DISH_INGREDIENT_QTY, 5);
 
     await request(server())
       .post(`/api/orders/${order.id}/cancel`)
@@ -273,7 +280,7 @@ describe('POS critical path (e2e)', () => {
       .expect(201);
 
     // Reversing movements restore the ingredient to its pre-send level.
-    expect(await stockOf(chicken.id)).toBeCloseTo(before, 5);
+    expect(await stockOf(ingredient.id)).toBeCloseTo(before, 5);
     const cancelled = (
       await request(server()).get(`/api/orders/${order.id}`).set('Authorization', bearer()).expect(200)
     ).body as OrderDTO;
