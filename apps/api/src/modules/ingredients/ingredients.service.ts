@@ -36,6 +36,7 @@ export class IngredientsService {
         data: {
           name: dto.name,
           baseUnit: dto.baseUnit,
+          barcode: dto.barcode ?? null,
           reorderLevel: dto.reorderLevel ?? 0,
           costPerUnit: dto.costPerUnit ?? 0,
           supplierId: dto.supplierId ?? null,
@@ -63,6 +64,7 @@ export class IngredientsService {
     const data: Prisma.IngredientUncheckedUpdateInput = {};
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.baseUnit !== undefined) data.baseUnit = dto.baseUnit;
+    if (dto.barcode !== undefined) data.barcode = dto.barcode;
     if (dto.reorderLevel !== undefined) data.reorderLevel = dto.reorderLevel;
     if (dto.costPerUnit !== undefined) data.costPerUnit = dto.costPerUnit;
     if (dto.supplierId !== undefined) data.supplierId = dto.supplierId ?? null;
@@ -123,6 +125,7 @@ export class IngredientsService {
       reorderLevel,
       costPerUnit: decToNum(r.costPerUnit),
       supplierId: r.supplierId,
+      barcode: r.barcode,
       isActive: r.isActive,
       lowStock: reorderLevel > 0 && currentStock <= reorderLevel,
     };

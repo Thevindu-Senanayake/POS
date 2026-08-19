@@ -79,3 +79,18 @@ export class MenuController {
     await this.menu.remove(id);
   }
 }
+
+/**
+ * `GET /api/menu/scan?code=<barcode>` — bar USB-scanner lookup (spec feature (c)).
+ * Kept off `menu-items/:id` so the literal `scan` path can't shadow an id route.
+ * Any authenticated user (the global JWT guard applies); no admin role required.
+ */
+@Controller('menu')
+export class MenuScanController {
+  constructor(private readonly menu: MenuService) {}
+
+  @Get('scan')
+  scan(@Query('code') code?: string) {
+    return this.menu.scan(code ?? '');
+  }
+}

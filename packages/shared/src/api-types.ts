@@ -50,6 +50,8 @@ export interface IngredientDTO {
   reorderLevel: number;
   costPerUnit: number;
   supplierId: string | null;
+  /** Bottle/can barcode (spirits); scanned at the bar to open the pour picker. */
+  barcode: string | null;
   isActive: boolean;
   lowStock: boolean;
 }
@@ -106,6 +108,10 @@ export interface MenuItemDTO {
   name: string;
   category: MenuCategory;
   station: Station;
+  /** Fine sheet category (e.g. `Arrack`, `Whisky`) for grouping the bar grid; null falls back to `category`. */
+  menuGroup: string | null;
+  /** Barcode for whole-unit direct-sale items (bottles/cans/packaged); scanned at the bar. */
+  barcode: string | null;
   isActive: boolean;
   prices: MenuItemPriceDTO[];
 }
@@ -118,6 +124,18 @@ export interface RecipeDTO {
   quantity: number;
   notes: string | null;
 }
+
+/**
+ * Result of resolving a scanned barcode (bar USB scanner, spec feature (c)).
+ *  - `item`   — barcode matched a whole-unit MenuItem (bottle/can/packaged) → add it directly.
+ *  - `spirit` — barcode matched a spirit Ingredient → offer its pour sizes (the MenuItems whose
+ *               recipe draws from that bottle) so the bartender picks 25/50/100/… ml.
+ *  - `none`   — no match; the UI shows a transient "not found" note.
+ */
+export type ScanResultDTO =
+  | { kind: 'item'; item: MenuItemDTO }
+  | { kind: 'spirit'; ingredientId: string; ingredientName: string; pours: MenuItemDTO[] }
+  | { kind: 'none' };
 
 export interface ServiceChargeRuleDTO {
   channel: Channel;

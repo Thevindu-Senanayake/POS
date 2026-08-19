@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@pos/db';
-import type { Channel, MenuCategory, MenuItemDTO } from '@pos/shared';
+import type { Channel, MenuCategory, MenuItemDTO, ScanResultDTO } from '@pos/shared';
 import { CATEGORY_DEFAULT_STATION } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -46,6 +46,42 @@ export class MenuService {
     return this.toDTO(await this.getEntity(id));
   }
 
+  /**
+   * Resolve a scanned barcode (bar USB scanner, spec feature (c)). A barcode may
+   * sit on a whole-unit MenuItem (bottled beer/cans → add directly) or on a spirit
+   * bottle Ingredient (→ offer the pour MenuItems built from it, smallest first so
+   * the picker reads 25 → 750 ml). Only active items/ingredients resolve.
+   */
+  async scan(code: string): Promise<ScanResultDTO> {
+    const barcode = code.trim();
+    if (!barcode) return { kind: 'none' };
+
+    const item = await this.prisma.menuItem.findFirst({
+      where: { barcode, isActive: true },
+      include: MENU_INCLUDE,
+    });
+    if (item) return { kind: 'item', item: this.toDTO(item) };
+
+    const ingredient = await this.prisma.ingredient.findFirst({
+      where: { barcode, isActive: true },
+    });
+    if (ingredient) {
+      const recipes = await this.prisma.recipe.findMany({
+        where: { ingredientId: ingredient.id, menuItem: { isActive: true } },
+        orderBy: { quantity: 'asc' },
+        include: { menuItem: { include: MENU_INCLUDE } },
+      });
+      return {
+        kind: 'spirit',
+        ingredientId: ingredient.id,
+        ingredientName: ingredient.name,
+        pours: recipes.map((r) => this.toDTO(r.menuItem)),
+      };
+    }
+
+    return { kind: 'none' };
+  }
+
   async create(dto: CreateMenuItemDto): Promise<MenuItemDTO> {
     this.assertNoDuplicateChannels(dto.prices);
     const station = dto.station ?? CATEGORY_DEFAULT_STATION[dto.category];
@@ -54,6 +90,8 @@ export class MenuService {
         name: dto.name,
         category: dto.category,
         station,
+        menuGroup: dto.menuGroup ?? null,
+        barcode: dto.barcode ?? null,
         ...(dto.prices && dto.prices.length > 0
           ? {
               prices: {
@@ -76,6 +114,8 @@ export class MenuService {
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.category !== undefined) data.category = dto.category;
     if (dto.station !== undefined) data.station = dto.station;
+    if (dto.menuGroup !== undefined) data.menuGroup = dto.menuGroup;
+    if (dto.barcode !== undefined) data.barcode = dto.barcode;
     if (dto.isActive !== undefined) data.isActive = dto.isActive;
     const item = await this.prisma.menuItem.update({
       where: { id },
@@ -156,6 +196,8 @@ export class MenuService {
       name: item.name,
       category: item.category,
       station: item.station,
+      menuGroup: item.menuGroup,
+      barcode: item.barcode,
       isActive: item.isActive,
       prices: item.prices.map((p) => ({
         channel: p.channel,

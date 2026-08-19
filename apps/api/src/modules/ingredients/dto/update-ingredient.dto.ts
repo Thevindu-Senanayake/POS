@@ -1,4 +1,4 @@
-import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
 import { BASE_UNITS, type BaseUnit } from '@pos/shared';
 
 export class UpdateIngredientDto {
@@ -10,6 +10,12 @@ export class UpdateIngredientDto {
   @IsOptional()
   @IsIn([...BASE_UNITS])
   baseUnit?: BaseUnit;
+
+  /** Bottle/can barcode (spirits); unique when set, null clears it. */
+  @IsOptional()
+  @IsString()
+  @MaxLength(64)
+  barcode?: string | null;
 
   @IsOptional()
   @IsNumber()
