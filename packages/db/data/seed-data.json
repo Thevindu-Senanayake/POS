@@ -1,0 +1,6090 @@
+{
+  "meta": {
+    "generator": "packages/db/scripts/import-xlsx.py",
+    "sources": [
+      "Hotel Kintop Wine Item Stock.xlsx",
+      "Hotel KinTop Kitchen Item List (Filled).xlsx"
+    ],
+    "note": "Generated from the source workbooks — do not hand-edit; re-run the generator.",
+    "counts": {
+      "ingredients": 47,
+      "menuItems": 220,
+      "barcodes": 34
+    }
+  },
+  "ingredients": [
+    {
+      "name": "VA EXTRA SPECIAL ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796013270931",
+      "openingStock": 2250,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA BLACK ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796013270412",
+      "openingStock": 8250,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796013271280",
+      "openingStock": 2600,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA GAL ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796013270047",
+      "openingStock": 175,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4792077420138",
+      "openingStock": 4775,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4792077420237",
+      "openingStock": 400,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796011960193",
+      "openingStock": 3000,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK",
+      "baseUnit": "ml",
+      "barcode": null,
+      "openingStock": 450,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796000542904",
+      "openingStock": 3550,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796000541167",
+      "openingStock": 1550,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796000541204",
+      "openingStock": 3000,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796000541723",
+      "openingStock": 3000,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK",
+      "baseUnit": "ml",
+      "barcode": "4796000543048",
+      "openingStock": 550,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "DCSL GALERIE BRANDY",
+      "baseUnit": "ml",
+      "barcode": "4796011960056",
+      "openingStock": 3000,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND DRY GIN",
+      "baseUnit": "ml",
+      "barcode": "4796000542010",
+      "openingStock": 400,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA WHISKY",
+      "baseUnit": "ml",
+      "barcode": "4796013270702",
+      "openingStock": 9000,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA ALL BLUE VODKA",
+      "baseUnit": "ml",
+      "barcode": "4796013270191",
+      "openingStock": 1100,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA",
+      "baseUnit": "ml",
+      "barcode": "4796000543123",
+      "openingStock": 2525,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA",
+      "baseUnit": "ml",
+      "barcode": "4796013271839",
+      "openingStock": 2250,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM",
+      "baseUnit": "ml",
+      "barcode": "4796000542072",
+      "openingStock": 1100,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "ROCKLAND WHITE RUM",
+      "baseUnit": "ml",
+      "barcode": "4796000542102",
+      "openingStock": 150,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "LION STRONG BEER- BOT 625ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 15,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "LION STRONG BEER - CAN 500ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 24,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "LION STRONG BEER - CAN 330ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 21,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "LION STOUT BEER 625ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 10,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "CARLSBERG SPECIAL BREW BEER 625ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 5,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "COCA-COLA -BOT 1050ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 3,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "COCA-COLA -BOT 400ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 26,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "SPRITE - BOT 1050ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 4,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "SPRITE - BOT 400ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 7,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "EH SODA - BOT 1000ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 2,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "KINLEY SODA - BOT 400ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 12,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "EH BOTTLED DRINKING WATER 500ML",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 23,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "GOLD LEAF (M)",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 11,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "GOLD LEAF (L)",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 6,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Kottu Roti",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Noodles",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Rice",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Egg",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Sausage",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Chicken",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Pork",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Fish",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Prawns",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Cuttlefish",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "French Fries",
+      "baseUnit": "g",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    },
+    {
+      "name": "Cheese",
+      "baseUnit": "pcs",
+      "barcode": null,
+      "openingStock": 0,
+      "reorderLevel": 0,
+      "costPerUnit": 0
+    }
+  ],
+  "menuItems": [
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3750
+        },
+        {
+          "channel": "takeaway",
+          "price": 3750
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 580
+        },
+        {
+          "channel": "takeaway",
+          "price": 580
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 280
+        },
+        {
+          "channel": "takeaway",
+          "price": 280
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SPECIAL ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 220
+        },
+        {
+          "channel": "takeaway",
+          "price": 220
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SPECIAL ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3900
+        },
+        {
+          "channel": "takeaway",
+          "price": 3900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2150
+        },
+        {
+          "channel": "takeaway",
+          "price": 2150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 300
+        },
+        {
+          "channel": "takeaway",
+          "price": 300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA BLACK ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 250
+        },
+        {
+          "channel": "takeaway",
+          "price": 250
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA BLACK ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3700
+        },
+        {
+          "channel": "takeaway",
+          "price": 3700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2050
+        },
+        {
+          "channel": "takeaway",
+          "price": 2050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 550
+        },
+        {
+          "channel": "takeaway",
+          "price": 550
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 280
+        },
+        {
+          "channel": "takeaway",
+          "price": 280
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA EXTRA SUPER ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 220
+        },
+        {
+          "channel": "takeaway",
+          "price": 220
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA EXTRA SUPER ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3500
+        },
+        {
+          "channel": "takeaway",
+          "price": 3500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1950
+        },
+        {
+          "channel": "takeaway",
+          "price": 1950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1050
+        },
+        {
+          "channel": "takeaway",
+          "price": 1050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 500
+        },
+        {
+          "channel": "takeaway",
+          "price": 500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 270
+        },
+        {
+          "channel": "takeaway",
+          "price": 270
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA GAL ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 220
+        },
+        {
+          "channel": "takeaway",
+          "price": 220
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA GAL ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4300
+        },
+        {
+          "channel": "takeaway",
+          "price": 4300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2350
+        },
+        {
+          "channel": "takeaway",
+          "price": 2350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 650
+        },
+        {
+          "channel": "takeaway",
+          "price": 650
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "DCSL EXTRA SPECIAL ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 300
+        },
+        {
+          "channel": "takeaway",
+          "price": 300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL EXTRA SPECIAL ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4600
+        },
+        {
+          "channel": "takeaway",
+          "price": 4600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2450
+        },
+        {
+          "channel": "takeaway",
+          "price": 2450
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1350
+        },
+        {
+          "channel": "takeaway",
+          "price": 1350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 400
+        },
+        {
+          "channel": "takeaway",
+          "price": 400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "DCSL WHITE LABLE ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL WHITE LABLE ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4400
+        },
+        {
+          "channel": "takeaway",
+          "price": 4400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2400
+        },
+        {
+          "channel": "takeaway",
+          "price": 2400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1350
+        },
+        {
+          "channel": "takeaway",
+          "price": 1350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 400
+        },
+        {
+          "channel": "takeaway",
+          "price": 400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "DCSL BLACK OPEL ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL BLACK OPEL ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4950
+        },
+        {
+          "channel": "takeaway",
+          "price": 4950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2750
+        },
+        {
+          "channel": "takeaway",
+          "price": 2750
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1550
+        },
+        {
+          "channel": "takeaway",
+          "price": 1550
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 850
+        },
+        {
+          "channel": "takeaway",
+          "price": 850
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 470
+        },
+        {
+          "channel": "takeaway",
+          "price": 470
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "DCSL DOUBLE DISTILLED ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 380
+        },
+        {
+          "channel": "takeaway",
+          "price": 380
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL DOUBLE DISTILLED ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3900
+        },
+        {
+          "channel": "takeaway",
+          "price": 3900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2050
+        },
+        {
+          "channel": "takeaway",
+          "price": 2050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND EXTRA SPECIAL ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 300
+        },
+        {
+          "channel": "takeaway",
+          "price": 300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND EXTRA SPECIAL ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5200
+        },
+        {
+          "channel": "takeaway",
+          "price": 5200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2500
+        },
+        {
+          "channel": "takeaway",
+          "price": 2500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 750
+        },
+        {
+          "channel": "takeaway",
+          "price": 750
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 530
+        },
+        {
+          "channel": "takeaway",
+          "price": 530
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND VAT 9 ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 380
+        },
+        {
+          "channel": "takeaway",
+          "price": 380
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND VAT 9 ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4450
+        },
+        {
+          "channel": "takeaway",
+          "price": 4450
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2350
+        },
+        {
+          "channel": "takeaway",
+          "price": 2350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 410
+        },
+        {
+          "channel": "takeaway",
+          "price": 410
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND HALMILLA OLD ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 300
+        },
+        {
+          "channel": "takeaway",
+          "price": 300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND HALMILLA OLD ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4300
+        },
+        {
+          "channel": "takeaway",
+          "price": 4300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2300
+        },
+        {
+          "channel": "takeaway",
+          "price": 2300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1200
+        },
+        {
+          "channel": "takeaway",
+          "price": 1200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND GOVERNOR'S CHOICE ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 250
+        },
+        {
+          "channel": "takeaway",
+          "price": 250
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND GOVERNOR'S CHOICE ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3800
+        },
+        {
+          "channel": "takeaway",
+          "price": 3800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2150
+        },
+        {
+          "channel": "takeaway",
+          "price": 2150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 400
+        },
+        {
+          "channel": "takeaway",
+          "price": 400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND NAVY SEAL WHITE ARRACK 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Arrack",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 350
+        },
+        {
+          "channel": "takeaway",
+          "price": 350
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND NAVY SEAL WHITE ARRACK",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5800
+        },
+        {
+          "channel": "takeaway",
+          "price": 5800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3050
+        },
+        {
+          "channel": "takeaway",
+          "price": 3050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 900
+        },
+        {
+          "channel": "takeaway",
+          "price": 900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "DCSL GALERIE BRANDY 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Brandy",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 400
+        },
+        {
+          "channel": "takeaway",
+          "price": 400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "DCSL GALERIE BRANDY",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5800
+        },
+        {
+          "channel": "takeaway",
+          "price": 5800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3200
+        },
+        {
+          "channel": "takeaway",
+          "price": 3200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1800
+        },
+        {
+          "channel": "takeaway",
+          "price": 1800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 550
+        },
+        {
+          "channel": "takeaway",
+          "price": 550
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DRY GIN 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Gin",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 390
+        },
+        {
+          "channel": "takeaway",
+          "price": 390
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DRY GIN",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 7400
+        },
+        {
+          "channel": "takeaway",
+          "price": 7400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 4300
+        },
+        {
+          "channel": "takeaway",
+          "price": 4300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 2400
+        },
+        {
+          "channel": "takeaway",
+          "price": 2400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA WHISKY 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Whisky",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 500
+        },
+        {
+          "channel": "takeaway",
+          "price": 500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA WHISKY",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5800
+        },
+        {
+          "channel": "takeaway",
+          "price": 5800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3200
+        },
+        {
+          "channel": "takeaway",
+          "price": 3200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1800
+        },
+        {
+          "channel": "takeaway",
+          "price": 1800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 550
+        },
+        {
+          "channel": "takeaway",
+          "price": 550
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA ALL BLUE VODKA 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 450
+        },
+        {
+          "channel": "takeaway",
+          "price": 450
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA ALL BLUE VODKA",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5600
+        },
+        {
+          "channel": "takeaway",
+          "price": 5600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3050
+        },
+        {
+          "channel": "takeaway",
+          "price": 3050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 950
+        },
+        {
+          "channel": "takeaway",
+          "price": 950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 480
+        },
+        {
+          "channel": "takeaway",
+          "price": 480
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND KEROF VODKA 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 370
+        },
+        {
+          "channel": "takeaway",
+          "price": 370
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND KEROF VODKA",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5600
+        },
+        {
+          "channel": "takeaway",
+          "price": 5600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3050
+        },
+        {
+          "channel": "takeaway",
+          "price": 3050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 950
+        },
+        {
+          "channel": "takeaway",
+          "price": 950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 480
+        },
+        {
+          "channel": "takeaway",
+          "price": 480
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "VA RANGERS RESERVE VODKA 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Vodka",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 370
+        },
+        {
+          "channel": "takeaway",
+          "price": 370
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "VA RANGERS RESERVE VODKA",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5500
+        },
+        {
+          "channel": "takeaway",
+          "price": 5500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3050
+        },
+        {
+          "channel": "takeaway",
+          "price": 3050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 950
+        },
+        {
+          "channel": "takeaway",
+          "price": 950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 480
+        },
+        {
+          "channel": "takeaway",
+          "price": 480
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND DARK RED RUM 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 370
+        },
+        {
+          "channel": "takeaway",
+          "price": 370
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND DARK RED RUM",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 750ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 5500
+        },
+        {
+          "channel": "takeaway",
+          "price": 5500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 750
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 400ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 3050
+        },
+        {
+          "channel": "takeaway",
+          "price": 3050
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 400
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 200ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 100ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 950
+        },
+        {
+          "channel": "takeaway",
+          "price": 950
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 50ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 480
+        },
+        {
+          "channel": "takeaway",
+          "price": 480
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "ROCKLAND WHITE RUM 25ml",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Rum",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 370
+        },
+        {
+          "channel": "takeaway",
+          "price": 370
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "ROCKLAND WHITE RUM",
+          "quantity": 25
+        }
+      ]
+    },
+    {
+      "name": "LION STRONG BEER- BOT 625ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Beer",
+      "barcode": "4791059000702",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 900
+        },
+        {
+          "channel": "takeaway",
+          "price": 900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "LION STRONG BEER- BOT 625ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "LION STRONG BEER - CAN 500ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Beer",
+      "barcode": "4791059042955",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 900
+        },
+        {
+          "channel": "takeaway",
+          "price": 900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "LION STRONG BEER - CAN 500ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "LION STRONG BEER - CAN 330ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Beer",
+      "barcode": "4791059042894",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 680
+        },
+        {
+          "channel": "takeaway",
+          "price": 680
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "LION STRONG BEER - CAN 330ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "LION STOUT BEER 625ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Beer",
+      "barcode": "4791059000504",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 920
+        },
+        {
+          "channel": "takeaway",
+          "price": 920
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "LION STOUT BEER 625ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "CARLSBERG SPECIAL BREW BEER 625ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Beer",
+      "barcode": "4791059043082",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 980
+        },
+        {
+          "channel": "takeaway",
+          "price": 980
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "CARLSBERG SPECIAL BREW BEER 625ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "COCA-COLA -BOT 1050ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4792229106705",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 450
+        },
+        {
+          "channel": "takeaway",
+          "price": 450
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "COCA-COLA -BOT 1050ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "COCA-COLA -BOT 400ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4792229042430",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 270
+        },
+        {
+          "channel": "takeaway",
+          "price": 270
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "COCA-COLA -BOT 400ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "SPRITE - BOT 1050ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4792229206702",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 450
+        },
+        {
+          "channel": "takeaway",
+          "price": 450
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "SPRITE - BOT 1050ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "SPRITE - BOT 400ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4792229048739",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 270
+        },
+        {
+          "channel": "takeaway",
+          "price": 270
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "SPRITE - BOT 400ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "EH SODA - BOT 1000ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4791066101072",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 300
+        },
+        {
+          "channel": "takeaway",
+          "price": 300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "EH SODA - BOT 1000ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "KINLEY SODA - BOT 400ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4792229666216",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 200
+        },
+        {
+          "channel": "takeaway",
+          "price": 200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "KINLEY SODA - BOT 400ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "EH BOTTLED DRINKING WATER 500ML",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Soft Drinks",
+      "barcode": "4791066002232",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 150
+        },
+        {
+          "channel": "takeaway",
+          "price": 150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "EH BOTTLED DRINKING WATER 500ML",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "GOLD LEAF (M)",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Cigarette",
+      "barcode": "4791047011505",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 130
+        },
+        {
+          "channel": "takeaway",
+          "price": 130
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "GOLD LEAF (M)",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "GOLD LEAF (L)",
+      "category": "bar",
+      "station": "bar",
+      "menuGroup": "Cigarette",
+      "barcode": "47900028",
+      "prices": [
+        {
+          "channel": "dine_in_bar",
+          "price": 180
+        },
+        {
+          "channel": "takeaway",
+          "price": 180
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "GOLD LEAF (L)",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Steamed Plain / Garlic Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        },
+        {
+          "channel": "room_service",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        }
+      ]
+    },
+    {
+      "name": "Vegetable Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        }
+      ]
+    },
+    {
+      "name": "Sausage Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        },
+        {
+          "channel": "room_service",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "name": "Egg Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Chicken Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        },
+        {
+          "channel": "room_service",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        }
+      ]
+    },
+    {
+      "name": "Chicken Fried Rice( H)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        },
+        {
+          "channel": "room_service",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "Pork Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        }
+      ]
+    },
+    {
+      "name": "Fish Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        }
+      ]
+    },
+    {
+      "name": "Prawn Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 60
+        }
+      ]
+    },
+    {
+      "name": "Mixed Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 40
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 30
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 30
+        }
+      ]
+    },
+    {
+      "name": "Sea Food Fried Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 330
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 80
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 60
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 60
+        }
+      ]
+    },
+    {
+      "name": "Vegetable Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 900
+        },
+        {
+          "channel": "takeaway",
+          "price": 900
+        },
+        {
+          "channel": "room_service",
+          "price": 900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Eggs Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Sausages Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        },
+        {
+          "channel": "room_service",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 4
+        }
+      ]
+    },
+    {
+      "name": "Chicken Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        },
+        {
+          "channel": "room_service",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        }
+      ]
+    },
+    {
+      "name": "Pork Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        }
+      ]
+    },
+    {
+      "name": "Prawn Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        },
+        {
+          "channel": "room_service",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 60
+        }
+      ]
+    },
+    {
+      "name": "Fish Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        },
+        {
+          "channel": "room_service",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        }
+      ]
+    },
+    {
+      "name": "Mixed Fried Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 40
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 30
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 30
+        }
+      ]
+    },
+    {
+      "name": "Sea Food Special Noodles",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Fried Noodles",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Noodles",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 80
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 60
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 60
+        }
+      ]
+    },
+    {
+      "name": "Pepper Fried Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Chilli Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Fried Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Devilled Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        },
+        {
+          "channel": "room_service",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Chicken Chopsuey",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "Batter Fried Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Chicken Stew",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        },
+        {
+          "channel": "room_service",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Chicken Curry",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1300
+        },
+        {
+          "channel": "takeaway",
+          "price": 1300
+        },
+        {
+          "channel": "room_service",
+          "price": 1300
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Hot Butter Chicken",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chicken Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 250
+        }
+      ]
+    },
+    {
+      "name": "Vegetable Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1200
+        },
+        {
+          "channel": "takeaway",
+          "price": 1200
+        },
+        {
+          "channel": "room_service",
+          "price": 1200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        }
+      ]
+    },
+    {
+      "name": "Chicken Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "Pork Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1700
+        },
+        {
+          "channel": "takeaway",
+          "price": 1700
+        },
+        {
+          "channel": "room_service",
+          "price": 1700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "Prawn Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 80
+        }
+      ]
+    },
+    {
+      "name": "Mixed Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2200
+        },
+        {
+          "channel": "takeaway",
+          "price": 2200
+        },
+        {
+          "channel": "room_service",
+          "price": 2200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 80
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 40
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 30
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 30
+        }
+      ]
+    },
+    {
+      "name": "Sea Food Chopsuey Rice",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Chopsuey Rice",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2200
+        },
+        {
+          "channel": "takeaway",
+          "price": 2200
+        },
+        {
+          "channel": "room_service",
+          "price": 2200
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Rice",
+          "quantity": 165
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 80
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 60
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 60
+        }
+      ]
+    },
+    {
+      "name": "Devilled Fish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fish Stew",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fish Fingers",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fish Curry",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1400
+        },
+        {
+          "channel": "takeaway",
+          "price": 1400
+        },
+        {
+          "channel": "room_service",
+          "price": 1400
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fried Fish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fish Chopsuey",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Fish",
+          "quantity": 150
+        }
+      ]
+    },
+    {
+      "name": "Battered Fried Fish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Battered Fried Cuttlefish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 160
+        }
+      ]
+    },
+    {
+      "name": "Hot Butter Cuttlefish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 160
+        }
+      ]
+    },
+    {
+      "name": "Devilled Cuttlefish",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1500
+        },
+        {
+          "channel": "takeaway",
+          "price": 1500
+        },
+        {
+          "channel": "room_service",
+          "price": 1500
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Prawns",
+          "quantity": 180
+        }
+      ]
+    },
+    {
+      "name": "Batter Fried Prawns",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 180
+        }
+      ]
+    },
+    {
+      "name": "Devilled Prawns",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Prawns",
+          "quantity": 180
+        }
+      ]
+    },
+    {
+      "name": "Cuttlefish Curry",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 160
+        }
+      ]
+    },
+    {
+      "name": "Garlic Prawns",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Prawns",
+          "quantity": 180
+        }
+      ]
+    },
+    {
+      "name": "Prawns Curry",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Sea Food",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1600
+        },
+        {
+          "channel": "takeaway",
+          "price": 1600
+        },
+        {
+          "channel": "room_service",
+          "price": 1600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Prawns",
+          "quantity": 180
+        }
+      ]
+    },
+    {
+      "name": "Black Pepper Pork",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fried Pork",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Pork Chopsuy",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 100
+        }
+      ]
+    },
+    {
+      "name": "Pork Curry / Black Curry",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Devilled Pork",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1900
+        },
+        {
+          "channel": "takeaway",
+          "price": 1900
+        },
+        {
+          "channel": "room_service",
+          "price": 1900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Pork Stew",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Pork Curry (w/b)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Black Pepper Pork (w/b)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Fried Pork (w/b)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Devilled Pork (w/b)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Pork Stew (w/b)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Pork Dishes",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2000
+        },
+        {
+          "channel": "takeaway",
+          "price": 2000
+        },
+        {
+          "channel": "room_service",
+          "price": 2000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Pork",
+          "quantity": 200
+        }
+      ]
+    },
+    {
+      "name": "Vegetable Soup",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Soup",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 550
+        },
+        {
+          "channel": "takeaway",
+          "price": 550
+        },
+        {
+          "channel": "room_service",
+          "price": 550
+        }
+      ],
+      "recipe": []
+    },
+    {
+      "name": "Egg & Sweet Corn Soup",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Soup",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 750
+        },
+        {
+          "channel": "takeaway",
+          "price": 750
+        },
+        {
+          "channel": "room_service",
+          "price": 750
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Sweet Corn & Chicken Soup",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Soup",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 750
+        },
+        {
+          "channel": "takeaway",
+          "price": 750
+        },
+        {
+          "channel": "room_service",
+          "price": 750
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Chicken",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "Egg & Chicken Soup",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Soup",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 800
+        },
+        {
+          "channel": "takeaway",
+          "price": 800
+        },
+        {
+          "channel": "room_service",
+          "price": 800
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "Garlic Fried",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 550
+        },
+        {
+          "channel": "takeaway",
+          "price": 550
+        },
+        {
+          "channel": "room_service",
+          "price": 550
+        }
+      ],
+      "recipe": []
+    },
+    {
+      "name": "French Fries",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 900
+        },
+        {
+          "channel": "takeaway",
+          "price": 900
+        },
+        {
+          "channel": "room_service",
+          "price": 900
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "French Fries",
+          "quantity": 160
+        }
+      ]
+    },
+    {
+      "name": "Vegetable Chopsuey",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": []
+    },
+    {
+      "name": "Boiled Vegetables",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 950
+        },
+        {
+          "channel": "takeaway",
+          "price": 950
+        },
+        {
+          "channel": "room_service",
+          "price": 950
+        }
+      ],
+      "recipe": []
+    },
+    {
+      "name": "Batter Fried Vegetables",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        },
+        {
+          "channel": "room_service",
+          "price": 1150
+        }
+      ],
+      "recipe": []
+    },
+    {
+      "name": "Hot Butter Vegetables",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Vegetable",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1150
+        },
+        {
+          "channel": "takeaway",
+          "price": 1150
+        },
+        {
+          "channel": "room_service",
+          "price": 1150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Fried Eggs / Bullseye",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 150
+        },
+        {
+          "channel": "takeaway",
+          "price": 150
+        },
+        {
+          "channel": "room_service",
+          "price": 150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Ometet (sri Lankan)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 600
+        },
+        {
+          "channel": "takeaway",
+          "price": 600
+        },
+        {
+          "channel": "room_service",
+          "price": 600
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 3
+        }
+      ]
+    },
+    {
+      "name": "Sausages (05 Nons)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        },
+        {
+          "channel": "room_service",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Sausage",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "name": "Sausages (01 Nons)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 150
+        },
+        {
+          "channel": "takeaway",
+          "price": 150
+        },
+        {
+          "channel": "room_service",
+          "price": 150
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Sausage",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "name": "Chicken Omelet",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 3
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 50
+        }
+      ]
+    },
+    {
+      "name": "Cheese Omlet",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1000
+        },
+        {
+          "channel": "takeaway",
+          "price": 1000
+        },
+        {
+          "channel": "room_service",
+          "price": 1000
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 3
+        },
+        {
+          "ingredient": "Cheese",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "name": "Mix Chopsuey",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 2100
+        },
+        {
+          "channel": "takeaway",
+          "price": 2100
+        },
+        {
+          "channel": "room_service",
+          "price": 2100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Sausage",
+          "quantity": 2
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Pork",
+          "quantity": 70
+        },
+        {
+          "ingredient": "Fish",
+          "quantity": 40
+        },
+        {
+          "ingredient": "Prawns",
+          "quantity": 30
+        },
+        {
+          "ingredient": "Cuttlefish",
+          "quantity": 30
+        }
+      ]
+    },
+    {
+      "name": "Chiken Koththu",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 1100
+        },
+        {
+          "channel": "takeaway",
+          "price": 1100
+        },
+        {
+          "channel": "room_service",
+          "price": 1100
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Kottu Roti",
+          "quantity": 350
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 90
+        }
+      ]
+    },
+    {
+      "name": "Chiken Koththu(h)",
+      "category": "food",
+      "station": "kitchen",
+      "menuGroup": "Other Items",
+      "barcode": null,
+      "prices": [
+        {
+          "channel": "dine_in_restaurant",
+          "price": 700
+        },
+        {
+          "channel": "takeaway",
+          "price": 700
+        },
+        {
+          "channel": "room_service",
+          "price": 700
+        }
+      ],
+      "recipe": [
+        {
+          "ingredient": "Kottu Roti",
+          "quantity": 250
+        },
+        {
+          "ingredient": "Egg",
+          "quantity": 1
+        },
+        {
+          "ingredient": "Chicken",
+          "quantity": 60
+        }
+      ]
+    }
+  ]
+}

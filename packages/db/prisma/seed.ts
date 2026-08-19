@@ -2,11 +2,14 @@
  * Seed data for the Hospitality POS (spec §11 phase 0 + demo data for every flow).
  *
  * Creates one outlet, a user per role (with a manager PIN on the admin), suppliers,
- * ingredients with an opening-balance ledger movement, a menu spanning food / bar /
- * room-service — including "Whisky (Single)" and "Whisky (Double)" as *distinct*
- * items with their own recipes and per-channel prices (spec §2.4) — service-charge
- * rules, restaurant + bar tables, room categories + rooms (one with a rate override),
- * a sample checked-in booking, printers, and app settings.
+ * and the venue's real catalog — Hotel KinTop's ingredients and menu — loaded from
+ * `data/seed-data.json` (generated from the source workbooks by
+ * `scripts/import-xlsx.py`; never hand-edit that file). That catalog covers spirits
+ * sold by the ml (bottle barcodes + opening stock, with every pour size 25–750 ml as
+ * its own priced item, spec §2.4), packaged bar items scanned by their own barcode,
+ * and the kitchen dishes — each with per-channel prices and a recipe. It also seeds
+ * service-charge rules, restaurant + bar tables, room categories + rooms (one with a
+ * rate override), a sample checked-in booking, printers, and app settings.
  *
  * Idempotent: wipes the domain tables (reverse-dependency order) and re-inserts, so
  * `pnpm --filter @pos/db seed` can be run repeatedly.
@@ -14,6 +17,8 @@
  * Dev credentials (documented in README): every user's password is `pos1234`;
  * the admin's manager PIN is `1234`.
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
@@ -23,96 +28,40 @@ const DEV_PASSWORD = 'pos1234';
 const ADMIN_PIN = '1234';
 const BCRYPT_ROUNDS = 10;
 
-type IngredientSeed = {
-  name: string;
-  baseUnit: 'g' | 'ml' | 'pcs';
-  stock: number;
-  reorder: number;
-  cost: number; // cost per base unit (weighted average)
-  supplier: string;
+type Channel = 'dine_in_restaurant' | 'dine_in_bar' | 'takeaway' | 'room_service';
+
+/** Shape of `data/seed-data.json` (produced by `scripts/import-xlsx.py`). */
+type SeedData = {
+  ingredients: Array<{
+    name: string;
+    baseUnit: 'g' | 'ml' | 'pcs';
+    barcode: string | null;
+    openingStock: number;
+    reorderLevel: number;
+    costPerUnit: number;
+  }>;
+  menuItems: Array<{
+    name: string;
+    category: 'food' | 'bar' | 'room_service';
+    station: 'kitchen' | 'bar';
+    menuGroup: string | null;
+    barcode: string | null;
+    prices: Array<{ channel: Channel; price: number }>;
+    recipe: Array<{ ingredient: string; quantity: number }>;
+  }>;
 };
+
+/** Load the generated catalog, resolved relative to this file (CWD-independent). */
+function loadSeedData(): SeedData {
+  const dir =
+    typeof __dirname !== 'undefined' ? join(__dirname, '..', 'data') : join(process.cwd(), 'data');
+  return JSON.parse(readFileSync(join(dir, 'seed-data.json'), 'utf8')) as SeedData;
+}
 
 const SUPPLIERS = [
   { name: 'Metro Cash & Carry', contactInfo: 'Wholesale groceries', phone: '+92-300-1112222', email: 'orders@metro.example' },
   { name: 'Fresh Farm Produce', contactInfo: 'Meat & vegetables', phone: '+92-301-3334444', email: 'sales@freshfarm.example' },
   { name: 'City Beverages', contactInfo: 'Bar & soft drinks', phone: '+92-302-5556666', email: 'trade@citybev.example' },
-];
-
-const INGREDIENTS: IngredientSeed[] = [
-  { name: 'Chicken Breast', baseUnit: 'g', stock: 40000, reorder: 5000, cost: 0.85, supplier: 'Fresh Farm Produce' },
-  { name: 'Basmati Rice', baseUnit: 'g', stock: 60000, reorder: 8000, cost: 0.28, supplier: 'Metro Cash & Carry' },
-  { name: 'Cooking Oil', baseUnit: 'ml', stock: 30000, reorder: 4000, cost: 0.42, supplier: 'Metro Cash & Carry' },
-  { name: 'Onion', baseUnit: 'g', stock: 25000, reorder: 3000, cost: 0.12, supplier: 'Fresh Farm Produce' },
-  { name: 'Tomato', baseUnit: 'g', stock: 20000, reorder: 3000, cost: 0.18, supplier: 'Fresh Farm Produce' },
-  { name: 'Eggs', baseUnit: 'pcs', stock: 300, reorder: 60, cost: 22, supplier: 'Fresh Farm Produce' },
-  { name: 'Bread Slice', baseUnit: 'pcs', stock: 200, reorder: 40, cost: 12, supplier: 'Metro Cash & Carry' },
-  { name: 'Milk', baseUnit: 'ml', stock: 20000, reorder: 3000, cost: 0.22, supplier: 'Metro Cash & Carry' },
-  // Deliberately below its reorder level so the low-stock alert has something to show.
-  { name: 'Coffee Beans', baseUnit: 'g', stock: 600, reorder: 800, cost: 3.5, supplier: 'Metro Cash & Carry' },
-  { name: 'Sugar', baseUnit: 'g', stock: 25000, reorder: 4000, cost: 0.15, supplier: 'Metro Cash & Carry' },
-  // ~20 x 750ml bottles; sold by the ml so Single (30ml) and Double (60ml) deduct correctly.
-  { name: 'Whisky', baseUnit: 'ml', stock: 15000, reorder: 3000, cost: 4.2, supplier: 'City Beverages' },
-  { name: 'Cola Syrup', baseUnit: 'ml', stock: 18000, reorder: 3000, cost: 0.3, supplier: 'City Beverages' },
-];
-
-type MenuSeed = {
-  name: string;
-  category: 'food' | 'bar' | 'room_service';
-  station: 'kitchen' | 'bar';
-  prices: Partial<Record<'dine_in_restaurant' | 'dine_in_bar' | 'takeaway' | 'room_service', number>>;
-  recipe: Array<[string, number]>; // [ingredient name, qty in base unit]
-};
-
-const MENU: MenuSeed[] = [
-  {
-    name: 'Chicken Biryani',
-    category: 'food',
-    station: 'kitchen',
-    prices: { dine_in_restaurant: 850, dine_in_bar: 850, takeaway: 800, room_service: 950 },
-    recipe: [['Basmati Rice', 250], ['Chicken Breast', 200], ['Cooking Oil', 30], ['Onion', 60], ['Tomato', 40]],
-  },
-  {
-    name: 'Grilled Chicken Sandwich',
-    category: 'food',
-    station: 'kitchen',
-    prices: { dine_in_restaurant: 650, dine_in_bar: 650, takeaway: 600, room_service: 750 },
-    recipe: [['Bread Slice', 2], ['Chicken Breast', 150], ['Cooking Oil', 10]],
-  },
-  {
-    name: 'Continental Breakfast',
-    category: 'food',
-    station: 'kitchen',
-    prices: { dine_in_restaurant: 550, room_service: 650 },
-    recipe: [['Eggs', 2], ['Bread Slice', 2], ['Milk', 100]],
-  },
-  {
-    name: 'Coffee',
-    category: 'food',
-    station: 'kitchen',
-    prices: { dine_in_restaurant: 250, dine_in_bar: 250, takeaway: 220, room_service: 300 },
-    recipe: [['Coffee Beans', 15], ['Milk', 50], ['Sugar', 10]],
-  },
-  {
-    name: 'Whisky (Single)',
-    category: 'bar',
-    station: 'bar',
-    prices: { dine_in_bar: 500, dine_in_restaurant: 550, room_service: 650 },
-    recipe: [['Whisky', 30]],
-  },
-  {
-    name: 'Whisky (Double)',
-    category: 'bar',
-    station: 'bar',
-    prices: { dine_in_bar: 900, dine_in_restaurant: 1000, room_service: 1150 },
-    recipe: [['Whisky', 60]],
-  },
-  {
-    name: 'Cola',
-    category: 'bar',
-    station: 'bar',
-    prices: { dine_in_bar: 180, dine_in_restaurant: 200, takeaway: 150, room_service: 220 },
-    recipe: [['Cola Syrup', 50]],
-  },
 ];
 
 const SERVICE_CHARGE: Array<['dine_in_restaurant' | 'dine_in_bar' | 'takeaway' | 'room_service', number]> = [
@@ -164,6 +113,12 @@ async function reset() {
 }
 
 async function main() {
+  // Load (and validate the presence of) the generated catalog before the wipe,
+  // so a missing/corrupt seed-data.json aborts without destroying existing data.
+  const seedData = loadSeedData();
+  console.log(
+    `Loaded catalog: ${seedData.ingredients.length} ingredients, ${seedData.menuItems.length} menu items.`,
+  );
   console.log('Seeding — wiping existing data...');
   await reset();
 
@@ -194,67 +149,76 @@ async function main() {
   console.log(`Users: ${USERS.length} (password "${DEV_PASSWORD}", admin PIN "${ADMIN_PIN}")`);
 
   // --- Suppliers ----------------------------------------------------------
-  const supplierByName = new Map<string, string>();
+  // Kept for the purchasing / goods-receiving flow. The imported ingredients
+  // are not pre-linked to a supplier — cost is established later on receiving.
   for (const s of SUPPLIERS) {
-    const created = await prisma.supplier.create({ data: s });
-    supplierByName.set(s.name, created.id);
+    await prisma.supplier.create({ data: s });
   }
   console.log(`Suppliers: ${SUPPLIERS.length}`);
 
   // --- Ingredients (+ opening-balance ledger movement) --------------------
   const ingredientByName = new Map<string, string>();
-  for (const ing of INGREDIENTS) {
+  let openingMovements = 0;
+  for (const ing of seedData.ingredients) {
     const created = await prisma.ingredient.create({
       data: {
         outletId: outlet.id,
         name: ing.name,
         baseUnit: ing.baseUnit,
-        currentStock: ing.stock,
-        reorderLevel: ing.reorder,
-        costPerUnit: ing.cost,
-        supplierId: supplierByName.get(ing.supplier) ?? null,
+        barcode: ing.barcode, // spirit bottles carry the scannable barcode
+        currentStock: ing.openingStock,
+        reorderLevel: ing.reorderLevel,
+        costPerUnit: ing.costPerUnit,
       },
     });
     ingredientByName.set(ing.name, created.id);
     // Opening balance in the append-only ledger so currentStock is reconcilable.
-    await prisma.stockMovement.create({
-      data: {
-        ingredientId: created.id,
-        changeQty: ing.stock,
-        reason: 'adjustment',
-        refType: 'manual',
-        unitCostAtTime: ing.cost,
-        note: 'Opening balance',
-      },
-    });
+    // Kitchen ingredients start empty (0) — nothing to record.
+    if (ing.openingStock !== 0) {
+      await prisma.stockMovement.create({
+        data: {
+          ingredientId: created.id,
+          changeQty: ing.openingStock,
+          reason: 'adjustment',
+          refType: 'manual',
+          unitCostAtTime: ing.costPerUnit,
+          note: 'Opening balance',
+        },
+      });
+      openingMovements += 1;
+    }
   }
-  console.log(`Ingredients: ${INGREDIENTS.length} (each with an opening-balance movement)`);
+  console.log(
+    `Ingredients: ${seedData.ingredients.length} (${openingMovements} with an opening-balance movement)`,
+  );
 
   // --- Menu items, prices, recipes ----------------------------------------
-  for (const m of MENU) {
+  for (const m of seedData.menuItems) {
     await prisma.menuItem.create({
       data: {
         outletId: outlet.id,
         name: m.name,
         category: m.category,
+        menuGroup: m.menuGroup, // fine section (e.g. Arrack / Fried Rice)
+        barcode: m.barcode, // set on packaged whole-unit bar items (beer/cans)
         station: m.station,
         prices: {
-          create: Object.entries(m.prices).map(([channel, price]) => ({
-            channel: channel as any,
-            price: price as number,
-          })),
+          create: m.prices.map((p) => ({ channel: p.channel, price: p.price })),
         },
         recipes: {
-          create: m.recipe.map(([ingName, qty]) => {
-            const ingredientId = ingredientByName.get(ingName);
-            if (!ingredientId) throw new Error(`Recipe references unknown ingredient: ${ingName}`);
-            return { ingredientId, quantity: qty };
+          create: m.recipe.map((r) => {
+            const ingredientId = ingredientByName.get(r.ingredient);
+            if (!ingredientId) throw new Error(`Recipe references unknown ingredient: ${r.ingredient}`);
+            return { ingredientId, quantity: r.quantity };
           }),
         },
       },
     });
   }
-  console.log(`Menu items: ${MENU.length} (with per-channel prices + recipes)`);
+  const recipeRows = seedData.menuItems.reduce((n, m) => n + m.recipe.length, 0);
+  console.log(
+    `Menu items: ${seedData.menuItems.length} (with per-channel prices + ${recipeRows} recipe rows)`,
+  );
 
   // --- Service-charge rules ------------------------------------------------
   for (const [channel, pct] of SERVICE_CHARGE) {
