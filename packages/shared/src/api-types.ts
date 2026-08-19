@@ -126,6 +126,16 @@ export interface RecipeDTO {
 }
 
 /**
+ * One pour size offered after scanning a spirit bottle: the sellable MenuItem plus the volume it
+ * draws from the bottle (the Recipe quantity, in the bottle's base unit — ml for spirits). The
+ * volume lets the picker label shots (50 ml = 1 shot, 100 ml = 2 shots).
+ */
+export interface SpiritPourDTO {
+  item: MenuItemDTO;
+  volumeMl: number;
+}
+
+/**
  * Result of resolving a scanned barcode (bar USB scanner, spec feature (c)).
  *  - `item`   — barcode matched a whole-unit MenuItem (bottle/can/packaged) → add it directly.
  *  - `spirit` — barcode matched a spirit Ingredient → offer its pour sizes (the MenuItems whose
@@ -134,7 +144,7 @@ export interface RecipeDTO {
  */
 export type ScanResultDTO =
   | { kind: 'item'; item: MenuItemDTO }
-  | { kind: 'spirit'; ingredientId: string; ingredientName: string; pours: MenuItemDTO[] }
+  | { kind: 'spirit'; ingredientId: string; ingredientName: string; pours: SpiritPourDTO[] }
   | { kind: 'none' };
 
 export interface ServiceChargeRuleDTO {

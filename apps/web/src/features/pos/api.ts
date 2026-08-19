@@ -15,6 +15,7 @@ import type {
   DiscountType,
   MenuItemDTO,
   OrderDTO,
+  ScanResultDTO,
   ServiceChargeRuleDTO,
   TableSessionDTO,
 } from '@pos/shared';
@@ -81,6 +82,15 @@ export function useMenu() {
     queryFn: () => api.get<MenuItemDTO[]>('/menu-items'),
     staleTime: 60_000,
   });
+}
+
+/**
+ * Resolve a barcode from the bar USB scanner (spec feature (c)). Imperative — a
+ * scan is a one-off event, not a cached query — so callers invoke it directly on
+ * each Enter-terminated read. Encodes the code as it may contain URL-special chars.
+ */
+export function scanBarcode(code: string): Promise<ScanResultDTO> {
+  return api.get<ScanResultDTO>(`/menu/scan?code=${encodeURIComponent(code)}`);
 }
 
 export function useOrder(id: string | null) {

@@ -75,7 +75,10 @@ export class MenuService {
         kind: 'spirit',
         ingredientId: ingredient.id,
         ingredientName: ingredient.name,
-        pours: recipes.map((r) => this.toDTO(r.menuItem)),
+        pours: recipes.map((r) => ({
+          item: this.toDTO(r.menuItem),
+          volumeMl: decToNum(r.quantity),
+        })),
       };
     }
 

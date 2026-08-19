@@ -18,6 +18,13 @@ const STATION_TAG: Record<string, string> = {
   bar: 'bg-fuchsia-100 text-fuchsia-700',
 };
 
+/** Section heading when an item has no `menuGroup` — keyed by its coarse category. */
+const CATEGORY_FALLBACK_LABEL: Record<MenuCategory, string> = {
+  food: 'Food',
+  bar: 'Bar',
+  room_service: 'Room Service',
+};
+
 export interface MenuPick {
   menuItemId: string;
   name: string;
@@ -25,7 +32,7 @@ export interface MenuPick {
 }
 
 /** Price for this order's channel; undefined => the item isn't sold on it. */
-function priceForChannel(item: MenuItemDTO, channel: Channel): number | undefined {
+export function priceForChannel(item: MenuItemDTO, channel: Channel): number | undefined {
   return item.prices.find((p) => p.channel === channel)?.price;
 }
 
@@ -62,12 +69,26 @@ export function MenuGrid({
     ? category
     : tabs[0]?.key ?? 'food';
 
-  const visible = useMemo(() => {
+  // Within the active category, group tiles by `menuGroup` (fine sheet category,
+  // e.g. Arrack / Whisky / Beer) so the bar's ~200 pours stay navigable; items
+  // without a group fall back to a single section named for their category.
+  const sections = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return available
-      .filter((it) => it.category === activeCategory)
-      .filter((it) => (q ? it.name.toLowerCase().includes(q) : true))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    const byGroup = new Map<string, MenuItemDTO[]>();
+    for (const it of available) {
+      if (it.category !== activeCategory) continue;
+      if (q && !it.name.toLowerCase().includes(q)) continue;
+      const label = it.menuGroup?.trim() || CATEGORY_FALLBACK_LABEL[it.category];
+      const bucket = byGroup.get(label) ?? [];
+      bucket.push(it);
+      byGroup.set(label, bucket);
+    }
+    return [...byGroup.entries()]
+      .map(([label, items]) => ({
+        label,
+        items: items.sort((a, b) => a.name.localeCompare(b.name)),
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }, [available, activeCategory, search]);
 
   if (menu.isLoading) {
@@ -119,47 +140,72 @@ export function MenuGrid({
       </div>
 
       <div className="flex-1 overflow-y-auto p-3">
-        {visible.length === 0 ? (
+        {sections.length === 0 ? (
           <p className="py-12 text-center text-sm text-slate-400">
             {search ? 'No matches.' : 'Nothing on this menu yet.'}
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
-            {visible.map((item) => {
-              const price = priceForChannel(item, channel)!;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onPick({ menuItemId: item.id, name: item.name, unitPrice: price })}
-                  className={cn(
-                    'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
-                    'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-                  )}
-                >
-                  <span className="line-clamp-2 text-sm font-semibold leading-tight text-slate-800">
-                    {item.name}
-                  </span>
-                  <span className="flex items-center justify-between gap-1">
-                    <span className="text-sm font-bold text-slate-900">
-                      {formatMoney(price)}
-                    </span>
-                    <span
-                      className={cn(
-                        'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase',
-                        STATION_TAG[item.station] ?? 'bg-slate-100 text-slate-600',
-                      )}
-                    >
-                      {item.station}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
+          <div className="flex flex-col gap-5">
+            {sections.map((section) => (
+              <section key={section.label}>
+                {sections.length > 1 ? (
+                  <h3 className="mb-2 px-0.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+                    {section.label}
+                  </h3>
+                ) : null}
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
+                  {section.items.map((item) => (
+                    <MenuTile
+                      key={item.id}
+                      item={item}
+                      price={priceForChannel(item, channel)!}
+                      onPick={onPick}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+/** A single tappable menu tile: name, channel price, and station tag. */
+function MenuTile({
+  item,
+  price,
+  onPick,
+}: {
+  item: MenuItemDTO;
+  price: number;
+  onPick: (pick: MenuPick) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onPick({ menuItemId: item.id, name: item.name, unitPrice: price })}
+      className={cn(
+        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
+        'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+      )}
+    >
+      <span className="line-clamp-2 text-sm font-semibold leading-tight text-slate-800">
+        {item.name}
+      </span>
+      <span className="flex items-center justify-between gap-1">
+        <span className="text-sm font-bold text-slate-900">{formatMoney(price)}</span>
+        <span
+          className={cn(
+            'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase',
+            STATION_TAG[item.station] ?? 'bg-slate-100 text-slate-600',
+          )}
+        >
+          {item.station}
+        </span>
+      </span>
+    </button>
   );
 }

@@ -1,14 +1,15 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import type { Channel } from '@pos/shared';
+import { useEffect, useRef, useState } from 'react';
+import type { Channel, SpiritPourDTO } from '@pos/shared';
 import { ApiError } from '@/lib/api-client';
 import { enqueueSend } from '@/lib/offline/sync';
 import { useOfflineStore } from '@/lib/offline/store';
 import { Button } from '@/components/ui/button';
 import { FullscreenSpinner } from '@/components/ui/spinner';
 import {
+  scanBarcode,
   useAddItems,
   useCreateOrder,
   useOpenSession,
@@ -19,9 +20,11 @@ import {
 } from './api';
 import { useCartStore, type CartLine } from './cart-store';
 import { CHANNEL_LABELS, channelForArea } from './format';
-import { MenuGrid } from './menu-grid';
+import { MenuGrid, priceForChannel } from './menu-grid';
 import { OrderTicket } from './order-ticket';
 import { PayDialog } from './pay-dialog';
+import { PourPicker } from './pour-picker';
+import { useBarcodeScanner } from './use-barcode-scanner';
 
 const EMPTY_CART: CartLine[] = [];
 
@@ -66,6 +69,62 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [payOpen, setPayOpen] = useState(false);
+
+  // --- bar USB barcode scanner (spec feature (c)) ----------------------------
+  // Only the bar screen listens for the HID scanner. A scanned whole-unit item
+  // (bottled beer/cans) is added straight to the cart; a spirit bottle opens the
+  // pour picker. Feedback surfaces in a transient banner.
+  const [scanNote, setScanNote] = useState<string | null>(null);
+  const [pourPick, setPourPick] = useState<{
+    ingredientName: string;
+    pours: SpiritPourDTO[];
+  } | null>(null);
+  const scanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flashScan = (message: string) => {
+    setScanNote(message);
+    if (scanTimer.current) clearTimeout(scanTimer.current);
+    scanTimer.current = setTimeout(() => setScanNote(null), 2800);
+  };
+  useEffect(
+    () => () => {
+      if (scanTimer.current) clearTimeout(scanTimer.current);
+    },
+    [],
+  );
+
+  const handleScan = async (code: string) => {
+    try {
+      const result = await scanBarcode(code);
+      if (result.kind === 'item') {
+        const price = priceForChannel(result.item, channel);
+        if (price === undefined) {
+          flashScan(`${result.item.name} isn’t sold at the bar`);
+          return;
+        }
+        useCartStore.getState().add(cartKey, {
+          menuItemId: result.item.id,
+          name: result.item.name,
+          unitPrice: price,
+        });
+        flashScan(`Added ${result.item.name}`);
+      } else if (result.kind === 'spirit') {
+        if (result.pours.length === 0) {
+          flashScan(`${result.ingredientName} has no pour sizes set`);
+          return;
+        }
+        setPourPick({ ingredientName: result.ingredientName, pours: result.pours });
+      } else {
+        flashScan(`No match for ${code}`);
+      }
+    } catch {
+      flashScan('Scan lookup failed — is the server reachable?');
+    }
+  };
+
+  // Enable only on an open bar table (the order workspace is showing).
+  const barScanEnabled = channel === 'dine_in_bar' && !!table?.activeSessionId;
+  useBarcodeScanner(barScanEnabled, handleScan);
 
   // --- loading / guard states ------------------------------------------------
 
@@ -204,6 +263,12 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
         </div>
       ) : null}
 
+      {scanNote ? (
+        <div className="border-b border-sky-200 bg-sky-50 px-4 py-2 text-sm font-medium text-sky-800">
+          {scanNote}
+        </div>
+      ) : null}
+
       {queuedForCart.length > 0 ? (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
           {queuedForCart.length} round{queuedForCart.length === 1 ? '' : 's'} queued offline —{' '}
@@ -235,6 +300,28 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
 
       {payOpen && order ? (
         <PayDialog order={order} onClose={() => setPayOpen(false)} onSettled={settledAway} />
+      ) : null}
+
+      {pourPick ? (
+        <PourPicker
+          open
+          ingredientName={pourPick.ingredientName}
+          pours={pourPick.pours}
+          channel={channel}
+          onClose={() => setPourPick(null)}
+          onPick={(pour) => {
+            const price = priceForChannel(pour.item, channel);
+            if (price !== undefined) {
+              useCartStore.getState().add(cartKey, {
+                menuItemId: pour.item.id,
+                name: pour.item.name,
+                unitPrice: price,
+              });
+              flashScan(`Added ${pour.item.name}`);
+            }
+            setPourPick(null);
+          }}
+        />
       ) : null}
     </div>
   );
