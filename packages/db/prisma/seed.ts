@@ -328,9 +328,18 @@ async function main() {
   console.log('Booking: John Guest in room 201 (half-board, checked-in)');
 
   // --- Printers ------------------------------------------------------------
-  await prisma.printer.create({ data: { station: 'kitchen', name: 'Kitchen Printer', port: 9100, type: 'epson' } });
-  await prisma.printer.create({ data: { station: 'bar', name: 'Bar Printer', port: 9100, type: 'epson' } });
-  console.log('Printers: kitchen + bar');
+  // KOTs print over the network (kitchen + bar); the customer bill/receipt
+  // prints on the USB printer attached to the till host (spec §3.2).
+  await prisma.printer.create({
+    data: { role: 'kitchen', name: 'Kitchen Printer', connection: 'network', port: 9100, type: 'epson' },
+  });
+  await prisma.printer.create({
+    data: { role: 'bar', name: 'Bar Printer', connection: 'network', port: 9100, type: 'epson' },
+  });
+  await prisma.printer.create({
+    data: { role: 'receipt', name: 'Receipt Printer', connection: 'usb', device: 'Receipt Printer', type: 'epson' },
+  });
+  console.log('Printers: kitchen + bar (network) + receipt (USB)');
 
   // --- App settings --------------------------------------------------------
   const settings: Array<[string, unknown]> = [

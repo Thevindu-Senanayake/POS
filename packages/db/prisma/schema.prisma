@@ -165,6 +165,21 @@ enum AuditAction {
   goods_received
 }
 
+// Which physical printer a job routes to (spec §3.2). `receipt` is the
+// station-less customer bill/receipt printer; `kitchen`/`bar` are the KOTs.
+enum PrinterRole {
+  kitchen
+  bar
+  receipt
+}
+
+// How the agent reaches a printer: `network` = TCP (ip:port), `usb` = the
+// host OS spooler / installed printer addressed by name (`device`).
+enum PrinterConnection {
+  network
+  usb
+}
+
 // ---------------------------------------------------------------------------
 // Tenancy / users
 // ---------------------------------------------------------------------------
@@ -236,6 +251,9 @@ model Ingredient {
   outlet       Outlet?  @relation(fields: [outletId], references: [id])
   name         String
   baseUnit     BaseUnit
+  // Barcode of the physical stock unit (e.g. a spirit bottle). A bar scan that
+  // matches this resolves to the pour MenuItems built from this ingredient.
+  barcode      String?  @unique
   // Derived from the stock_movements ledger; kept in sync only inside the same
   // DB transaction that appends the movement, never mutated standalone (spec §2.1).
   currentStock Decimal  @default(0) @db.Decimal(14, 3)
@@ -338,6 +356,13 @@ model MenuItem {
   outlet    Outlet?      @relation(fields: [outletId], references: [id])
   name      String
   category  MenuCategory
+  // Fine-grained menu section from the source catalog (e.g. "ARRACK", "Fried
+  // Rice"). `category` remains the coarse KOT-routing bucket; `menuGroup` is for
+  // grouping/filtering the POS grid and reports.
+  menuGroup String?
+  // Scannable barcode for whole-unit, direct-sale bar items (bottled beer, cans).
+  // Spirits sold by pour carry the barcode on their bottle Ingredient instead.
+  barcode   String?      @unique
   station   Station // KOT routing (spec §2.4)
   isActive  Boolean      @default(true)
   createdAt DateTime     @default(now())
@@ -652,16 +677,18 @@ model PrintJob {
 
 // Printer registry + health (spec §3.2 config mapping, §3.3 health banner).
 model Printer {
-  id         String    @id @default(cuid())
-  station    Station   @unique
+  id         String            @id @default(cuid())
+  role       PrinterRole       @unique
   name       String
-  ip         String?
-  port       Int       @default(9100)
-  type       String    @default("epson")
-  online     Boolean   @default(true)
+  connection PrinterConnection @default(network)
+  ip         String? // network: printer IP
+  port       Int               @default(9100)
+  device     String? // usb: OS spooler / installed-printer name
+  type       String            @default("epson")
+  online     Boolean           @default(true)
   lastSeenAt DateTime?
   lastError  String?
-  updatedAt  DateTime  @updatedAt
+  updatedAt  DateTime          @updatedAt
 
   @@map("printers")
 }
