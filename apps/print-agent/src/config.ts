@@ -1,9 +1,13 @@
 import { hostname } from 'node:os';
+import type { PrinterConnection } from '@pos/shared';
 
-/** A resolved print target: where (and how) to print one station's jobs. */
+/** A resolved print target: where (and how) to print one printer role's jobs. */
 export interface PrinterTarget {
+  /** `network` → TCP ip:port; `usb` → the host OS spooler / printer named `device`. */
+  connection: PrinterConnection;
   ip: string | null;
   port: number;
+  device: string | null;
   type: string;
 }
 
@@ -18,11 +22,11 @@ export interface AgentConfig {
   maxBackoffMs: number;
   printerRefreshMs: number;
   connectTimeoutMs: number;
-  /** Per-station printer overrides from env (`kitchen`/`bar`, or `receipt` for bills). */
+  /** Per-role printer overrides from env (`kitchen`/`bar` KOTs, `receipt` for bills). */
   overrides: Record<string, Partial<PrinterTarget>>;
 }
 
-/** Stations that can be overridden via env; `receipt` targets station-less bill jobs. */
+/** Printer roles overridable via env; `receipt` targets station-less bill jobs. */
 const OVERRIDE_KEYS = ['kitchen', 'bar', 'receipt'] as const;
 
 function strEnv(env: NodeJS.ProcessEnv, key: string): string | undefined {
@@ -40,16 +44,20 @@ function intEnv(env: NodeJS.ProcessEnv, key: string, fallback: number): number {
   return Math.floor(n);
 }
 
-/** Build the per-station override map from PRINTER_<STATION>_{IP,PORT,TYPE}. */
+/** Build the per-role override map from PRINTER_<ROLE>_{CONNECTION,IP,PORT,DEVICE,TYPE}. */
 function readOverrides(env: NodeJS.ProcessEnv): Record<string, Partial<PrinterTarget>> {
   const out: Record<string, Partial<PrinterTarget>> = {};
   for (const key of OVERRIDE_KEYS) {
     const prefix = `PRINTER_${key.toUpperCase()}_`;
     const override: Partial<PrinterTarget> = {};
+    const connection = strEnv(env, `${prefix}CONNECTION`);
     const ip = strEnv(env, `${prefix}IP`);
+    const device = strEnv(env, `${prefix}DEVICE`);
     const type = strEnv(env, `${prefix}TYPE`);
+    if (connection === 'network' || connection === 'usb') override.connection = connection;
     if (ip !== undefined) override.ip = ip;
     if (strEnv(env, `${prefix}PORT`) !== undefined) override.port = intEnv(env, `${prefix}PORT`, 9100);
+    if (device !== undefined) override.device = device;
     if (type !== undefined) override.type = type;
     if (Object.keys(override).length > 0) out[key] = override;
   }

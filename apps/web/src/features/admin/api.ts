@@ -90,8 +90,10 @@ export interface RoomCategoryInput {
 }
 export interface PrinterInput {
   name?: string;
+  connection?: 'network' | 'usb';
   ip?: string | null;
   port?: number;
+  device?: string | null;
   type?: string;
   online?: boolean;
 }

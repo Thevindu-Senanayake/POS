@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { FullscreenSpinner, Spinner } from '@/components/ui/spinner';
 import { usePrinters, usePrintJobs, useRetryPrintJob, useUpdatePrinter } from './api';
-import { STATION_LABELS, formatDateTime } from './format';
+import { CONNECTION_LABELS, ROLE_LABELS, STATION_LABELS, formatDateTime } from './format';
 import { AdminPage, Badge, ErrorNote, Field, SectionCard, SelectInput, Table, TextInput } from './ui';
 
 const JOB_STATUS_LABELS: Record<PrintJobStatus, string> = {
@@ -58,7 +58,7 @@ export function PrintersScreen() {
                   <span className={`h-2.5 w-2.5 rounded-full ${p.online ? 'bg-emerald-500' : 'bg-red-500'}`} />
                   <span className="font-bold text-slate-900">{p.name}</span>
                 </div>
-                <Badge tone="slate">{STATION_LABELS[p.station]}</Badge>
+                <Badge tone="slate">{ROLE_LABELS[p.role]}</Badge>
               </div>
               <Button variant="secondary" onClick={() => setEditing(p)}>
                 Edit
@@ -72,8 +72,18 @@ export function PrintersScreen() {
                 </dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-slate-400">Address</dt>
-                <dd className="font-medium text-slate-700">{p.ip ? `${p.ip}:${p.port}` : 'Not set'}</dd>
+                <dt className="text-slate-400">Connection</dt>
+                <dd className="font-medium text-slate-700">{CONNECTION_LABELS[p.connection]}</dd>
+              </div>
+              <div className="flex justify-between">
+                <dt className="text-slate-400">{p.connection === 'usb' ? 'Device' : 'Address'}</dt>
+                <dd className="font-medium text-slate-700">
+                  {p.connection === 'usb'
+                    ? (p.device ?? 'Not set')
+                    : p.ip
+                      ? `${p.ip}:${p.port}`
+                      : 'Not set'}
+                </dd>
               </div>
               <div className="flex justify-between">
                 <dt className="text-slate-400">Type</dt>
@@ -195,8 +205,10 @@ function PrintJobs({
 
 const printerSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
+  connection: z.enum(['network', 'usb']),
   ip: z.string().trim(),
   port: z.coerce.number().int().min(1).max(65535),
+  device: z.string().trim(),
   type: z.string().trim().min(1, 'Type is required'),
   online: z.boolean(),
 });
@@ -208,24 +220,36 @@ function PrinterModal({ printer, onClose }: { printer: PrinterDTO; onClose: () =
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<PrinterValues>({
     resolver: zodResolver(printerSchema),
     defaultValues: {
       name: printer.name,
+      connection: printer.connection,
       ip: printer.ip ?? '',
       port: printer.port,
+      device: printer.device ?? '',
       type: printer.type,
       online: printer.online,
     },
   });
+  const connection = watch('connection');
 
   const onSubmit = handleSubmit(async (v) => {
     setError(null);
     try {
       await update.mutateAsync({
         id: printer.id,
-        body: { name: v.name, ip: v.ip.trim() === '' ? null : v.ip.trim(), port: v.port, type: v.type, online: v.online },
+        body: {
+          name: v.name,
+          connection: v.connection,
+          ip: v.ip.trim() === '' ? null : v.ip.trim(),
+          port: v.port,
+          device: v.device.trim() === '' ? null : v.device.trim(),
+          type: v.type,
+          online: v.online,
+        },
       });
       onClose();
     } catch (e) {
@@ -237,19 +261,31 @@ function PrinterModal({ printer, onClose }: { printer: PrinterDTO; onClose: () =
     <Modal open onClose={onClose} title={`Edit ${printer.name}`} widthClassName="max-w-md">
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <p className="text-sm text-slate-500">
-          Station: <span className="font-semibold text-slate-700">{STATION_LABELS[printer.station]}</span>
+          Role: <span className="font-semibold text-slate-700">{ROLE_LABELS[printer.role]}</span>
         </p>
         <Field label="Name" htmlFor="pr-name" error={errors.name?.message}>
           <TextInput id="pr-name" {...register('name')} />
         </Field>
-        <div className="grid grid-cols-[1fr_100px] gap-3">
-          <Field label="IP address" htmlFor="pr-ip" hint="Blank = not networked (dev/stdout)">
-            <TextInput id="pr-ip" placeholder="192.168.1.50" {...register('ip')} />
+        <Field label="Connection" htmlFor="pr-connection" hint="USB = local OS printer; Network = LAN ESC/POS">
+          <SelectInput id="pr-connection" {...register('connection')}>
+            <option value="network">Network (IP)</option>
+            <option value="usb">USB (OS printer)</option>
+          </SelectInput>
+        </Field>
+        {connection === 'usb' ? (
+          <Field label="Device" htmlFor="pr-device" hint="OS/spooler printer name the agent prints to">
+            <TextInput id="pr-device" placeholder="EPSON TM-T20" {...register('device')} />
           </Field>
-          <Field label="Port" htmlFor="pr-port" error={errors.port?.message}>
-            <TextInput id="pr-port" type="number" min="1" max="65535" {...register('port')} />
-          </Field>
-        </div>
+        ) : (
+          <div className="grid grid-cols-[1fr_100px] gap-3">
+            <Field label="IP address" htmlFor="pr-ip" hint="Blank = not networked (dev/stdout)">
+              <TextInput id="pr-ip" placeholder="192.168.1.50" {...register('ip')} />
+            </Field>
+            <Field label="Port" htmlFor="pr-port" error={errors.port?.message}>
+              <TextInput id="pr-port" type="number" min="1" max="65535" {...register('port')} />
+            </Field>
+          </div>
+        )}
         <Field label="Type" htmlFor="pr-type" error={errors.type?.message} hint="e.g. escpos">
           <TextInput id="pr-type" {...register('type')} />
         </Field>

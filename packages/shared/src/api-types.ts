@@ -13,6 +13,8 @@ import type {
   PaymentMethod,
   PrintJobStatus,
   PrintJobType,
+  PrinterConnection,
+  PrinterRole,
   PurchaseOrderStatus,
   RoomStatus,
   Station,
@@ -285,10 +287,14 @@ export interface PrintJobAgentDTO {
 
 export interface PrinterDTO {
   id: string;
-  station: Station;
+  role: PrinterRole;
   name: string;
+  /** How the agent reaches it: `network` (ip:port) or `usb` (OS spooler by name). */
+  connection: PrinterConnection;
   ip: string | null;
   port: number;
+  /** usb: the OS spooler / installed-printer name the agent prints to. */
+  device: string | null;
   /** ESC/POS profile the agent renders with (e.g. `epson`, `star`). */
   type: string;
   online: boolean;

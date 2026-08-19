@@ -4,6 +4,8 @@ import type {
   Channel,
   MenuCategory,
   PaymentMethod,
+  PrinterConnection,
+  PrinterRole,
   PurchaseOrderStatus,
   RoomStatus,
   StockReason,
@@ -57,6 +59,19 @@ export const MENU_CATEGORY_LABELS: Record<MenuCategory, string> = {
 export const STATION_LABELS: Record<Station, string> = {
   kitchen: 'Kitchen',
   bar: 'Bar',
+};
+
+/** Printer role (KOT stations + the station-less receipt/bill printer). */
+export const ROLE_LABELS: Record<PrinterRole, string> = {
+  kitchen: 'Kitchen',
+  bar: 'Bar',
+  receipt: 'Receipt',
+};
+
+/** How the agent reaches a printer. */
+export const CONNECTION_LABELS: Record<PrinterConnection, string> = {
+  network: 'Network',
+  usb: 'USB',
 };
 
 export const ROOM_STATUS_LABELS: Record<RoomStatus, string> = {

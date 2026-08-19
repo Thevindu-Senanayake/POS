@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import type { PrintJob, Printer } from '@pos/db';
-import type { PrinterDTO, PrintJobAgentDTO, PrintJobDTO, PrintJobStatus, Station } from '@pos/shared';
+import type { PrinterDTO, PrinterRole, PrintJobAgentDTO, PrintJobDTO, PrintJobStatus } from '@pos/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RealtimeGateway } from '../realtime/realtime.gateway';
 import { ClaimJobsDto } from './dto/claim-jobs.dto';
@@ -82,21 +82,23 @@ export class PrintingService {
     return claimed.map((job) => this.toAgentDTO(job));
   }
 
-  /** Agent confirms a job printed: mark done and flip the station's printer online. */
+  /** Agent confirms a job printed: mark done and flip that printer's health online. */
   async reportDone(id: string, dto: ReportDoneDto): Promise<PrintJobDTO> {
     const job = await this.loadJobOrThrow(id);
     const updated = await this.prisma.printJob.update({
       where: { id },
       data: { status: 'done', printedAt: new Date(), lastError: null },
     });
-    const station = dto.station ?? job.station;
-    if (station) await this.markPrinter(station, true, null);
+    // Station-less bill jobs belong to the `receipt` (USB) printer, so its health
+    // is now tracked too — previously untracked because it had no station.
+    const role: PrinterRole = dto.station ?? job.station ?? 'receipt';
+    await this.markPrinter(role, true, null);
     return this.toJobDTO(updated);
   }
 
   /**
    * Agent reports a job failed. Reschedule with backoff while attempts remain,
-   * else mark `failed`; either way flip the station's printer offline (loud
+   * else mark `failed`; either way flip that printer's health offline (loud
    * banner via `printer:health`).
    */
   async reportFailed(id: string, dto: ReportFailedDto): Promise<PrintJobDTO> {
@@ -114,14 +116,14 @@ export class PrintingService {
           : {}),
       },
     });
-    const station = dto.station ?? job.station;
-    if (station) await this.markPrinter(station, false, dto.error);
+    const role: PrinterRole = dto.station ?? job.station ?? 'receipt';
+    await this.markPrinter(role, false, dto.error);
     return this.toJobDTO(updated);
   }
 
-  /** Printer↔station map the agent uses to route jobs to a LAN address. */
+  /** Printer registry the agent uses to route jobs (by role) to a LAN/USB target. */
   async listPrinters(): Promise<PrinterDTO[]> {
-    const printers = await this.prisma.printer.findMany({ orderBy: { station: 'asc' } });
+    const printers = await this.prisma.printer.findMany({ orderBy: { role: 'asc' } });
     return printers.map((p) => this.toPrinterDTO(p));
   }
 
@@ -164,8 +166,10 @@ export class PrintingService {
       where: { id },
       data: {
         ...(dto.name !== undefined ? { name: dto.name } : {}),
+        ...(dto.connection !== undefined ? { connection: dto.connection } : {}),
         ...(dto.ip !== undefined ? { ip: dto.ip } : {}),
         ...(dto.port !== undefined ? { port: dto.port } : {}),
+        ...(dto.device !== undefined ? { device: dto.device } : {}),
         ...(dto.type !== undefined ? { type: dto.type } : {}),
         ...(dto.online !== undefined
           ? { online: dto.online, ...(dto.online ? { lastError: null } : {}) }
@@ -187,12 +191,12 @@ export class PrintingService {
   // --- Helpers -----------------------------------------------------------
 
   /** Reflect a printer's reachability; broadcast only when the online state flips. */
-  private async markPrinter(station: Station, online: boolean, error: string | null): Promise<void> {
-    const printer = await this.prisma.printer.findUnique({ where: { station } });
+  private async markPrinter(role: PrinterRole, online: boolean, error: string | null): Promise<void> {
+    const printer = await this.prisma.printer.findUnique({ where: { role } });
     if (!printer) return;
     const changed = printer.online !== online;
     const updated = await this.prisma.printer.update({
-      where: { station },
+      where: { role },
       data: {
         online,
         lastError: online ? null : error,
@@ -251,10 +255,12 @@ export class PrintingService {
   private toPrinterDTO(printer: Printer): PrinterDTO {
     return {
       id: printer.id,
-      station: printer.station,
+      role: printer.role,
       name: printer.name,
+      connection: printer.connection,
       ip: printer.ip,
       port: printer.port,
+      device: printer.device,
       type: printer.type,
       online: printer.online,
       lastSeenAt: printer.lastSeenAt ? printer.lastSeenAt.toISOString() : null,

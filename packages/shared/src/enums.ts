@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 // Enum values MUST match the Prisma schema (packages/db/prisma/schema.prisma).
-// A compile-time assertion in apps/api (enum-parity.ts) guards against drift.
+// Keep this file and schema.prisma in lockstep whenever either enum changes.
 
 export const UserRoleSchema = z.enum([
   'admin',
@@ -137,6 +137,18 @@ export const AuditActionSchema = z.enum([
   'goods_received',
 ]);
 export type AuditAction = z.infer<typeof AuditActionSchema>;
+
+// Which physical printer a job routes to (spec §3.2). `receipt` is the
+// station-less customer bill/receipt printer; `kitchen`/`bar` are the KOTs.
+export const PrinterRoleSchema = z.enum(['kitchen', 'bar', 'receipt']);
+export type PrinterRole = z.infer<typeof PrinterRoleSchema>;
+export const PRINTER_ROLES = PrinterRoleSchema.options;
+
+// How the agent reaches a printer: `network` = TCP (ip:port), `usb` = the host
+// OS spooler / installed printer addressed by name (`device`).
+export const PrinterConnectionSchema = z.enum(['network', 'usb']);
+export type PrinterConnection = z.infer<typeof PrinterConnectionSchema>;
+export const PRINTER_CONNECTIONS = PrinterConnectionSchema.options;
 
 /** Which station a menu category defaults to for KOT routing. */
 export const CATEGORY_DEFAULT_STATION: Record<MenuCategory, Station> = {

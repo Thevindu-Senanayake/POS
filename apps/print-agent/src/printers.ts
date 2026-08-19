@@ -6,14 +6,15 @@ const DEFAULT_PORT = 9100;
 const DEFAULT_TYPE = 'epson';
 
 /**
- * Station → printer routing (spec §3.2). The DB printer map is the source of
- * truth; env `PRINTER_<STATION>_*` values override it (they win), which lets an
+ * Role → printer routing (spec §3.2). The DB printer map is the source of
+ * truth; env `PRINTER_<ROLE>_*` values override it (they win), which lets an
  * operator point the agent at real hardware without touching the DB and is also
- * how the no-IP dev fallback is expressed (blank IP → stdout). Station-less bill
- * jobs route to the optional `receipt` target.
+ * how the no-hardware dev fallback is expressed (blank IP + no device → stdout).
+ * KOT jobs route by their `station` (kitchen/bar); station-less bill jobs route
+ * to the `receipt` printer (typically USB on the till host).
  */
 export class PrinterMap {
-  private byStation = new Map<string, PrinterDTO>();
+  private byRole = new Map<string, PrinterDTO>();
 
   constructor(
     private readonly api: ApiClient,
@@ -22,17 +23,19 @@ export class PrinterMap {
 
   async refresh(): Promise<void> {
     const printers = await this.api.listPrinters();
-    this.byStation = new Map(printers.map((p) => [p.station, p]));
+    this.byRole = new Map(printers.map((p) => [p.role, p]));
   }
 
   resolve(job: PrintJobAgentDTO): PrinterTarget {
-    const overrideKey = job.station ?? 'receipt';
-    const dbPrinter = job.station ? this.byStation.get(job.station) : undefined;
-    const override = this.config.overrides[overrideKey] ?? {};
+    const role = job.station ?? 'receipt';
+    const dbPrinter = this.byRole.get(role);
+    const override = this.config.overrides[role] ?? {};
     const ip = override.ip ?? dbPrinter?.ip ?? null;
     return {
+      connection: override.connection ?? dbPrinter?.connection ?? 'network',
       ip: ip && ip.length > 0 ? ip : null,
       port: override.port ?? dbPrinter?.port ?? DEFAULT_PORT,
+      device: override.device ?? dbPrinter?.device ?? null,
       type: override.type ?? dbPrinter?.type ?? DEFAULT_TYPE,
     };
   }
