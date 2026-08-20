@@ -286,4 +286,93 @@ describe('POS critical path (e2e)', () => {
     ).body as OrderDTO;
     expect(cancelled.status).toBe('cancelled');
   });
+
+  it('voiding lines frees the table only when the last line goes (Fix #1)', async () => {
+    const table = (
+      await request(server())
+        .post('/api/tables')
+        .set('Authorization', bearer())
+        .send({ area: 'restaurant', name: `E2E-V-${Date.now()}`, capacity: 2 })
+        .expect(201)
+    ).body as DiningTableDTO;
+    expect(table.status).toBe('free');
+
+    // Opening a session seats the table (occupied).
+    const session = (
+      await request(server())
+        .post(`/api/tables/${table.id}/session`)
+        .set('Authorization', bearer())
+        .send({})
+        .expect(201)
+    ).body as TableSessionDTO;
+    const seated = (
+      await request(server()).get(`/api/tables/${table.id}`).set('Authorization', bearer()).expect(200)
+    ).body as DiningTableDTO;
+    expect(seated.status).toBe('occupied');
+
+    // Two distinct restaurant lines so we can void one and keep the table seated.
+    const dish1 = await findMenuItem((m) => m.name === DISH_NAME);
+    const dish2 = await findMenuItem(
+      (m) => m.name !== DISH_NAME && m.prices.some((p) => p.channel === 'dine_in_restaurant'),
+    );
+    const ingredient = await findIngredient(DISH_INGREDIENT);
+    const before = await stockOf(ingredient.id);
+
+    let order = (
+      await request(server())
+        .post('/api/orders')
+        .set('Authorization', bearer())
+        .send({
+          channel: 'dine_in_restaurant',
+          tableSessionId: session.id,
+          items: [
+            { menuItemId: dish1.id, qty: 1 },
+            { menuItemId: dish2.id, qty: 1 },
+          ],
+        })
+        .expect(201)
+    ).body as OrderDTO;
+    order = (
+      await request(server())
+        .post(`/api/orders/${order.id}/send`)
+        .set('Authorization', bearer())
+        .send({})
+        .expect(201)
+    ).body as OrderDTO;
+    expect(order.items).toHaveLength(2);
+
+    // Void the first line: a live line remains, so the table stays seated.
+    await request(server())
+      .post(`/api/orders/${order.id}/items/${order.items[0].id}/void`)
+      .set('Authorization', bearer())
+      .send({ reason: 'e2e partial void' })
+      .expect(201);
+    const midTable = (
+      await request(server()).get(`/api/tables/${table.id}`).set('Authorization', bearer()).expect(200)
+    ).body as DiningTableDTO;
+    expect(midTable.status).toBe('occupied');
+    expect(midTable.activeSessionId).toBe(session.id);
+
+    // Void the remaining line: nothing live and nothing paid → back to free.
+    await request(server())
+      .post(`/api/orders/${order.id}/items/${order.items[1].id}/void`)
+      .set('Authorization', bearer())
+      .send({ reason: 'e2e final void' })
+      .expect(201);
+
+    // The emptied order is cancelled and its session closed.
+    const afterOrder = (
+      await request(server()).get(`/api/orders/${order.id}`).set('Authorization', bearer()).expect(200)
+    ).body as OrderDTO;
+    expect(afterOrder.status).toBe('cancelled');
+
+    const freed = (
+      await request(server()).get(`/api/tables/${table.id}`).set('Authorization', bearer()).expect(200)
+    ).body as DiningTableDTO;
+    expect(freed.status).toBe('free');
+    expect(freed.activeSessionId).toBeNull();
+
+    // Both voids fully restored the deducted stock.
+    expect(await stockOf(ingredient.id)).toBeCloseTo(before, 5);
+  });
 });

@@ -6,7 +6,6 @@ import type { Channel, SpiritPourDTO } from '@pos/shared';
 import { ApiError } from '@/lib/api-client';
 import { enqueueSend } from '@/lib/offline/sync';
 import { useOfflineStore } from '@/lib/offline/store';
-import { Button } from '@/components/ui/button';
 import { FullscreenSpinner } from '@/components/ui/spinner';
 import {
   scanBarcode,
@@ -122,35 +121,25 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
     }
   };
 
-  // Enable only on an open bar table (the order workspace is showing).
-  const barScanEnabled = channel === 'dine_in_bar' && !!table?.activeSessionId;
+  // Enable on any bar order workspace. A scan builds the local round; the table
+  // is seated on the first send, so we don't gate scanning on an open session.
+  const barScanEnabled = channel === 'dine_in_bar';
   useBarcodeScanner(barScanEnabled, handleScan);
+
+  // A dining table that's been fully voided is freed server-side (its order comes
+  // back `cancelled`): drop the empty draft and return to the floor.
+  useEffect(() => {
+    if (tableId && order?.status === 'cancelled') {
+      clearCart(cartKey);
+      router.push('/pos');
+    }
+  }, [tableId, order?.status, cartKey, clearCart, router]);
 
   // --- loading / guard states ------------------------------------------------
 
   if (tableId && tableQuery.isLoading) return <FullscreenSpinner />;
   if (tableId && tableQuery.isError) {
     return <CenterNote>Could not load this table.</CenterNote>;
-  }
-  if (tableId && table && !table.activeSessionId) {
-    return (
-      <CenterNote>
-        <p className="mb-4 font-semibold text-slate-700">{table.name} isn’t open yet.</p>
-        <Button
-          size="lg"
-          onClick={async () => {
-            try {
-              await openSession.mutateAsync({ tableId });
-            } catch (e) {
-              setError(e instanceof ApiError ? e.message : 'Could not open the table');
-            }
-          }}
-        >
-          Open table
-        </Button>
-        {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
-      </CenterNote>
-    );
   }
   if (!tableId && orderId && orderQuery.isLoading && !order) return <FullscreenSpinner />;
 
@@ -165,13 +154,33 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
       qty: l.qty,
       notes: l.notes.trim() ? l.notes.trim() : undefined,
     }));
+    // A brand-new dining table has no session yet. Seating it (which flips the
+    // table to occupied) must hit the server, so it can't be done offline — but
+    // once open, later rounds queue offline like any other table.
+    let sessionId = table?.activeSessionId ?? undefined;
+    if (tableId && !sessionId) {
+      if (!online) {
+        setError('Connect to the server to open this table.');
+        setSending(false);
+        return;
+      }
+      try {
+        const opened = await openSession.mutateAsync({ tableId });
+        sessionId = opened.id;
+      } catch (e) {
+        setError(e instanceof ApiError ? e.message : 'Could not open the table');
+        setSending(false);
+        return;
+      }
+    }
+
     // Metadata carried on a queued round so replay can recreate/attach the order.
     const queueBase = {
       cartKey,
       label: tableId ? table?.name ?? 'Table' : CHANNEL_LABELS[channel],
       channel,
       tableId,
-      tableSessionId: table?.activeSessionId ?? undefined,
+      tableSessionId: sessionId,
     };
 
     // Known offline: durably queue the whole round without hitting the network.
@@ -190,7 +199,7 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
       if (!targetId) {
         const created = await createOrder.mutateAsync({
           channel,
-          tableSessionId: table?.activeSessionId ?? undefined,
+          tableSessionId: sessionId,
           items: inputs,
         });
         targetId = created.id;

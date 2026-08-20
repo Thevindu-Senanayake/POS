@@ -386,6 +386,7 @@ export class OrdersService {
       throw new ConflictException('Cannot void an item on a paid order');
     }
 
+    let freedTable = false;
     await this.prisma.$transaction(async (tx) => {
       await this.reverseStockForItem(tx, itemId, userId);
       await tx.discount.deleteMany({ where: { orderItemId: itemId } });
@@ -409,8 +410,11 @@ export class OrdersService {
         },
         tx,
       );
+      // Voiding the last live line un-seats the table (back to available).
+      freedTable = await this.freeSessionIfEmptied(tx, order.tableSessionId);
     });
 
+    if (freedTable) this.realtime.emitTablesUpdated();
     return this.emitOrderDTO(await this.loadOrderOrThrow(id));
   }
 
@@ -451,7 +455,10 @@ export class OrdersService {
         },
         tx,
       );
-      await this.maybeCloseSession(tx, order.tableSessionId);
+      // If cancelling empties the session with nothing paid, free the table
+      // outright; otherwise fall back to the normal used-table close (cleaning).
+      const freed = await this.freeSessionIfEmptied(tx, order.tableSessionId);
+      if (!freed) await this.maybeCloseSession(tx, order.tableSessionId);
     });
 
     if (order.tableSessionId) this.realtime.emitTablesUpdated();
@@ -917,6 +924,50 @@ export class OrdersService {
       where: { id: session.tableId },
       data: { status: 'needs_cleaning' },
     });
+  }
+
+  /**
+   * Undo an accidental seating: if voiding/cancelling leaves the table's session
+   * with no live (non-cancelled) items across any of its orders and nothing has
+   * been paid, the table was never really used — so cancel the now-empty orders,
+   * close the session, and return the table to `free` (available), NOT
+   * `needs_cleaning`. Distinct from {@link maybeCloseSession}, which sends a
+   * genuinely-used table to cleaning. Returns whether it freed a table so the
+   * caller can broadcast `tables:updated`.
+   */
+  private async freeSessionIfEmptied(
+    tx: Prisma.TransactionClient,
+    tableSessionId: string | null,
+  ): Promise<boolean> {
+    if (!tableSessionId) return false;
+    const session = await tx.tableSession.findUnique({
+      where: { id: tableSessionId },
+      include: {
+        orders: { select: { status: true, items: { select: { status: true } } } },
+      },
+    });
+    if (!session || session.closedAt) return false;
+    // Anything paid means the table was really used — leave it to the normal
+    // settlement → needs_cleaning path.
+    if (session.orders.some((o) => o.status === 'paid')) return false;
+    const hasLiveItem = session.orders.some((o) =>
+      o.items.some((it) => it.status !== 'cancelled'),
+    );
+    if (hasLiveItem) return false;
+
+    await tx.order.updateMany({
+      where: { tableSessionId, status: { notIn: ['cancelled', 'paid'] } },
+      data: { status: 'cancelled' },
+    });
+    await tx.tableSession.update({
+      where: { id: tableSessionId },
+      data: { closedAt: new Date() },
+    });
+    await tx.diningTable.update({
+      where: { id: session.tableId },
+      data: { status: 'free' },
+    });
+    return true;
   }
 
   private async enqueueBillPrint(

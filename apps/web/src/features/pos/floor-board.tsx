@@ -9,7 +9,6 @@ import { Spinner } from '@/components/ui/spinner';
 import {
   useCleanTable,
   useCreateOrder,
-  useOpenSession,
   useTables,
 } from './api';
 import { AREA_LABELS, TABLE_STATUS_STYLES } from './format';
@@ -20,13 +19,13 @@ const AREA_ORDER: TableArea[] = ['restaurant', 'bar'];
 /**
  * Live floor board (spec §1): tables grouped by area, colour-coded by status,
  * updated in realtime via the socket `tables:updated` event. Tapping a free
- * table opens a session and jumps to its order screen; an occupied table
- * resumes its order; a dirty table is cleaned in place.
+ * table opens its order screen without seating it — the table only flips to
+ * "occupied" on the first send there, so tapping a card to look never occupies
+ * it; an occupied table resumes its order; a dirty table is cleaned in place.
  */
 export function FloorBoard() {
   const router = useRouter();
   const tablesQuery = useTables();
-  const openSession = useOpenSession();
   const cleanTable = useCleanTable();
   const createOrder = useCreateOrder();
 
@@ -60,15 +59,10 @@ export function FloorBoard() {
       }
       return;
     }
-    // free / reserved -> seat guests
-    setBusyId(table.id);
-    try {
-      await openSession.mutateAsync({ tableId: table.id });
-      openOrderScreen(table.id);
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Could not open the table');
-      setBusyId(null);
-    }
+    // free / reserved -> open the order screen WITHOUT seating the table. The
+    // table only flips to "occupied" on the first send from the order screen;
+    // tapping a card to look never occupies it.
+    openOrderScreen(table.id);
   };
 
   const startTakeaway = async () => {
