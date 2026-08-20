@@ -5,6 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@pos/db';
+import type { Outlet } from '@pos/db';
 import type {
   BillDTO,
   Channel,
@@ -596,6 +597,10 @@ export class OrdersService {
               orderId: id,
               method: p.method as PaymentMethod,
               amount: new Prisma.Decimal(p.amount),
+              tendered:
+                p.method === 'cash' && p.tendered != null
+                  ? new Prisma.Decimal(p.tendered)
+                  : null,
               reference: p.reference ?? null,
               takenById: userId,
             })),
@@ -605,7 +610,7 @@ export class OrdersService {
       });
 
       await tx.order.update({ where: { id }, data: { status: 'paid' } });
-      await this.enqueueBillPrint(tx, order.channel, created);
+      await this.enqueueBillPrint(tx, order.channel, created, pct);
       await this.maybeCloseSession(tx, order.tableSessionId);
       return created;
     });
@@ -684,7 +689,7 @@ export class OrdersService {
       });
 
       await tx.order.update({ where: { id }, data: { status: 'paid', bookingId } });
-      await this.enqueueBillPrint(tx, order.channel, created);
+      await this.enqueueBillPrint(tx, order.channel, created, pct);
       await this.maybeCloseSession(tx, order.tableSessionId);
       return created;
     });
@@ -797,7 +802,7 @@ export class OrdersService {
           },
           include: BILL_INCLUDE,
         });
-        await this.enqueueBillPrint(tx, order.channel, bill);
+        await this.enqueueBillPrint(tx, order.channel, bill, pct);
         created.push(bill);
       }
 
@@ -974,14 +979,18 @@ export class OrdersService {
     tx: Prisma.TransactionClient,
     channel: Channel,
     bill: BillWithRelations,
+    serviceChargePct: number,
   ): Promise<void> {
+    // Read the singleton outlet inside the same tx so header customisation and
+    // toggles are captured at print time (spec: owner-editable receipt).
+    const outlet = await tx.outlet.findFirst({ orderBy: { createdAt: 'asc' } });
     await tx.printJob.create({
       data: {
         type: 'bill',
         station: null,
         orderId: bill.orderId,
         billId: bill.id,
-        payload: this.buildBillPayload(channel, bill),
+        payload: this.buildBillPayload(channel, bill, outlet, serviceChargePct),
       },
     });
   }
@@ -1023,10 +1032,35 @@ export class OrdersService {
     };
   }
 
+  /**
+   * Assemble the render model the print-agent turns into a receipt. Header/footer
+   * lines are populated only when their outlet `show*` toggle is on and the value
+   * is non-empty, so the renderer just prints each line "if present". The currency
+   * label prefixes the total/payment lines (custom `Rs.`-style label when enabled,
+   * else the ₨ symbol). Cash tenders carry the derived change.
+   */
   private buildBillPayload(
     channel: Channel,
     bill: BillWithRelations,
+    outlet: Outlet | null,
+    serviceChargePct: number,
   ): Prisma.InputJsonObject {
+    const headerText = (show: boolean, value: string | null): string | undefined => {
+      if (!show || value == null) return undefined;
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : undefined;
+    };
+
+    const businessName = headerText(outlet?.showName ?? false, outlet?.name ?? null);
+    const tagline = headerText(outlet?.showTagline ?? false, outlet?.tagline ?? null);
+    const address = headerText(outlet?.showAddress ?? false, outlet?.address ?? null);
+    const phone = headerText(outlet?.showPhone ?? false, outlet?.phone ?? null);
+    const taxNumber = headerText(outlet?.showTaxNumber ?? false, outlet?.taxNumber ?? null);
+    const footer = headerText(outlet?.showFooter ?? false, outlet?.receiptFooter ?? null);
+    const currencyLabel =
+      headerText(outlet?.showCurrencyLabel ?? false, outlet?.receiptCurrencyLabel ?? null) ??
+      DEFAULT_CURRENCY_SYMBOL;
+
     return {
       kind: 'bill',
       billId: bill.id,
@@ -1034,6 +1068,14 @@ export class OrdersService {
       channel,
       label: bill.label,
       currencySymbol: DEFAULT_CURRENCY_SYMBOL,
+      currencyLabel,
+      serviceChargePct,
+      ...(businessName ? { businessName } : {}),
+      ...(tagline ? { tagline } : {}),
+      ...(address ? { address } : {}),
+      ...(phone ? { phone } : {}),
+      ...(taxNumber ? { taxNumber } : {}),
+      ...(footer ? { footer } : {}),
       items: bill.items.map((it) => ({
         description: it.description,
         qty: decToNum(it.qty),
@@ -1044,11 +1086,18 @@ export class OrdersService {
       discountTotal: decToNum(bill.discountTotal),
       serviceCharge: decToNum(bill.serviceCharge),
       total: decToNum(bill.total),
-      payments: bill.payments.map((p) => ({
-        method: p.method,
-        amount: decToNum(p.amount),
-        reference: p.reference,
-      })),
+      payments: bill.payments.map((p) => {
+        const amount = decToNum(p.amount);
+        const tendered = p.tendered != null ? decToNum(p.tendered) : null;
+        const change = tendered != null ? round2(tendered - amount) : null;
+        return {
+          method: p.method,
+          amount,
+          reference: p.reference,
+          ...(tendered != null ? { tendered } : {}),
+          ...(change != null && change > 0 ? { change } : {}),
+        };
+      }),
       createdAt: bill.createdAt.toISOString(),
     };
   }
@@ -1277,13 +1326,20 @@ export class OrdersService {
       discountTotal: decToNum(bill.discountTotal),
       serviceCharge: decToNum(bill.serviceCharge),
       total: decToNum(bill.total),
-      payments: bill.payments.map((p) => ({
-        id: p.id,
-        method: p.method,
-        amount: decToNum(p.amount),
-        reference: p.reference,
-        createdAt: p.createdAt.toISOString(),
-      })),
+      payments: bill.payments.map((p) => {
+        const amount = decToNum(p.amount);
+        const tendered = p.tendered != null ? decToNum(p.tendered) : null;
+        const change = tendered != null ? round2(tendered - amount) : null;
+        return {
+          id: p.id,
+          method: p.method,
+          amount,
+          tendered,
+          change,
+          reference: p.reference,
+          createdAt: p.createdAt.toISOString(),
+        };
+      }),
       createdAt: bill.createdAt.toISOString(),
     };
   }

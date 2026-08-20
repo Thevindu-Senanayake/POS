@@ -39,8 +39,39 @@ function formatTime(iso: string): string {
   return d.toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 }
 
-function money(symbol: string, amount: number): string {
-  return `${symbol}${amount.toFixed(2)}`;
+/** Amount with thousands separators, 2 dp, no currency (e.g. `7,750.00`). */
+function fmt(amount: number): string {
+  return amount.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+/** Amount prefixed with the currency label (e.g. `Rs. 7,750.00`). */
+function withLabel(label: string, amount: number): string {
+  return label ? `${label} ${fmt(amount)}` : fmt(amount);
+}
+
+/** Short, uppercase channel badge for the receipt meta line. */
+const CHANNEL_BADGES: Record<string, string> = {
+  dine_in_restaurant: 'DINE IN',
+  dine_in_bar: 'BAR',
+  takeaway: 'TAKEAWAY',
+  room_service: 'ROOM SERVICE',
+};
+
+function channelBadge(channel: string): string {
+  return CHANNEL_BADGES[channel] ?? channel.replace(/_/g, ' ').toUpperCase();
+}
+
+const PAYMENT_LABELS: Record<string, string> = {
+  cash: 'Cash',
+  card: 'Card',
+  charge_to_room: 'Charged to room',
+};
+
+function paymentLabel(method: string): string {
+  return PAYMENT_LABELS[method] ?? method;
 }
 
 /** Kitchen/bar ticket — never shows prices (spec §3.1). */
@@ -79,48 +110,80 @@ export function renderKot(sink: ReceiptSink, p: KotPayload): void {
   sink.cut();
 }
 
-/** Customer receipt/bill (spec §2.6/§3.1). */
+/** Customer receipt/bill (spec §2.6/§3.1). Business header + footer are owner-
+ * editable (each line printed only when present); the currency label prefixes
+ * the total and payment lines. Cash tenders print the amount handed over and the
+ * change due. */
 export function renderBill(sink: ReceiptSink, p: BillPayload): void {
-  const sym = p.currencySymbol || '';
+  const label = p.currencyLabel || p.currencySymbol || '';
+
+  // --- Business header — each line only if the API populated it (toggle on) ---
   sink.alignCenter();
-  sink.bold(true);
-  sink.emphasize(true);
-  sink.println('RECEIPT');
-  sink.emphasize(false);
-  sink.bold(false);
-  sink.println(channelLabel(p.channel));
-  if (p.label) sink.println(p.label);
+  if (p.businessName) {
+    sink.bold(true);
+    sink.emphasize(true);
+    sink.println(p.businessName);
+    sink.emphasize(false);
+    sink.bold(false);
+  }
+  if (p.tagline) sink.println(p.tagline);
+  if (p.address) sink.println(p.address);
+  if (p.phone) sink.println(`Tel: ${p.phone}`);
+  if (p.taxNumber) sink.println(p.taxNumber);
   sink.alignLeft();
   sink.drawLine();
 
-  for (const item of p.items) {
-    sink.leftRight(`${item.qty} x ${item.description}`, money(sym, item.lineTotal));
-  }
-  sink.drawLine();
-
-  sink.leftRight('Subtotal', money(sym, p.subtotal));
-  if (p.discountTotal > 0) sink.leftRight('Discount', `-${money(sym, p.discountTotal)}`);
-  if (p.serviceCharge > 0) sink.leftRight('Service charge', money(sym, p.serviceCharge));
-  sink.drawLine();
-
-  sink.bold(true);
-  sink.emphasize(true);
-  sink.leftRight('TOTAL', money(sym, p.total));
-  sink.emphasize(false);
-  sink.bold(false);
-  sink.drawLine();
-
-  for (const pay of p.payments) {
-    sink.leftRight(`Paid · ${pay.method}`, money(sym, pay.amount));
-    if (pay.reference) sink.println(`   ref: ${pay.reference}`);
-  }
-
-  sink.newLine();
-  sink.alignCenter();
-  sink.println('Thank you!');
-  sink.println(`Order #${shortId(p.orderId)}`);
+  // --- Order meta ---
+  sink.leftRight(`#${shortId(p.orderId)}`, channelBadge(p.channel));
   sink.println(formatTime(p.createdAt));
-  sink.alignLeft();
+  if (p.label) sink.println(p.label);
+  sink.drawLine();
+
+  // --- Items: name on its own line, then `qty × unit` left / line total right ---
+  for (const item of p.items) {
+    sink.bold(true);
+    sink.println(item.description);
+    sink.bold(false);
+    sink.leftRight(`  ${item.qty} x ${fmt(item.unitPrice)}`, fmt(item.lineTotal));
+  }
+  sink.drawLine();
+
+  // --- Totals (no currency label on these lines) ---
+  sink.leftRight('Subtotal', fmt(p.subtotal));
+  if (p.discountTotal > 0) sink.leftRight('Discount', `-${fmt(p.discountTotal)}`);
+  if (p.serviceCharge > 0) {
+    const pctLabel = p.serviceChargePct ? ` (${p.serviceChargePct}%)` : '';
+    sink.leftRight(`Service Charge${pctLabel}`, fmt(p.serviceCharge));
+  }
+  sink.drawLine();
+
+  // --- Grand total (the only line that carries the currency label + emphasis) ---
+  sink.bold(true);
+  sink.emphasize(true);
+  sink.leftRight('TOTAL', withLabel(label, p.total));
+  sink.emphasize(false);
+  sink.bold(false);
+
+  // --- Payments: cash shows tender + change; card/room show the amount ---
+  for (const pay of p.payments) {
+    if (pay.method === 'cash' && pay.tendered != null) {
+      sink.leftRight(paymentLabel(pay.method), withLabel(label, pay.tendered));
+      if (pay.change != null && pay.change > 0) {
+        sink.leftRight('Change', withLabel(label, pay.change));
+      }
+    } else {
+      sink.leftRight(paymentLabel(pay.method), withLabel(label, pay.amount));
+    }
+    if (pay.reference) sink.println(`  ref: ${pay.reference}`);
+  }
+
+  // --- Footer message (owner-editable; only if present) ---
+  if (p.footer) {
+    sink.newLine();
+    sink.alignCenter();
+    sink.println(p.footer);
+    sink.alignLeft();
+  }
   sink.newLine();
   sink.cut();
 }

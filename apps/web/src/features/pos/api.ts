@@ -43,6 +43,8 @@ export interface CreateOrderInput {
 export interface PaymentInput {
   method: 'cash' | 'card';
   amount: number;
+  /** Physical cash handed over (cash tenders); server derives change = tendered − amount. */
+  tendered?: number;
   reference?: string;
 }
 

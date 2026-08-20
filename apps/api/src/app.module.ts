@@ -12,6 +12,7 @@ import { SuppliersModule } from './modules/suppliers/suppliers.module';
 import { PurchaseOrdersModule } from './modules/purchase-orders/purchase-orders.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { ServiceChargeModule } from './modules/service-charge/service-charge.module';
+import { OutletModule } from './modules/outlet/outlet.module';
 import { RecipesModule } from './modules/recipes/recipes.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { TablesModule } from './modules/tables/tables.module';
@@ -42,6 +43,7 @@ import { ReportsModule } from './modules/reports/reports.module';
     PurchaseOrdersModule,
     MenuModule,
     ServiceChargeModule,
+    OutletModule,
     RecipesModule,
     OrdersModule,
     TablesModule,

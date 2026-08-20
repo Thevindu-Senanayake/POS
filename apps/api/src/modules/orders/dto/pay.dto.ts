@@ -23,6 +23,15 @@ export class PaymentInput {
   @Min(0.01)
   amount!: number;
 
+  /**
+   * Physical cash handed over for a cash tender (spec: cash change). Used to
+   * derive change = tendered − amount; `amount` still equals the billed portion.
+   */
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  tendered?: number;
+
   @IsOptional()
   @IsString()
   reference?: string;

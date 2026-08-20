@@ -14,6 +14,7 @@ export const qk = {
   order: (id: string) => ['orders', id] as const,
   bills: (orderId: string) => ['orders', orderId, 'bills'] as const,
   serviceCharges: ['service-charges'] as const,
+  outlet: ['outlet'] as const,
   // Everything under `['bookings']` so a single realtime invalidation refreshes
   // every booking view (lists, per-room lookup, single booking).
   bookings: (status?: string) => ['bookings', 'list', status ?? 'all'] as const,

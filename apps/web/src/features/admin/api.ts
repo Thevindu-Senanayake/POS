@@ -11,6 +11,7 @@ import type {
   LowStockRowDTO,
   MenuCategory,
   MenuItemDTO,
+  OutletDTO,
   PrinterDTO,
   PrintJobDTO,
   PurchaseOrderDTO,
@@ -112,6 +113,23 @@ export interface UserPatch {
   role?: UserRole;
   isActive?: boolean;
 }
+/** Partial update of the outlet identity + receipt customisation (PUT /outlet). */
+export interface OutletInput {
+  name?: string;
+  address?: string | null;
+  phone?: string | null;
+  tagline?: string | null;
+  taxNumber?: string | null;
+  receiptFooter?: string | null;
+  receiptCurrencyLabel?: string | null;
+  showName?: boolean;
+  showTagline?: boolean;
+  showAddress?: boolean;
+  showPhone?: boolean;
+  showTaxNumber?: boolean;
+  showFooter?: boolean;
+  showCurrencyLabel?: boolean;
+}
 
 // =============================================================================
 // Reads
@@ -175,6 +193,14 @@ export function useServiceCharges() {
   return useQuery({
     queryKey: qk.serviceCharges,
     queryFn: () => api.get<ServiceChargeRuleDTO[]>('/service-charges'),
+    staleTime: 5 * 60_000,
+  });
+}
+
+export function useOutlet() {
+  return useQuery({
+    queryKey: qk.outlet,
+    queryFn: () => api.get<OutletDTO>('/outlet'),
     staleTime: 5 * 60_000,
   });
 }
@@ -400,6 +426,14 @@ export function useUpdateServiceCharge() {
         percentage: vars.percentage,
       }),
     onSuccess: () => void qc.invalidateQueries({ queryKey: qk.serviceCharges }),
+  });
+}
+
+export function useUpdateOutlet() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: OutletInput) => api.put<OutletDTO>('/outlet', body),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: qk.outlet }),
   });
 }
 

@@ -126,8 +126,15 @@ async function main() {
   const outlet = await prisma.outlet.create({
     data: {
       name: 'The Grand Hospitality',
-      address: '1 Mall Road',
+      address: '1 Mall Road, Lahore',
       phone: '+92-42-111-000-111',
+      tagline: 'Restaurant · Bar · Rooms',
+      taxNumber: 'NTN 1234567-8',
+      receiptFooter: 'Thank you for dining with us!',
+      receiptCurrencyLabel: 'Rs.',
+      // Header toggles: name/address/phone/tagline/footer on; tax number hidden
+      // by default (owner enables it from the Business admin tab if needed).
+      showTagline: true,
     },
   });
   console.log(`Outlet: ${outlet.name}`);

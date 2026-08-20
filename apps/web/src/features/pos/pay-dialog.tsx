@@ -210,6 +210,13 @@ export function PayDialog({ order, onClose, onSettled }: PayDialogProps) {
 
 // --- Full payment -----------------------------------------------------------
 
+/**
+ * Full payment. Cash is entered as the amount *received* (spec: cash change):
+ * `cashDue = total − card`, and the guest hands over `received` ≥ that, so the
+ * cashier sees the `change` to give back. Card still settles exactly. The two
+ * `amount`s (card + cashDue) sum to the total, so the server's exact-match check
+ * is unchanged; `tendered` rides along on the cash line for the printed receipt.
+ */
 function FullPay({
   order,
   submitting,
@@ -220,24 +227,56 @@ function FullPay({
   onPay: (payments: PaymentInput[]) => void;
 }) {
   const [tender, setTender] = useState<Tender>(() => ({ cash: order.total.toFixed(2), card: '' }));
-  const paid = tenderSum(tender);
-  const matches = Math.abs(paid - order.total) <= 0.001;
+
+  const cardAmt = round2(num(tender.card));
+  const cashDue = round2(order.total - cardAmt);
+  const received = round2(num(tender.cash));
+  const change = cashDue > 0 ? round2(received - cashDue) : 0;
+
+  const cardOver = cardAmt > order.total + 0.001;
+  const cashShort = cashDue > 0.001 && received < cashDue - 0.001;
+  const canPay = !cardOver && !cashShort && cardAmt >= 0;
+
+  const buildFullPayments = (): PaymentInput[] => {
+    const out: PaymentInput[] = [];
+    if (cardAmt > 0) out.push({ method: 'card', amount: cardAmt });
+    if (cashDue > 0) out.push({ method: 'cash', amount: cashDue, tendered: received });
+    return out;
+  };
 
   return (
     <div>
       <TotalHeadline label="Amount due" value={order.total} />
-      <TenderInputs tender={tender} onChange={setTender} />
+      <div className="mt-1 grid grid-cols-2 gap-2">
+        <MoneyInput
+          label="Cash received"
+          value={tender.cash}
+          onChange={(v) => setTender({ ...tender, cash: v })}
+        />
+        <MoneyInput label="Card" value={tender.card} onChange={(v) => setTender({ ...tender, card: v })} />
+      </div>
       <QuickFill
         onExactCash={() => setTender({ cash: order.total.toFixed(2), card: '' })}
         onExactCard={() => setTender({ cash: '', card: order.total.toFixed(2) })}
       />
-      <BalanceLine paid={paid} total={order.total} />
+      {cardAmt > 0 && cashDue > 0 ? (
+        <div className="mt-3 flex items-center justify-between text-sm">
+          <span className="text-slate-500">Cash due (after card)</span>
+          <span className="font-bold tabular-nums text-slate-700">{formatMoney(cashDue)}</span>
+        </div>
+      ) : null}
+      {cardOver ? (
+        <p className="mt-2 text-sm font-medium text-red-600">Card amount exceeds the total.</p>
+      ) : cashShort ? (
+        <p className="mt-2 text-sm font-medium text-red-600">Cash received is less than the amount due.</p>
+      ) : null}
+      <ChangeLine change={change} />
       <Button
         variant="accent"
         className="mt-4 w-full"
         size="lg"
-        disabled={!matches || submitting}
-        onClick={() => onPay(buildPayments(tender))}
+        disabled={!canPay || submitting}
+        onClick={() => onPay(buildFullPayments())}
       >
         {submitting ? <Spinner /> : `Take ${formatMoney(order.total)}`}
       </Button>
@@ -462,7 +501,7 @@ function ChargeRoom({
           onChange={(e) => setComp(e.target.checked)}
           className="h-4 w-4 rounded border-sand-300 accent-brand-600"
         />
-        Comp this charge (board plan) — folio at ₨0
+        Comp this charge (board plan) - folio at ₨0
       </label>
 
       <Button
@@ -567,21 +606,13 @@ function QuickFill({
   );
 }
 
-function BalanceLine({ paid, total }: { paid: number; total: number }) {
-  const diff = round2(paid - total);
-  const matches = Math.abs(diff) <= 0.001;
+/** Prominent change-due callout shown once the cash received covers the due amount. */
+function ChangeLine({ change }: { change: number }) {
+  if (change <= 0) return null;
   return (
-    <div className="mt-3 flex items-center justify-between text-sm">
-      <span className="text-slate-500">Tendered</span>
-      <span className={cn('font-bold tabular-nums', matches ? 'text-emerald-600' : 'text-red-600')}>
-        {formatMoney(paid)}
-        {!matches ? (
-          <span className="ml-2 text-xs font-medium">
-            ({diff > 0 ? '+' : ''}
-            {formatMoney(diff)})
-          </span>
-        ) : null}
-      </span>
+    <div className="mt-3 flex items-center justify-between rounded-xl bg-emerald-50 px-4 py-3 ring-1 ring-emerald-200">
+      <span className="text-sm font-semibold text-emerald-700">Change due</span>
+      <span className="text-2xl font-extrabold tabular-nums text-emerald-700">{formatMoney(change)}</span>
     </div>
   );
 }

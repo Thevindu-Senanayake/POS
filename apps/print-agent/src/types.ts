@@ -32,6 +32,10 @@ export interface BillPaymentLine {
   method: string;
   amount: number;
   reference: string | null;
+  /** Cash handed over (cash tenders only). */
+  tendered?: number;
+  /** Change due back (only present when positive). */
+  change?: number;
 }
 
 export interface BillPayload {
@@ -41,10 +45,22 @@ export interface BillPayload {
   channel: string;
   label: string | null;
   currencySymbol: string;
+  /** Currency label prefixing the total/payment lines (e.g. `Rs.` or `₨`). */
+  currencyLabel?: string;
+  /** Business header lines — each present only when its admin toggle is on. */
+  businessName?: string;
+  tagline?: string;
+  address?: string;
+  phone?: string;
+  taxNumber?: string;
+  /** Footer message printed below the total. */
+  footer?: string;
   items: BillItemLine[];
   subtotal: number;
   discountTotal: number;
   serviceCharge: number;
+  /** Service-charge percentage, for the `Service Charge (10%)` line label. */
+  serviceChargePct?: number;
   total: number;
   payments: BillPaymentLine[];
   createdAt: string;

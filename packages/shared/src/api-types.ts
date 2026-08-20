@@ -165,6 +165,29 @@ export interface ServiceChargeRuleDTO {
   percentage: number;
 }
 
+/**
+ * Business identity + receipt header/footer customisation (owner-editable on the
+ * admin "Business" tab). Each text line has a `show*` toggle controlling whether
+ * it prints on the customer bill. The singleton outlet row backs this.
+ */
+export interface OutletDTO {
+  id: string;
+  name: string;
+  address: string | null;
+  phone: string | null;
+  tagline: string | null;
+  taxNumber: string | null;
+  receiptFooter: string | null;
+  receiptCurrencyLabel: string | null;
+  showName: boolean;
+  showTagline: boolean;
+  showAddress: boolean;
+  showPhone: boolean;
+  showTaxNumber: boolean;
+  showFooter: boolean;
+  showCurrencyLabel: boolean;
+}
+
 export interface DiningTableDTO {
   id: string;
   area: TableArea;
@@ -237,6 +260,10 @@ export interface PaymentDTO {
   id: string;
   method: PaymentMethod;
   amount: number;
+  /** Physical cash handed over (cash tenders only); null otherwise. */
+  tendered: number | null;
+  /** Derived change due back (tendered − amount) when positive; null otherwise. */
+  change: number | null;
   reference: string | null;
   createdAt: string;
 }
