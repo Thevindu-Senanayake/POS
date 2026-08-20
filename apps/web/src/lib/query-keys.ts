@@ -10,6 +10,7 @@ export const qk = {
   sessions: ['sessions'] as const,
   session: (id: string) => ['sessions', id] as const,
   menu: ['menu'] as const,
+  spirits: ['spirits'] as const,
   order: (id: string) => ['orders', id] as const,
   bills: (orderId: string) => ['orders', orderId, 'bills'] as const,
   serviceCharges: ['service-charges'] as const,

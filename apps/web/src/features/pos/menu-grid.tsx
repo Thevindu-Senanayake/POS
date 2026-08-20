@@ -2,10 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { formatMoney } from '@pos/shared';
-import type { Channel, MenuCategory, MenuItemDTO } from '@pos/shared';
+import type { Channel, MenuCategory, MenuItemDTO, SpiritGroupDTO } from '@pos/shared';
 import { cn } from '@/lib/cn';
 import { Spinner } from '@/components/ui/spinner';
-import { useMenu } from './api';
+import { useMenu, useSpirits } from './api';
 
 const CATEGORY_TABS: { key: MenuCategory; label: string }[] = [
   { key: 'food', label: 'Food' },
@@ -36,34 +36,72 @@ export function priceForChannel(item: MenuItemDTO, channel: Channel): number | u
   return item.prices.find((p) => p.channel === channel)?.price;
 }
 
+/** A tile in the grid: a normal menu item, or a spirit bottle (opens the pour picker). */
+type GridEntry =
+  | { kind: 'item'; item: MenuItemDTO }
+  | { kind: 'spirit'; group: SpiritGroupDTO };
+
+const entryName = (e: GridEntry) =>
+  e.kind === 'spirit' ? e.group.ingredientName : e.item.name;
+
 /**
  * Menu grid (spec §1 order screen): items filtered to the order's channel
  * (only those with a channel price are orderable), grouped by category with a
- * quick search. Tapping a card adds one to the compose cart.
+ * quick search. Tapping a food/beer card adds one to the compose cart; spirits
+ * are collapsed to one tile per bottle that opens the pour picker via
+ * `onPickSpirit` (the individual pour sizes are hidden from the flat tiles).
  */
 export function MenuGrid({
   channel,
   onPick,
+  onPickSpirit,
 }: {
   channel: Channel;
   onPick: (pick: MenuPick) => void;
+  onPickSpirit: (group: SpiritGroupDTO) => void;
 }) {
   const menu = useMenu();
+  const spirits = useSpirits();
   const [category, setCategory] = useState<MenuCategory>('food');
   const [search, setSearch] = useState('');
+
+  // Every pour MenuItem id, so the flat feed can drop them — built from the full,
+  // unfiltered spirits list so a pour never leaks in even when priced this channel.
+  const pourItemIds = useMemo(
+    () => new Set((spirits.data ?? []).flatMap((g) => g.pours.map((p) => p.item.id))),
+    [spirits.data],
+  );
 
   const available = useMemo(
     () =>
       (menu.data ?? []).filter(
-        (it) => it.isActive && priceForChannel(it, channel) !== undefined,
+        (it) =>
+          it.isActive &&
+          priceForChannel(it, channel) !== undefined &&
+          !pourItemIds.has(it.id),
       ),
-    [menu.data, channel],
+    [menu.data, channel, pourItemIds],
+  );
+
+  // Spirit bottles orderable on this channel (≥1 pour priced), mirroring the
+  // per-channel price filtering `available` applies to flat items.
+  const availableSpirits = useMemo(
+    () =>
+      (spirits.data ?? []).filter((g) =>
+        g.pours.some((p) => priceForChannel(p.item, channel) !== undefined),
+      ),
+    [spirits.data, channel],
   );
 
   const tabs = useMemo(() => {
     const present = new Set(available.map((it) => it.category));
+    // Fold in spirit categories: a spirits-only bar has no flat `bar` items, so
+    // without this the Bar tab (and the whole feature) would vanish.
+    if (availableSpirits.length > 0) {
+      present.add(availableSpirits[0].pours[0].item.category);
+    }
     return CATEGORY_TABS.filter((t) => present.has(t.key));
-  }, [available]);
+  }, [available, availableSpirits]);
 
   const activeCategory = tabs.some((t) => t.key === category)
     ? category
@@ -74,24 +112,40 @@ export function MenuGrid({
   // without a group fall back to a single section named for their category.
   const sections = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const byGroup = new Map<string, MenuItemDTO[]>();
+    const byGroup = new Map<string, GridEntry[]>();
+    const push = (label: string, entry: GridEntry) => {
+      const bucket = byGroup.get(label) ?? [];
+      bucket.push(entry);
+      byGroup.set(label, bucket);
+    };
     for (const it of available) {
       if (it.category !== activeCategory) continue;
       if (q && !it.name.toLowerCase().includes(q)) continue;
       const label = it.menuGroup?.trim() || CATEGORY_FALLBACK_LABEL[it.category];
-      const bucket = byGroup.get(label) ?? [];
-      bucket.push(it);
-      byGroup.set(label, bucket);
+      push(label, { kind: 'item', item: it });
+    }
+    for (const g of availableSpirits) {
+      const cat = g.pours[0].item.category;
+      if (cat !== activeCategory) continue;
+      if (
+        q &&
+        !g.ingredientName.toLowerCase().includes(q) &&
+        !(g.menuGroup ?? '').toLowerCase().includes(q)
+      ) {
+        continue;
+      }
+      const label = g.menuGroup?.trim() || CATEGORY_FALLBACK_LABEL[cat];
+      push(label, { kind: 'spirit', group: g });
     }
     return [...byGroup.entries()]
-      .map(([label, items]) => ({
+      .map(([label, entries]) => ({
         label,
-        items: items.sort((a, b) => a.name.localeCompare(b.name)),
+        entries: entries.sort((a, b) => entryName(a).localeCompare(entryName(b))),
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [available, activeCategory, search]);
+  }, [available, availableSpirits, activeCategory, search]);
 
-  if (menu.isLoading) {
+  if (menu.isLoading || spirits.isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center text-slate-400">
         <Spinner className="h-7 w-7" />
@@ -99,7 +153,7 @@ export function MenuGrid({
     );
   }
 
-  if (menu.isError) {
+  if (menu.isError || spirits.isError) {
     return (
       <div className="m-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
         Could not load the menu.
@@ -154,14 +208,23 @@ export function MenuGrid({
                   </h3>
                 ) : null}
                 <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
-                  {section.items.map((item) => (
-                    <MenuTile
-                      key={item.id}
-                      item={item}
-                      price={priceForChannel(item, channel)!}
-                      onPick={onPick}
-                    />
-                  ))}
+                  {section.entries.map((entry) =>
+                    entry.kind === 'spirit' ? (
+                      <SpiritTile
+                        key={`spirit-${entry.group.ingredientId}`}
+                        group={entry.group}
+                        channel={channel}
+                        onPickSpirit={onPickSpirit}
+                      />
+                    ) : (
+                      <MenuTile
+                        key={`item-${entry.item.id}`}
+                        item={entry.item}
+                        price={priceForChannel(entry.item, channel)!}
+                        onPick={onPick}
+                      />
+                    ),
+                  )}
                 </div>
               </section>
             ))}
@@ -204,6 +267,58 @@ function MenuTile({
           )}
         >
           {item.station}
+        </span>
+      </span>
+    </button>
+  );
+}
+
+/**
+ * A spirit bottle as one tile: the bottle name and its cheapest pour ("from …"),
+ * signalling "pick a size". Tapping opens the pour picker (same one the scanner
+ * uses) rather than adding to the cart directly.
+ */
+function SpiritTile({
+  group,
+  channel,
+  onPickSpirit,
+}: {
+  group: SpiritGroupDTO;
+  channel: Channel;
+  onPickSpirit: (group: SpiritGroupDTO) => void;
+}) {
+  // Guaranteed ≥1 priced pour by `availableSpirits`, so `from` is always finite.
+  const from = Math.min(
+    ...group.pours
+      .map((p) => priceForChannel(p.item, channel))
+      .filter((p): p is number => p !== undefined),
+  );
+  const station = group.pours[0].item.station;
+  return (
+    <button
+      type="button"
+      onClick={() => onPickSpirit(group)}
+      className={cn(
+        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
+        'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+      )}
+    >
+      <span className="line-clamp-2 text-sm font-semibold leading-tight text-slate-800">
+        {group.ingredientName}
+      </span>
+      <span className="flex items-center justify-between gap-1">
+        <span className="text-sm font-bold text-slate-900">
+          <span className="text-xs font-medium text-slate-400">from </span>
+          {formatMoney(from)}
+        </span>
+        <span
+          className={cn(
+            'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase',
+            STATION_TAG[station] ?? 'bg-slate-100 text-slate-600',
+          )}
+        >
+          {station}
         </span>
       </span>
     </button>

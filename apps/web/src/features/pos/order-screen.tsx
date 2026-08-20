@@ -293,6 +293,9 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
             onPick={(pick) =>
               useCartStore.getState().add(cartKey, pick)
             }
+            onPickSpirit={(group) =>
+              setPourPick({ ingredientName: group.ingredientName, pours: group.pours })
+            }
           />
         </div>
         <div className="min-h-0">

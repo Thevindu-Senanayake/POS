@@ -39,6 +39,10 @@ export function PourPicker({
   onPick: (pour: SpiritPourDTO) => void;
   onClose: () => void;
 }) {
+  // The largest pour is the whole bottle — label it "Bottle" (rather than "15
+  // shots"). Guard with a bottle-sized floor so a spirit whose only pour is a
+  // shot isn't mislabelled. `-Infinity` for an empty list never matches a volume.
+  const maxVolumeMl = pours.length ? Math.max(...pours.map((p) => p.volumeMl)) : -Infinity;
   return (
     <Modal open={open} onClose={onClose} title={ingredientName} widthClassName="max-w-md">
       <p className="mb-3 text-sm text-slate-500">
@@ -47,7 +51,10 @@ export function PourPicker({
       <div className="grid grid-cols-2 gap-2.5">
         {pours.map((pour) => {
           const price = priceForChannel(pour.item, channel);
-          const shots = shotLabel(pour.volumeMl);
+          const caption =
+            pour.volumeMl === maxVolumeMl && maxVolumeMl >= 500
+              ? 'Bottle'
+              : shotLabel(pour.volumeMl);
           return (
             <button
               key={pour.item.id}
@@ -63,8 +70,8 @@ export function PourPicker({
             >
               <span className="flex items-baseline gap-1.5">
                 <span className="text-base font-extrabold text-slate-900">{pour.volumeMl} ml</span>
-                {shots ? (
-                  <span className="text-xs font-semibold text-slate-400">{shots}</span>
+                {caption ? (
+                  <span className="text-xs font-semibold text-slate-400">{caption}</span>
                 ) : null}
               </span>
               <span className="text-sm font-bold text-slate-900">

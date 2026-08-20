@@ -5,7 +5,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@pos/db';
-import type { Channel, MenuCategory, MenuItemDTO, ScanResultDTO } from '@pos/shared';
+import type {
+  Channel,
+  MenuCategory,
+  MenuItemDTO,
+  ScanResultDTO,
+  SpiritGroupDTO,
+  SpiritPourDTO,
+} from '@pos/shared';
 import { CATEGORY_DEFAULT_STATION } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -22,6 +29,18 @@ const MENU_INCLUDE = {
 type MenuItemWithPrices = Prisma.MenuItemGetPayload<{
   include: typeof MENU_INCLUDE;
 }>;
+
+/**
+ * A MenuItem is a spirit pour iff it has exactly one recipe line drawing from an
+ * `ml`-based ingredient. This is what separates pours from the rest of the bar:
+ * food dishes have multiple recipe lines (and g/pcs ingredients), and beer/cans
+ * have no recipe at all. Pure + exported so the boundary is unit-tested without a DB.
+ */
+export function isSpiritPour(item: {
+  recipes: { ingredient: { baseUnit: string } }[];
+}): boolean {
+  return item.recipes.length === 1 && item.recipes[0].ingredient.baseUnit === 'ml';
+}
 
 @Injectable()
 export class MenuService {
@@ -66,23 +85,75 @@ export class MenuService {
       where: { barcode, isActive: true },
     });
     if (ingredient) {
-      const recipes = await this.prisma.recipe.findMany({
-        where: { ingredientId: ingredient.id, menuItem: { isActive: true } },
-        orderBy: { quantity: 'asc' },
-        include: { menuItem: { include: MENU_INCLUDE } },
-      });
       return {
         kind: 'spirit',
         ingredientId: ingredient.id,
         ingredientName: ingredient.name,
-        pours: recipes.map((r) => ({
-          item: this.toDTO(r.menuItem),
-          volumeMl: decToNum(r.quantity),
-        })),
+        pours: await this.poursForIngredient(ingredient.id),
       };
     }
 
     return { kind: 'none' };
+  }
+
+  /**
+   * The pour sizes sellable for a spirit bottle: every active MenuItem whose
+   * recipe draws from this ingredient, smallest first (so a picker reads 25 → 750
+   * ml). Shared by `scan()` (bottle barcode) and `listSpirits()` (grid tiles).
+   */
+  private async poursForIngredient(
+    ingredientId: string,
+  ): Promise<SpiritPourDTO[]> {
+    const recipes = await this.prisma.recipe.findMany({
+      where: { ingredientId, menuItem: { isActive: true } },
+      orderBy: { quantity: 'asc' },
+      include: { menuItem: { include: MENU_INCLUDE } },
+    });
+    return recipes.map((r) => ({
+      item: this.toDTO(r.menuItem),
+      volumeMl: decToNum(r.quantity),
+    }));
+  }
+
+  /**
+   * Every spirit as one group per bottle, for the bar grid: instead of showing
+   * each pour size as its own tile, the grid shows one tile per bottle that opens
+   * the pour picker. A "spirit pour" is a MenuItem with exactly one recipe line
+   * drawing from an `ml`-based ingredient — which excludes food (multi-line, g/pcs)
+   * and beer/cans (no recipe). Channel filtering is left to the client (mirrors the
+   * grid's per-channel price filtering), so one response serves every channel.
+   */
+  async listSpirits(): Promise<SpiritGroupDTO[]> {
+    const items = await this.prisma.menuItem.findMany({
+      where: { category: 'bar', isActive: true },
+      include: { ...MENU_INCLUDE, recipes: { include: { ingredient: true } } },
+      orderBy: { name: 'asc' },
+    });
+
+    const groups = new Map<string, SpiritGroupDTO>();
+    for (const item of items) {
+      if (!isSpiritPour(item)) continue;
+      const recipe = item.recipes[0];
+
+      let group = groups.get(recipe.ingredientId);
+      if (!group) {
+        group = {
+          ingredientId: recipe.ingredientId,
+          ingredientName: recipe.ingredient.name,
+          menuGroup: item.menuGroup,
+          pours: [],
+        };
+        groups.set(recipe.ingredientId, group);
+      }
+      group.pours.push({
+        item: this.toDTO(item),
+        volumeMl: decToNum(recipe.quantity),
+      });
+    }
+
+    const result = [...groups.values()];
+    for (const g of result) g.pours.sort((a, b) => a.volumeMl - b.volumeMl);
+    return result.sort((a, b) => a.ingredientName.localeCompare(b.ingredientName));
   }
 
   async create(dto: CreateMenuItemDto): Promise<MenuItemDTO> {

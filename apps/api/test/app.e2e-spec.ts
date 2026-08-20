@@ -10,6 +10,8 @@ import type {
   MenuItemDTO,
   OrderDTO,
   PrintJobDTO,
+  ScanResultDTO,
+  SpiritGroupDTO,
   StockMovementDTO,
   TableSessionDTO,
 } from '@pos/shared';
@@ -374,5 +376,43 @@ describe('POS critical path (e2e)', () => {
 
     // Both voids fully restored the deducted stock.
     expect(await stockOf(ingredient.id)).toBeCloseTo(before, 5);
+  });
+
+  it('lists spirits grouped one-per-bottle for the bar grid (pours ascending)', async () => {
+    const spirits = (
+      await request(server()).get('/api/menu/spirits').set('Authorization', bearer()).expect(200)
+    ).body as SpiritGroupDTO[];
+    expect(spirits.length).toBeGreaterThan(0);
+
+    // The shape every bar tile / the pour picker relies on: ≥1 pour, volumes
+    // ascending (25 → 750), and each pour is a real `bar` MenuItem.
+    for (const g of spirits) {
+      expect(g.pours.length).toBeGreaterThan(0);
+      const vols = g.pours.map((p) => p.volumeMl);
+      expect([...vols].sort((a, b) => a - b)).toEqual(vols);
+      for (const p of g.pours) expect(p.item.category).toBe('bar');
+    }
+
+    // The seeded arrack bottle offers a full 25 → 750 ml ladder, each priced at the bar.
+    const arrack = spirits.find((g) => g.ingredientName === 'VA EXTRA SPECIAL ARRACK');
+    expect(arrack).toBeDefined();
+    expect(arrack!.menuGroup).toBe('Arrack');
+    expect(arrack!.pours.map((p) => p.volumeMl)).toEqual([25, 50, 100, 200, 400, 750]);
+    for (const p of arrack!.pours) {
+      expect(p.item.prices.some((pr) => pr.channel === 'dine_in_bar')).toBe(true);
+    }
+
+    // Scanning that bottle's barcode resolves to the same pours (guards the shared
+    // `poursForIngredient` extraction used by both /scan and /spirits).
+    const scan = (
+      await request(server())
+        .get('/api/menu/scan?code=4796013270931')
+        .set('Authorization', bearer())
+        .expect(200)
+    ).body as ScanResultDTO;
+    expect(scan.kind).toBe('spirit');
+    if (scan.kind === 'spirit') {
+      expect(scan.pours.map((p) => p.item.id)).toEqual(arrack!.pours.map((p) => p.item.id));
+    }
   });
 });

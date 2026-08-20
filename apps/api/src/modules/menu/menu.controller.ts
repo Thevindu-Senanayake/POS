@@ -93,4 +93,13 @@ export class MenuScanController {
   scan(@Query('code') code?: string) {
     return this.menu.scan(code ?? '');
   }
+
+  /**
+   * `GET /api/menu/spirits` — spirits grouped one-per-bottle for the bar grid, so
+   * a bartender taps a bottle and picks a pour size (instead of a tile per size).
+   */
+  @Get('spirits')
+  listSpirits() {
+    return this.menu.listSpirits();
+  }
 }

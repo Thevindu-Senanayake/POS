@@ -17,6 +17,7 @@ import type {
   OrderDTO,
   ScanResultDTO,
   ServiceChargeRuleDTO,
+  SpiritGroupDTO,
   TableSessionDTO,
 } from '@pos/shared';
 import { api } from '@/lib/api-client';
@@ -80,6 +81,19 @@ export function useMenu() {
   return useQuery({
     queryKey: qk.menu,
     queryFn: () => api.get<MenuItemDTO[]>('/menu-items'),
+    staleTime: 60_000,
+  });
+}
+
+/**
+ * Spirits grouped one-per-bottle for the bar grid (each opens the pour picker).
+ * Returns every priced channel; the grid filters to the order's channel, so this
+ * caches once and serves any channel. Same 60 s staleness as {@link useMenu}.
+ */
+export function useSpirits() {
+  return useQuery({
+    queryKey: qk.spirits,
+    queryFn: () => api.get<SpiritGroupDTO[]>('/menu/spirits'),
     staleTime: 60_000,
   });
 }

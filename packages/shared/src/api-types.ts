@@ -136,6 +136,19 @@ export interface SpiritPourDTO {
 }
 
 /**
+ * A spirit bottle rendered as one bar-grid tile: the bottle Ingredient plus every
+ * pour size built from it (the PourPicker's input). Tapping the tile opens the same
+ * size picker the barcode scanner uses. `menuGroup` mirrors the pours' shared
+ * `MenuItem.menuGroup` so the tile lands in the right bar section (e.g. "Arrack").
+ */
+export interface SpiritGroupDTO {
+  ingredientId: string;
+  ingredientName: string;
+  menuGroup: string | null;
+  pours: SpiritPourDTO[];
+}
+
+/**
  * Result of resolving a scanned barcode (bar USB scanner, spec feature (c)).
  *  - `item`   — barcode matched a whole-unit MenuItem (bottle/can/packaged) → add it directly.
  *  - `spirit` — barcode matched a spirit Ingredient → offer its pour sizes (the MenuItems whose
