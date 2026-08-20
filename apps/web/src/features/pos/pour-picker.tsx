@@ -51,10 +51,8 @@ export function PourPicker({
       <div className="grid grid-cols-2 gap-2.5">
         {pours.map((pour) => {
           const price = priceForChannel(pour.item, channel);
-          const caption =
-            pour.volumeMl === maxVolumeMl && maxVolumeMl >= 500
-              ? 'Bottle'
-              : shotLabel(pour.volumeMl);
+          const isBottle = pour.volumeMl === maxVolumeMl && maxVolumeMl >= 500;
+          const caption = isBottle ? 'Bottle' : shotLabel(pour.volumeMl);
           return (
             <button
               key={pour.item.id}
@@ -62,20 +60,31 @@ export function PourPicker({
               disabled={price === undefined}
               onClick={() => onPick(pour)}
               className={cn(
-                'flex min-h-touch flex-col justify-between gap-1 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
-                'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
-                'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:shadow-sm',
+                'flex min-h-touch flex-col justify-between gap-1 rounded-2xl border p-3 text-left shadow-card transition-all',
+                'motion-safe:hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/40 hover:shadow-card-hover motion-safe:active:scale-[0.98]',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400',
+                'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:border-sand-200 disabled:hover:bg-white disabled:hover:shadow-card',
+                isBottle ? 'border-accent-300 bg-gradient-to-br from-accent-50 to-white' : 'border-sand-200 bg-white',
               )}
             >
               <span className="flex items-baseline gap-1.5">
                 <span className="text-base font-extrabold text-slate-900">{pour.volumeMl} ml</span>
                 {caption ? (
-                  <span className="text-xs font-semibold text-slate-400">{caption}</span>
+                  isBottle ? (
+                    <span className="rounded-full bg-accent-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-accent-700 ring-1 ring-accent-200">
+                      🍾 {caption}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-slate-400">{caption}</span>
+                  )
                 ) : null}
               </span>
-              <span className="text-sm font-bold text-slate-900">
-                {price === undefined ? 'Not sold at bar' : formatMoney(price)}
+              <span className="text-sm font-bold text-accent-700">
+                {price === undefined ? (
+                  <span className="font-semibold text-slate-400">Not sold at bar</span>
+                ) : (
+                  formatMoney(price)
+                )}
               </span>
             </button>
           );

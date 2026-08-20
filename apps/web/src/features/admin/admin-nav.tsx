@@ -25,7 +25,7 @@ export const ADMIN_SECTIONS: { href: string; label: string }[] = [
 export function AdminNav() {
   const pathname = usePathname();
   return (
-    <div className="border-b border-slate-200 bg-white">
+    <div className="border-b border-sand-200 bg-sand-50/70 backdrop-blur">
       <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2 sm:px-6">
         {ADMIN_SECTIONS.map((s) => {
           const active = s.href === '/admin' ? pathname === '/admin' : pathname.startsWith(s.href);
@@ -35,7 +35,9 @@ export function AdminNav() {
               href={s.href}
               className={cn(
                 'whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-colors',
-                active ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-100',
+                active
+                  ? 'bg-brand-50 text-brand-700 ring-1 ring-brand-100 shadow-sm'
+                  : 'text-slate-600 hover:bg-sand-100',
               )}
             >
               {s.label}

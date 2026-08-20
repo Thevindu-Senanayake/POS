@@ -117,7 +117,7 @@ export function Dashboard() {
               <Link
                 key={l.href}
                 href={l.href}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:bg-brand-50"
+                className="rounded-xl border border-sand-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:bg-brand-50"
               >
                 {l.label}
               </Link>

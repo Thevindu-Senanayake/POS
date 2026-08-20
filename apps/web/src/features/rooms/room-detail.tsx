@@ -39,7 +39,7 @@ import {
 } from './format';
 
 const inputClass =
-  'w-full rounded-xl border border-slate-300 px-3 py-2.5 text-base focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500';
+  'w-full rounded-xl border border-sand-300 bg-white px-3 py-2.5 text-base outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-100';
 
 /**
  * Room workspace (spec §2.7): the guest folio and its lifecycle. Shows the active
@@ -73,7 +73,7 @@ export function RoomDetail({ roomId }: { roomId: string }) {
         <button
           type="button"
           onClick={() => router.push('/rooms')}
-          className="rounded-lg px-2 py-1 text-sm font-semibold text-slate-500 hover:bg-slate-100"
+          className="rounded-lg px-2 py-1 text-sm font-semibold text-slate-500 hover:bg-sand-100"
         >
           ← Rooms
         </button>
@@ -146,7 +146,7 @@ function BookingPanel({
 
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-slate-200 bg-white p-4">
+      <section className="card p-4">
         <div className="flex items-start justify-between">
           <div>
             <div className="text-lg font-bold text-slate-900">{booking.guestName}</div>
@@ -214,7 +214,7 @@ function BookingPanel({
       </div>
 
       {!canFrontDesk ? (
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Front-desk actions (check-in, checkout, charges) require a cashier or admin.
         </p>
       ) : null}
@@ -231,9 +231,9 @@ function BookingPanel({
 
 function FolioCard({ booking }: { booking: BookingDTO }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4">
-      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-400">Folio</h2>
-      <div className="divide-y divide-slate-100 text-sm">
+    <section className="card p-4">
+      <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">Folio</h2>
+      <div className="divide-y divide-sand-100 text-sm">
         <FolioRow
           label="Room charge"
           hint={`${booking.nights} night${booking.nights > 1 ? 's' : ''} × ${formatMoney(booking.agreedRate)}`}
@@ -248,9 +248,9 @@ function FolioCard({ booking }: { booking: BookingDTO }) {
           />
         ))}
       </div>
-      <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-3">
+      <div className="mt-3 flex items-center justify-between border-t border-sand-200 pt-3">
         <span className="text-base font-extrabold text-slate-900">Grand total</span>
-        <span className="text-lg font-extrabold text-slate-900">{formatMoney(booking.grandTotal)}</span>
+        <span className="text-xl font-extrabold text-gradient">{formatMoney(booking.grandTotal)}</span>
       </div>
     </section>
   );
@@ -261,7 +261,7 @@ function FolioRow({ label, hint, amount }: { label: string; hint?: string; amoun
     <div className="flex items-center justify-between py-2">
       <div className="min-w-0">
         <div className="font-semibold text-slate-800">{label}</div>
-        {hint ? <div className="truncate text-xs text-slate-400">{hint}</div> : null}
+        {hint ? <div className="truncate text-xs text-slate-500">{hint}</div> : null}
       </div>
       <div className={`font-semibold ${amount === 0 ? 'text-emerald-600' : 'text-slate-800'}`}>
         {amount === 0 ? 'Comp' : formatMoney(amount)}
@@ -329,7 +329,7 @@ function ReservePanel({ room, canFrontDesk }: { room: RoomDTO; canFrontDesk: boo
   });
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4">
+    <section className="card p-4">
       <h2 className="mb-3 text-base font-bold text-slate-900">New booking</h2>
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <div>
@@ -362,7 +362,7 @@ function ReservePanel({ room, canFrontDesk }: { room: RoomDTO; canFrontDesk: boo
               </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-slate-400">
+          <p className="mt-1 text-xs text-slate-500">
             Agreed rate is snapshotted at {formatMoney(room.effectiveRate)}/night.
           </p>
         </div>
@@ -474,12 +474,12 @@ function CheckoutModal({ booking, onClose }: { booking: BookingDTO; onClose: () 
   return (
     <Modal open onClose={onClose} title={done ? 'Checked out' : 'Confirm check-out'}>
       <div className="space-y-4">
-        <div className="rounded-xl bg-slate-900 px-4 py-4 text-center text-white">
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-300">
+        <div className="rounded-xl bg-brand-gradient px-4 py-4 text-center text-white shadow-card">
+          <div className="text-xs font-semibold uppercase tracking-wide text-white/70">
             Final bill · {settled.guestName}
           </div>
           <div className="mt-1 text-3xl font-extrabold">{formatMoney(settled.grandTotal)}</div>
-          <div className="mt-1 text-xs text-slate-400">
+          <div className="mt-1 text-xs text-white/70">
             Room {formatMoney(settled.roomCharge)} + extras {formatMoney(settled.folioTotal)}
           </div>
         </div>
@@ -512,7 +512,7 @@ function CheckoutModal({ booking, onClose }: { booking: BookingDTO; onClose: () 
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-medium text-slate-400">{label}</dt>
+      <dt className="text-xs font-medium text-slate-500">{label}</dt>
       <dd className="font-semibold text-slate-800">{value}</dd>
     </div>
   );
@@ -540,7 +540,7 @@ function CenterNote({ children }: { children: React.ReactNode }) {
 
 function CardNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center text-slate-500">
+    <div className="card p-6 text-center text-slate-500">
       {children}
     </div>
   );

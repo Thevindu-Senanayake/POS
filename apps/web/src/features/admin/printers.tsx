@@ -51,7 +51,7 @@ export function PrintersScreen() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {(printers.data ?? []).map((p) => (
-          <div key={p.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div key={p.id} className="rounded-2xl border border-sand-200 bg-white p-5 shadow-card">
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export function PrintersScreen() {
           </div>
         ))}
         {(printers.data ?? []).length === 0 ? (
-          <div className="col-span-full rounded-2xl border border-dashed border-slate-200 px-4 py-10 text-center text-sm text-slate-400">
+          <div className="col-span-full rounded-2xl border border-dashed border-sand-300 px-4 py-10 text-center text-sm text-slate-400">
             No printers configured.
           </div>
         ) : null}

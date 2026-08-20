@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { formatMoney, type BookingDTO, type RoomDTO } from '@pos/shared';
+import { cn } from '@/lib/cn';
 import { FullscreenSpinner } from '@/components/ui/spinner';
 import { useBookings, useRooms } from './api';
 import { ROOM_STATUS_STYLES } from './format';
@@ -38,16 +39,21 @@ export function RoomsBoard() {
 
   return (
     <div className="mx-auto max-w-6xl p-4 sm:p-6">
-      <div className="mb-5">
-        <h1 className="text-2xl font-extrabold text-slate-900">Rooms</h1>
-        <p className="text-sm text-slate-500">Tap a room to manage its booking and folio.</p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Rooms</h1>
+        <div className="mt-1 h-1 w-16 rounded-full bg-accent-gradient" />
+        <p className="mt-2 text-sm text-slate-500">Tap a room to manage its booking and folio.</p>
       </div>
 
       {groups.map(({ category, rooms }) => (
         <section key={category} className="mb-6">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">
-            {category} <span className="text-slate-300">({rooms.length})</span>
-          </h2>
+          <div className="mb-3 flex items-center gap-3">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-slate-600">{category}</h2>
+            <span className="rounded-full bg-sand-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+              {rooms.length}
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-r from-accent-300/70 to-transparent" />
+          </div>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {rooms.map((room) => (
               <RoomTile
@@ -83,11 +89,16 @@ function RoomTile({
     <button
       type="button"
       onClick={onClick}
-      className={`flex min-h-[104px] flex-col rounded-2xl border p-3 text-left transition-colors ${style.tile}`}
+      className={cn(
+        'group flex min-h-[112px] flex-col rounded-2xl border p-3 text-left shadow-sm transition-all',
+        'motion-safe:hover:-translate-y-0.5 hover:shadow-card-hover motion-safe:active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2',
+        style.tile,
+      )}
     >
       <div className="flex items-center justify-between">
         <span className="text-lg font-extrabold">{room.roomNumber}</span>
-        <span className={`h-2.5 w-2.5 rounded-full ${style.dot}`} aria-hidden />
+        <span className={cn('h-2.5 w-2.5 rounded-full ring-2 ring-white/80', style.dot)} aria-hidden />
       </div>
       <div className="mt-1 text-xs font-medium opacity-80">{room.categoryName ?? 'Room'}</div>
       <div className="mt-auto pt-2 text-sm font-semibold">
@@ -105,10 +116,13 @@ function RoomTile({
 
 function Legend() {
   return (
-    <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500">
+    <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
       {(Object.keys(ROOM_STATUS_STYLES) as Array<keyof typeof ROOM_STATUS_STYLES>).map((s) => (
-        <span key={s} className="inline-flex items-center gap-1.5">
-          <span className={`h-2.5 w-2.5 rounded-full ${ROOM_STATUS_STYLES[s].dot}`} aria-hidden />
+        <span
+          key={s}
+          className="inline-flex items-center gap-1.5 rounded-full border border-sand-200 bg-white/70 px-2.5 py-1 font-medium text-slate-600"
+        >
+          <span className={cn('h-2.5 w-2.5 rounded-full', ROOM_STATUS_STYLES[s].dot)} aria-hidden />
           {ROOM_STATUS_STYLES[s].label}
         </span>
       ))}

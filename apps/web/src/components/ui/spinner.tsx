@@ -22,8 +22,9 @@ export function Spinner({ className }: { className?: string }) {
 /** Full-viewport centered spinner with an optional label (route/auth loading states). */
 export function FullscreenSpinner({ label }: { label?: string }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-3 text-slate-500">
-      <Spinner className="h-8 w-8 text-brand-600" />
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-slate-500">
+      <span className="logo-mark h-12 w-12 text-lg motion-safe:animate-pulse">G</span>
+      <Spinner className="h-7 w-7 text-brand-600" />
       {label ? <p className="text-sm font-medium">{label}</p> : null}
     </div>
   );

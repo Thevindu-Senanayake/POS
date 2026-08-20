@@ -336,7 +336,7 @@ function AdjustModal({ ingredient, onClose }: { ingredient: IngredientDTO; onClo
         <Field label="Note (optional)" htmlFor="adj-note">
           <TextInput id="adj-note" placeholder="e.g. spoiled, breakage, recount" {...register('note')} />
         </Field>
-        <div className="rounded-xl bg-slate-50 px-4 py-3 text-sm">
+        <div className="rounded-xl bg-sand-50 px-4 py-3 text-sm">
           New level:{' '}
           <span className={projected < 0 ? 'font-bold text-red-600' : 'font-bold text-slate-800'}>
             {projected.toLocaleString('en-US')} {BASE_UNIT_SHORT[ingredient.baseUnit]}

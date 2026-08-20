@@ -1,15 +1,19 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cn } from '@/lib/cn';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'accent';
 type Size = 'md' | 'lg';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800 disabled:bg-brand-300',
+  primary:
+    'bg-brand-gradient text-white shadow-card hover:brightness-[1.06] active:brightness-95 disabled:opacity-50 disabled:shadow-none',
+  accent:
+    'bg-accent-gradient text-white shadow-card hover:brightness-[1.06] active:brightness-95 disabled:opacity-50 disabled:shadow-none',
   secondary:
-    'bg-white text-slate-800 border border-slate-300 hover:bg-slate-50 active:bg-slate-100 disabled:opacity-50',
-  ghost: 'bg-transparent text-slate-700 hover:bg-slate-200/70 active:bg-slate-200 disabled:opacity-50',
-  danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:bg-red-300',
+    'bg-white text-slate-800 border border-sand-300 shadow-sm hover:bg-sand-50 hover:border-sand-400 active:bg-sand-100 disabled:opacity-50',
+  ghost: 'bg-transparent text-slate-700 hover:bg-sand-200/70 active:bg-sand-200 disabled:opacity-50',
+  danger:
+    'bg-red-600 text-white shadow-card hover:bg-red-700 active:bg-red-800 disabled:bg-red-300 disabled:shadow-none',
 };
 
 const SIZES: Record<Size, string> = {
@@ -32,9 +36,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       ref={ref}
       type={type}
       className={cn(
-        'inline-flex select-none items-center justify-center gap-2 rounded-xl font-semibold transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
-        'disabled:cursor-not-allowed',
+        'inline-flex select-none items-center justify-center gap-2 rounded-xl font-semibold transition-all',
+        'motion-safe:active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-sand-50',
+        'disabled:cursor-not-allowed disabled:active:scale-100',
         VARIANTS[variant],
         SIZES[size],
         className,

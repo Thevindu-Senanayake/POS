@@ -79,10 +79,11 @@ export function FloorBoard() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Floor</h1>
-          <p className="text-sm text-slate-500">Tap a table to take or resume an order.</p>
+          <div className="mt-1 h-1 w-16 rounded-full bg-accent-gradient" />
+          <p className="mt-2 text-sm text-slate-500">Tap a table to take or resume an order.</p>
         </div>
         <Button size="lg" onClick={startTakeaway} disabled={busyId === 'takeaway'}>
           {busyId === 'takeaway' ? <Spinner /> : '+ Takeaway'}
@@ -96,7 +97,7 @@ export function FloorBoard() {
       ) : null}
 
       {tablesQuery.isLoading ? (
-        <div className="flex justify-center py-16 text-slate-400">
+        <div className="flex justify-center py-16 text-brand-500">
           <Spinner className="h-8 w-8" />
         </div>
       ) : tablesQuery.isError ? (
@@ -109,11 +110,14 @@ export function FloorBoard() {
         <div className="space-y-8">
           {grouped.map(({ area, tables }) => (
             <section key={area}>
-              <div className="mb-3 flex items-center gap-2">
-                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-500">
+              <div className="mb-3 flex items-center gap-3">
+                <h2 className="text-sm font-bold uppercase tracking-wide text-slate-600">
                   {AREA_LABELS[area]}
                 </h2>
-                <span className="text-xs text-slate-400">({tables.length})</span>
+                <span className="rounded-full bg-sand-100 px-2 py-0.5 text-xs font-semibold text-slate-500">
+                  {tables.length}
+                </span>
+                <span className="h-px flex-1 bg-gradient-to-r from-accent-300/70 to-transparent" />
               </div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
                 {tables.map((table) => (
@@ -151,30 +155,41 @@ function TableTile({
       onClick={onClick}
       disabled={busy}
       className={cn(
-        'relative flex min-h-[104px] flex-col items-start justify-between rounded-2xl border p-3 text-left transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2',
+        'group relative flex min-h-[116px] flex-col justify-between rounded-2xl border p-3.5 text-left shadow-sm transition-all',
+        'motion-safe:hover:-translate-y-0.5 hover:shadow-card-hover motion-safe:active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2',
         'disabled:cursor-wait disabled:opacity-70',
         style.tile,
       )}
     >
-      <div className="flex w-full items-center justify-between">
-        <span className="text-lg font-extrabold">{table.name}</span>
-        <span className={cn('h-2.5 w-2.5 rounded-full', style.dot)} />
+      <div className="flex w-full items-start justify-between">
+        <span className="text-2xl leading-none" aria-hidden>
+          {style.icon}
+        </span>
+        <span className={cn('mt-1 h-2.5 w-2.5 rounded-full ring-2 ring-white/80', style.dot)} />
       </div>
-      <div className="text-xs font-medium opacity-80">
-        {busy ? 'Working…' : style.label}
-        {table.status === 'needs_cleaning' && !busy ? ' · tap to clear' : ''}
+      <div>
+        <div className="text-lg font-extrabold leading-tight">{table.name}</div>
+        <div className="text-xs font-semibold opacity-80">
+          {busy ? 'Working…' : style.label}
+          {table.status === 'needs_cleaning' && !busy ? ' · tap to clear' : ''}
+        </div>
       </div>
-      <div className="text-[11px] opacity-60">Seats {table.capacity}</div>
+      <span className="mt-1 inline-flex w-fit items-center gap-1 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-semibold opacity-80">
+        Seats {table.capacity}
+      </span>
     </button>
   );
 }
 
 function Legend() {
   return (
-    <div className="mt-8 flex flex-wrap gap-4 text-xs text-slate-500">
+    <div className="mt-8 flex flex-wrap gap-2 text-xs">
       {(['free', 'occupied', 'reserved', 'needs_cleaning'] as const).map((s) => (
-        <span key={s} className="inline-flex items-center gap-1.5">
+        <span
+          key={s}
+          className="inline-flex items-center gap-1.5 rounded-full border border-sand-200 bg-white/70 px-2.5 py-1 font-medium text-slate-600"
+        >
           <span className={cn('h-2.5 w-2.5 rounded-full', TABLE_STATUS_STYLES[s].dot)} />
           {TABLE_STATUS_STYLES[s].label}
         </span>

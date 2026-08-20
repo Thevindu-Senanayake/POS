@@ -135,7 +135,7 @@ export function OrderTicket({
           {cart.length === 0 ? (
             <EmptyHint>Tap menu items to build the order.</EmptyHint>
           ) : (
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-sand-100">
               {cart.map((line, i) => (
                 <li key={`${line.menuItemId}:${i}`} className="px-3 py-2">
                   <div className="flex items-center gap-2">
@@ -156,7 +156,7 @@ export function OrderTicket({
                     <button
                       type="button"
                       onClick={() => removeLine(cartKey, i)}
-                      className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-red-600"
+                      className="rounded-md p-1 text-slate-400 hover:bg-sand-100 hover:text-red-600"
                       aria-label="Remove line"
                     >
                       ✕
@@ -166,7 +166,7 @@ export function OrderTicket({
                     value={line.notes}
                     onChange={(e) => setNotes(cartKey, i, e.target.value)}
                     placeholder="Add a note (e.g. no ice, well done)…"
-                    className="mt-1.5 w-full rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs outline-none focus:border-brand-400 focus:bg-white"
+                    className="mt-1.5 w-full rounded-md border border-sand-200 bg-sand-50 px-2 py-1 text-xs outline-none focus:border-brand-400 focus:bg-white"
                   />
                 </li>
               ))}
@@ -192,7 +192,7 @@ export function OrderTicket({
               ) : null
             }
           >
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-sand-100">
               {firedOrDraft.map((it) => {
                 const style = ITEM_STATUS_STYLES[it.status];
                 return (
@@ -261,7 +261,7 @@ export function OrderTicket({
         {/* Discounts -------------------------------------------------------- */}
         {order && order.discounts.length > 0 ? (
           <Section title="Discounts" count={order.discounts.length}>
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-sand-100">
               {order.discounts.map((d) => (
                 <li key={d.id} className="flex items-center gap-2 px-3 py-2 text-sm">
                   <div className="min-w-0 flex-1">
@@ -277,7 +277,7 @@ export function OrderTicket({
                       type="button"
                       onClick={() => doRemoveDiscount(d.id)}
                       disabled={busy === `rmdisc:${d.id}`}
-                      className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-red-600 disabled:opacity-50"
+                      className="rounded-md p-1 text-slate-400 hover:bg-sand-100 hover:text-red-600 disabled:opacity-50"
                       aria-label="Remove discount"
                     >
                       ✕
@@ -297,7 +297,7 @@ export function OrderTicket({
       </div>
 
       {/* Footer: totals + actions ------------------------------------------- */}
-      <div className="border-t border-slate-200 bg-slate-50 p-3">
+      <div className="border-t border-sand-200 bg-sand-50 p-3">
         {order ? (
           <dl className="mb-3 space-y-1 text-sm">
             <Row label="Subtotal" value={formatMoney(order.subtotal)} />
@@ -329,7 +329,7 @@ export function OrderTicket({
             {sending ? <Spinner /> : `Send${cart.length ? ` (${cart.length})` : ''}`}
           </Button>
           {can('take_payment') ? (
-            <Button size="lg" onClick={onOpenPay} disabled={!payable || !hasBillable}>
+            <Button variant="accent" size="lg" onClick={onOpenPay} disabled={!payable || !hasBillable}>
               Pay
             </Button>
           ) : (
@@ -417,11 +417,11 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-b border-slate-100">
+    <section className="border-b border-sand-100">
       <div className="flex items-center justify-between px-3 pt-3 pb-1">
-        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-400">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">
           {title}
-          {count != null ? <span className="ml-1 text-slate-300">({count})</span> : null}
+          {count != null ? <span className="ml-1 text-slate-400">({count})</span> : null}
         </h3>
         {action}
       </div>
@@ -440,7 +440,7 @@ function QtyStepper({ qty, onDec, onInc }: { qty: number; onDec: () => void; onI
       <button
         type="button"
         onClick={onDec}
-        className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-lg font-bold text-slate-600 hover:bg-slate-200"
+        className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-lg font-bold text-brand-700 ring-1 ring-brand-100 transition-colors hover:bg-brand-100"
         aria-label="Decrease"
       >
         −
@@ -449,7 +449,7 @@ function QtyStepper({ qty, onDec, onInc }: { qty: number; onDec: () => void; onI
       <button
         type="button"
         onClick={onInc}
-        className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-lg font-bold text-slate-600 hover:bg-slate-200"
+        className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-lg font-bold text-brand-700 ring-1 ring-brand-100 transition-colors hover:bg-brand-100"
         aria-label="Increase"
       >
         +
@@ -461,7 +461,7 @@ function QtyStepper({ qty, onDec, onInc }: { qty: number; onDec: () => void; onI
 const LINE_TONES: Record<string, string> = {
   emerald: 'border-emerald-200 text-emerald-700 hover:bg-emerald-50',
   red: 'border-red-200 text-red-700 hover:bg-red-50',
-  slate: 'border-slate-200 text-slate-600 hover:bg-slate-100',
+  slate: 'border-sand-300 text-slate-600 hover:bg-sand-100',
 };
 
 function LineAction({
@@ -502,11 +502,11 @@ function Row({
   muted?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className={cn('flex items-center justify-between', strong && 'mt-1 border-t border-sand-200 pt-2')}>
       <dt className={cn(strong ? 'font-bold text-slate-900' : muted ? 'text-slate-500' : 'text-slate-600')}>
         {label}
       </dt>
-      <dd className={cn('tabular-nums', strong ? 'text-lg font-extrabold text-slate-900' : 'font-semibold text-slate-700')}>
+      <dd className={cn('tabular-nums', strong ? 'text-xl font-extrabold text-gradient' : 'font-semibold text-slate-700')}>
         {value}
       </dd>
     </div>
@@ -556,7 +556,7 @@ function VoidDialog({
         onChange={(e) => setReason(e.target.value)}
         placeholder="Reason (e.g. guest changed mind, wrong item)…"
         rows={3}
-        className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="mb-4 w-full rounded-lg border border-sand-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
       />
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onCancel}>
@@ -598,10 +598,10 @@ function DiscountDialog({
             type="button"
             onClick={() => setType(t)}
             className={cn(
-              'flex-1 rounded-lg border px-3 py-2 text-sm font-semibold',
+              'flex-1 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors',
               type === t
                 ? 'border-brand-500 bg-brand-50 text-brand-700'
-                : 'border-slate-300 text-slate-600',
+                : 'border-sand-300 text-slate-600 hover:bg-sand-100',
             )}
           >
             {t === 'percentage' ? 'Percentage %' : 'Flat amount'}
@@ -614,13 +614,13 @@ function DiscountDialog({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={type === 'percentage' ? 'e.g. 10 (%)' : 'e.g. 500'}
-        className="mb-3 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="mb-3 w-full rounded-lg border border-sand-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
       />
       <input
         value={reason}
         onChange={(e) => setReason(e.target.value)}
         placeholder="Reason (optional)"
-        className="mb-4 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="mb-4 w-full rounded-lg border border-sand-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
       />
       <div className="flex justify-end gap-2">
         <Button variant="secondary" onClick={onCancel}>

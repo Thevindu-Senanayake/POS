@@ -44,7 +44,7 @@ export function PurchasingScreen() {
       title="Purchasing"
       subtitle="Raise purchase orders, receive goods into stock, and manage suppliers."
       actions={
-        <div className="flex rounded-xl border border-slate-200 bg-slate-100 p-1 text-sm font-semibold">
+        <div className="flex rounded-xl border border-sand-200 bg-sand-100 p-1 text-sm font-semibold">
           <button
             type="button"
             onClick={() => setTab('orders')}
@@ -312,7 +312,7 @@ function PurchaseOrderModal({ order, onClose }: { order: PurchaseOrderDTO | null
           </div>
         </div>
 
-        <div className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3">
+        <div className="flex items-center justify-between rounded-xl bg-sand-50 px-4 py-3">
           <span className="text-sm font-semibold text-slate-600">Order total</span>
           <span className="text-lg font-bold text-slate-900">{formatMoney(grandTotal)}</span>
         </div>
@@ -351,7 +351,7 @@ function ReceiveModal({ order, onClose }: { order: PurchaseOrderDTO; onClose: ()
           <span className="font-semibold">{order.items.length}</span> item{order.items.length === 1 ? '' : 's'} into
           stock and updates weighted-average costs. This cannot be undone.
         </p>
-        <div className="rounded-xl bg-slate-50 px-4 py-3 text-sm">
+        <div className="rounded-xl bg-sand-50 px-4 py-3 text-sm">
           <div className="flex justify-between">
             <span className="text-slate-500">Order total</span>
             <span className="font-bold">{formatMoney(order.total)}</span>

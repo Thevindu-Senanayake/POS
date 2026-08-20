@@ -38,7 +38,7 @@ export function RoomsAdminScreen() {
           <Link href="/rooms" className="text-sm font-semibold text-brand-700 hover:underline">
             Live board →
           </Link>
-          <div className="flex rounded-xl border border-slate-200 bg-slate-100 p-1 text-sm font-semibold">
+          <div className="flex rounded-xl border border-sand-200 bg-sand-100 p-1 text-sm font-semibold">
             <button
               type="button"
               onClick={() => setTab('rooms')}

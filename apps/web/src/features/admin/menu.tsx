@@ -103,7 +103,7 @@ export function MenuScreen() {
                     {m.prices.map((p) => (
                       <span
                         key={p.channel}
-                        className="rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600"
+                        className="rounded-lg bg-sand-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-sand-200"
                         title={CHANNEL_LABELS[p.channel]}
                       >
                         {CHANNEL_SHORT[p.channel]} {formatMoney(p.price)}
@@ -221,7 +221,7 @@ function ItemModal({ item, onClose }: { item: MenuItemDTO | null; onClose: () =>
             <input type="checkbox" className="h-5 w-5" {...register('isActive')} /> Active (available to order)
           </label>
         ) : (
-          <p className="rounded-xl bg-slate-50 px-4 py-3 text-xs text-slate-500">
+          <p className="rounded-xl bg-sand-50 px-4 py-3 text-xs text-slate-500">
             After creating the item, set its per-channel prices and recipe from the list.
           </p>
         )}
@@ -416,7 +416,7 @@ function RecipeForm({
 
         <div className="space-y-2">
           {fields.length === 0 ? (
-            <p className="rounded-xl bg-slate-50 px-4 py-6 text-center text-sm text-slate-400">
+            <p className="rounded-xl bg-sand-50 px-4 py-6 text-center text-sm text-slate-400">
               No ingredients. Add a line to build the recipe.
             </p>
           ) : null}

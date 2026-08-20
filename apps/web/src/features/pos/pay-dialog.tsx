@@ -146,7 +146,7 @@ export function PayDialog({ order, onClose, onSettled }: PayDialogProps) {
 
   return (
     <Modal open onClose={onClose} title="Settle order" widthClassName="max-w-lg">
-      <div className="mb-4 flex gap-1 rounded-xl bg-slate-100 p-1">
+      <div className="mb-4 flex gap-1 rounded-xl bg-sand-100 p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -157,7 +157,7 @@ export function PayDialog({ order, onClose, onSettled }: PayDialogProps) {
             }}
             className={cn(
               'flex-1 rounded-lg px-3 py-2 text-sm font-bold transition-colors',
-              mode === t.key ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500',
+              mode === t.key ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500 hover:text-slate-700',
             )}
           >
             {t.label}
@@ -233,6 +233,7 @@ function FullPay({
       />
       <BalanceLine paid={paid} total={order.total} />
       <Button
+        variant="accent"
         className="mt-4 w-full"
         size="lg"
         disabled={!matches || submitting}
@@ -297,8 +298,8 @@ function SplitPay({
             type="button"
             onClick={() => setPartCount(n)}
             className={cn(
-              'h-9 w-9 rounded-lg text-sm font-bold',
-              partCount === n ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-600',
+              'h-9 w-9 rounded-lg text-sm font-bold transition-colors',
+              partCount === n ? 'bg-brand-gradient text-white shadow-sm' : 'bg-sand-100 text-slate-600 hover:bg-sand-200',
             )}
           >
             {n}
@@ -313,9 +314,9 @@ function SplitPay({
         </button>
       </div>
 
-      <div className="mb-3 max-h-40 overflow-y-auto rounded-lg border border-slate-200">
+      <div className="mb-3 max-h-40 overflow-y-auto rounded-lg border border-sand-200">
         {items.map((it) => (
-          <div key={it.id} className="flex items-center gap-2 border-b border-slate-100 px-2 py-1.5 last:border-0">
+          <div key={it.id} className="flex items-center gap-2 border-b border-sand-100 px-2 py-1.5 last:border-0">
             <span className="min-w-0 flex-1 truncate text-sm">
               <span className="font-semibold text-slate-500">{it.qty}× </span>
               {it.name}
@@ -327,10 +328,10 @@ function SplitPay({
                   type="button"
                   onClick={() => setAssign((prev) => ({ ...prev, [it.id]: p }))}
                   className={cn(
-                    'h-7 w-7 rounded-md text-xs font-bold',
+                    'h-7 w-7 rounded-md text-xs font-bold transition-colors',
                     (Math.min(assign[it.id] ?? 0, partCount - 1)) === p
                       ? 'bg-brand-600 text-white'
-                      : 'bg-slate-100 text-slate-500',
+                      : 'bg-sand-100 text-slate-500 hover:bg-sand-200',
                   )}
                 >
                   {p + 1}
@@ -348,7 +349,7 @@ function SplitPay({
           const sum = tenderSum(tender);
           const ok = Math.abs(sum - t.total) <= 0.001;
           return (
-            <div key={i} className="rounded-xl border border-slate-200 p-3">
+            <div key={i} className="rounded-xl border border-sand-200 p-3">
               <div className="mb-2 flex items-center justify-between">
                 <span className="text-sm font-bold text-slate-700">
                   Part {i + 1} · {ids.length} item{ids.length === 1 ? '' : 's'}
@@ -380,6 +381,7 @@ function SplitPay({
       </div>
 
       <Button
+        variant="accent"
         className="mt-4 w-full"
         size="lg"
         disabled={!valid || submitting}
@@ -426,7 +428,7 @@ function ChargeRoom({
           <Spinner />
         </div>
       ) : bookings.length === 0 && !order.bookingId ? (
-        <p className="rounded-lg bg-slate-50 px-3 py-4 text-center text-sm text-slate-500">
+        <p className="rounded-lg bg-sand-50 px-3 py-4 text-center text-sm text-slate-500">
           No checked-in guests to charge.
         </p>
       ) : (
@@ -437,10 +439,10 @@ function ChargeRoom({
               type="button"
               onClick={() => setBookingId(b.id)}
               className={cn(
-                'flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm',
+                'flex w-full items-center justify-between rounded-lg border px-3 py-2 text-left text-sm transition-colors',
                 chosen === b.id
                   ? 'border-brand-500 bg-brand-50'
-                  : 'border-slate-200 hover:bg-slate-50',
+                  : 'border-sand-200 hover:bg-sand-50',
               )}
             >
               <span>
@@ -458,12 +460,13 @@ function ChargeRoom({
           type="checkbox"
           checked={comp}
           onChange={(e) => setComp(e.target.checked)}
-          className="h-4 w-4 rounded border-slate-300"
+          className="h-4 w-4 rounded border-sand-300 accent-brand-600"
         />
         Comp this charge (board plan) — folio at ₨0
       </label>
 
       <Button
+        variant="accent"
         className="mt-4 w-full"
         size="lg"
         disabled={submitting || (!chosen)}
@@ -479,8 +482,8 @@ function ChargeRoom({
 
 function TotalHeadline({ label, value }: { label: string; value: number }) {
   return (
-    <div className="mb-4 rounded-xl bg-slate-900 px-4 py-3 text-center text-white">
-      <div className="text-xs uppercase tracking-wide text-slate-300">{label}</div>
+    <div className="mb-4 rounded-xl bg-brand-gradient px-4 py-3 text-center text-white shadow-card">
+      <div className="text-xs uppercase tracking-wide text-white/70">{label}</div>
       <div className="text-3xl font-extrabold tabular-nums">{formatMoney(value)}</div>
     </div>
   );
@@ -531,7 +534,7 @@ function MoneyInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="0.00"
-        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-right text-sm tabular-nums outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+        className="w-full rounded-lg border border-sand-300 px-3 py-2 text-right text-sm tabular-nums outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
       />
     </label>
   );
@@ -549,14 +552,14 @@ function QuickFill({
       <button
         type="button"
         onClick={onExactCash}
-        className="rounded-lg bg-slate-100 px-3 py-1.5 font-semibold text-slate-600 hover:bg-slate-200"
+        className="rounded-lg bg-sand-100 px-3 py-1.5 font-semibold text-slate-600 hover:bg-sand-200"
       >
         Exact cash
       </button>
       <button
         type="button"
         onClick={onExactCard}
-        className="rounded-lg bg-slate-100 px-3 py-1.5 font-semibold text-slate-600 hover:bg-slate-200"
+        className="rounded-lg bg-sand-100 px-3 py-1.5 font-semibold text-slate-600 hover:bg-sand-200"
       >
         Exact card
       </button>

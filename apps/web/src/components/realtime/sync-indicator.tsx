@@ -31,7 +31,7 @@ export function SyncIndicator() {
         onClick={() => setOpen((v) => !v)}
         className={cn(
           'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold',
-          syncing ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700',
+          syncing ? 'bg-brand-50 text-brand-700' : 'bg-amber-50 text-amber-700',
         )}
         title={
           syncing
@@ -42,7 +42,7 @@ export function SyncIndicator() {
         <span
           className={cn(
             'h-2 w-2 rounded-full',
-            syncing ? 'animate-pulse bg-sky-500' : 'bg-amber-500',
+            syncing ? 'animate-pulse bg-brand-500' : 'bg-amber-500',
           )}
         />
         {label}
@@ -56,7 +56,7 @@ export function SyncIndicator() {
             className="fixed inset-0 z-40 cursor-default"
             onClick={() => setOpen(false)}
           />
-          <div className="absolute right-0 z-50 mt-2 w-80 rounded-xl border border-slate-200 bg-white p-3 shadow-xl">
+          <div className="absolute right-0 z-50 mt-2 w-80 rounded-xl border border-sand-200 bg-white p-3 shadow-xl">
             <div className="mb-2 flex items-center justify-between">
               <h4 className="text-sm font-bold text-slate-800">Offline queue</h4>
               <button
@@ -76,7 +76,7 @@ export function SyncIndicator() {
             {pending === 0 ? (
               <p className="py-3 text-center text-xs text-slate-400">Everything is synced.</p>
             ) : (
-              <ul className="max-h-64 divide-y divide-slate-100 overflow-y-auto">
+              <ul className="max-h-64 divide-y divide-sand-100 overflow-y-auto">
                 {entries.map((e) => {
                   const count = e.items.reduce((n, i) => n + i.qty, 0);
                   return (
@@ -97,7 +97,7 @@ export function SyncIndicator() {
                         <button
                           type="button"
                           onClick={() => void discardEntry(e.id)}
-                          className="rounded-md px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-slate-100 hover:text-red-600"
+                          className="rounded-md px-2 py-1 text-xs font-semibold text-slate-400 hover:bg-sand-100 hover:text-red-600"
                         >
                           Discard
                         </button>

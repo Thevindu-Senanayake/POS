@@ -26,7 +26,7 @@ export function ReportsScreen() {
       title="Reports"
       subtitle="Sales performance, inventory variance and the compliance audit trail."
       actions={
-        <div className="flex rounded-xl border border-slate-200 bg-slate-100 p-1 text-sm font-semibold">
+        <div className="flex rounded-xl border border-sand-200 bg-sand-100 p-1 text-sm font-semibold">
           {(
             [
               ['sales', 'Sales'],

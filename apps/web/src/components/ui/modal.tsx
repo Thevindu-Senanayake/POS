@@ -13,9 +13,10 @@ export interface ModalProps {
 }
 
 /**
- * Minimal accessible modal: backdrop + centered card, Escape and backdrop-click
- * to dismiss, body scroll locked while open. No portal — it's rendered from a
- * single top-level provider, so a fixed overlay is enough.
+ * Minimal accessible modal: blurred backdrop + centered card with a gold top
+ * hairline and a close button. Escape and backdrop-click dismiss, body scroll
+ * locked while open. No portal — it's rendered from a single top-level
+ * provider, so a fixed overlay is enough.
  */
 export function Modal({ open, onClose, title, children, widthClassName = 'max-w-sm' }: ModalProps) {
   useEffect(() => {
@@ -36,7 +37,7 @@ export function Modal({ open, onClose, title, children, widthClassName = 'max-w-
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/40 p-4 backdrop-blur-sm"
       role="presentation"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -46,10 +47,27 @@ export function Modal({ open, onClose, title, children, widthClassName = 'max-w-
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className={cn('w-full rounded-2xl bg-white p-5 shadow-xl', widthClassName)}
+        className={cn(
+          'relative w-full overflow-hidden rounded-2xl bg-white shadow-card-hover ring-1 ring-sand-200 motion-safe:animate-scale-in',
+          widthClassName,
+        )}
       >
-        {title ? <h2 className="mb-4 text-lg font-bold text-slate-900">{title}</h2> : null}
-        {children}
+        {/* Gold accent hairline across the top edge. */}
+        <div className="h-1 w-full bg-accent-gradient" />
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-sand-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400"
+        >
+          ✕
+        </button>
+        <div className="p-5">
+          {title ? (
+            <h2 className="mb-4 pr-8 text-lg font-extrabold tracking-tight text-slate-900">{title}</h2>
+          ) : null}
+          {children}
+        </div>
       </div>
     </div>
   );

@@ -26,27 +26,31 @@ export const AREA_LABELS: Record<TableArea, string> = {
 /** Tile styling per table status for the floor board (spec §1 status board). */
 export const TABLE_STATUS_STYLES: Record<
   TableStatus,
-  { label: string; tile: string; dot: string }
+  { label: string; tile: string; dot: string; icon: string }
 > = {
   free: {
     label: 'Free',
-    tile: 'border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900',
-    dot: 'bg-emerald-500',
+    tile: 'border-brand-200 bg-gradient-to-br from-brand-50 to-white hover:from-brand-100 text-brand-900 ring-1 ring-brand-100',
+    dot: 'bg-brand-500',
+    icon: '🪑',
   },
   occupied: {
     label: 'Occupied',
-    tile: 'border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900',
-    dot: 'bg-amber-500',
+    tile: 'border-accent-300 bg-gradient-to-br from-accent-50 to-white hover:from-accent-100 text-accent-800 ring-1 ring-accent-100',
+    dot: 'bg-accent-500',
+    icon: '🍽️',
   },
   reserved: {
     label: 'Reserved',
-    tile: 'border-violet-300 bg-violet-50 hover:bg-violet-100 text-violet-900',
-    dot: 'bg-violet-500',
+    tile: 'border-purple-200 bg-gradient-to-br from-purple-50 to-white hover:from-purple-100 text-purple-900 ring-1 ring-purple-100',
+    dot: 'bg-purple-500',
+    icon: '📅',
   },
   needs_cleaning: {
     label: 'Needs cleaning',
-    tile: 'border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600',
-    dot: 'bg-slate-400',
+    tile: 'border-stone-300 bg-gradient-to-br from-stone-100 to-white hover:from-stone-200 text-stone-600 ring-1 ring-stone-200',
+    dot: 'bg-stone-400',
+    icon: '🧹',
   },
 };
 
@@ -61,10 +65,10 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 
 /** Badge styling for a fired order line's status. */
 export const ITEM_STATUS_STYLES: Record<OrderItemStatus, { label: string; badge: string }> = {
-  draft: { label: 'Draft', badge: 'bg-slate-100 text-slate-600' },
-  sent_to_kitchen: { label: 'In kitchen', badge: 'bg-sky-100 text-sky-700' },
-  served: { label: 'Served', badge: 'bg-emerald-100 text-emerald-700' },
-  cancelled: { label: 'Voided', badge: 'bg-red-100 text-red-700' },
+  draft: { label: 'Draft', badge: 'bg-sand-100 text-slate-600 ring-1 ring-sand-200' },
+  sent_to_kitchen: { label: 'In kitchen', badge: 'bg-amber-100 text-amber-800 ring-1 ring-amber-200' },
+  served: { label: 'Served', badge: 'bg-brand-100 text-brand-800 ring-1 ring-brand-200' },
+  cancelled: { label: 'Voided', badge: 'bg-rose-100 text-rose-700 ring-1 ring-rose-200' },
 };
 
 /** Order statuses from which a bill can still be taken (stock already deducted). */

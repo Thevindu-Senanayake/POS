@@ -14,8 +14,8 @@ const CATEGORY_TABS: { key: MenuCategory; label: string }[] = [
 ];
 
 const STATION_TAG: Record<string, string> = {
-  kitchen: 'bg-orange-100 text-orange-700',
-  bar: 'bg-fuchsia-100 text-fuchsia-700',
+  kitchen: 'bg-orange-100 text-orange-700 ring-1 ring-orange-200',
+  bar: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200',
 };
 
 /** Section heading when an item has no `menuGroup` — keyed by its coarse category. */
@@ -147,7 +147,7 @@ export function MenuGrid({
 
   if (menu.isLoading || spirits.isLoading) {
     return (
-      <div className="flex flex-1 items-center justify-center text-slate-400">
+      <div className="flex flex-1 items-center justify-center text-brand-500">
         <Spinner className="h-7 w-7" />
       </div>
     );
@@ -163,14 +163,14 @@ export function MenuGrid({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-col gap-3 border-b border-slate-200 p-3">
+      <div className="flex flex-col gap-3 border-b border-sand-200 bg-sand-50/60 p-3">
         <input
           type="search"
           inputMode="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search menu…"
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
+          className="w-full rounded-xl border border-sand-300 bg-white px-3 py-2 text-sm outline-none transition-colors focus:border-brand-500 focus:ring-2 focus:ring-brand-100"
         />
         {tabs.length > 1 ? (
           <div className="flex flex-wrap gap-2">
@@ -180,10 +180,10 @@ export function MenuGrid({
                 type="button"
                 onClick={() => setCategory(t.key)}
                 className={cn(
-                  'rounded-full px-3 py-1.5 text-sm font-semibold transition-colors',
+                  'rounded-full px-3.5 py-1.5 text-sm font-semibold transition-all',
                   t.key === activeCategory
-                    ? 'bg-brand-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                    ? 'bg-brand-gradient text-white shadow-sm'
+                    : 'bg-white text-slate-600 ring-1 ring-sand-200 hover:bg-sand-100',
                 )}
               >
                 {t.label}
@@ -203,8 +203,9 @@ export function MenuGrid({
             {sections.map((section) => (
               <section key={section.label}>
                 {sections.length > 1 ? (
-                  <h3 className="mb-2 px-0.5 text-xs font-bold uppercase tracking-wide text-slate-400">
+                  <h3 className="mb-2 flex items-center gap-2 px-0.5 text-xs font-bold uppercase tracking-wide text-slate-500">
                     {section.label}
+                    <span className="h-px flex-1 bg-gradient-to-r from-accent-300/60 to-transparent" />
                   </h3>
                 ) : null}
                 <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
@@ -250,9 +251,9 @@ function MenuTile({
       type="button"
       onClick={() => onPick({ menuItemId: item.id, name: item.name, unitPrice: price })}
       className={cn(
-        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
-        'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-sand-200 bg-white p-3 text-left shadow-card transition-all',
+        'motion-safe:hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-card-hover motion-safe:active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400',
       )}
     >
       <span className="line-clamp-2 text-sm font-semibold leading-tight text-slate-800">
@@ -263,7 +264,7 @@ function MenuTile({
         <span
           className={cn(
             'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase',
-            STATION_TAG[item.station] ?? 'bg-slate-100 text-slate-600',
+            STATION_TAG[item.station] ?? 'bg-sand-100 text-slate-600 ring-1 ring-sand-200',
           )}
         >
           {item.station}
@@ -276,7 +277,9 @@ function MenuTile({
 /**
  * A spirit bottle as one tile: the bottle name and its cheapest pour ("from …"),
  * signalling "pick a size". Tapping opens the pour picker (same one the scanner
- * uses) rather than adding to the cart directly.
+ * uses) rather than adding to the cart directly. Styled distinctly from a plain
+ * menu tile — a teal-tinted bottle card with a gold "from" price and a "🍾 size"
+ * cue — so staff read it as a chooser, not a one-tap add.
  */
 function SpiritTile({
   group,
@@ -293,32 +296,26 @@ function SpiritTile({
       .map((p) => priceForChannel(p.item, channel))
       .filter((p): p is number => p !== undefined),
   );
-  const station = group.pours[0].item.station;
   return (
     <button
       type="button"
       onClick={() => onPickSpirit(group)}
       className={cn(
-        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 text-left shadow-sm transition-all',
-        'hover:border-brand-300 hover:shadow-md active:scale-[0.98]',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+        'flex min-h-touch flex-col justify-between gap-2 rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50/70 to-white p-3 text-left shadow-card transition-all',
+        'motion-safe:hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-card-hover motion-safe:active:scale-[0.98]',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400',
       )}
     >
       <span className="line-clamp-2 text-sm font-semibold leading-tight text-slate-800">
         {group.ingredientName}
       </span>
       <span className="flex items-center justify-between gap-1">
-        <span className="text-sm font-bold text-slate-900">
+        <span className="text-sm font-bold text-accent-700">
           <span className="text-xs font-medium text-slate-400">from </span>
           {formatMoney(from)}
         </span>
-        <span
-          className={cn(
-            'rounded-full px-1.5 py-0.5 text-[10px] font-bold uppercase',
-            STATION_TAG[station] ?? 'bg-slate-100 text-slate-600',
-          )}
-        >
-          {station}
+        <span className="rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand-700 ring-1 ring-brand-200">
+          🍾 size
         </span>
       </span>
     </button>

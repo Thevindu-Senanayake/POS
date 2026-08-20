@@ -7,21 +7,21 @@ export const ROOM_STATUS_STYLES: Record<
 > = {
   vacant: {
     label: 'Vacant',
-    tile: 'border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-900',
+    tile: 'border-emerald-300 bg-gradient-to-br from-emerald-50 to-white hover:from-emerald-100 text-emerald-900 ring-1 ring-emerald-100',
     dot: 'bg-emerald-500',
-    badge: 'bg-emerald-100 text-emerald-700',
+    badge: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
   },
   occupied: {
     label: 'Occupied',
-    tile: 'border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900',
-    dot: 'bg-amber-500',
-    badge: 'bg-amber-100 text-amber-700',
+    tile: 'border-accent-300 bg-gradient-to-br from-accent-50 to-white hover:from-accent-100 text-accent-800 ring-1 ring-accent-100',
+    dot: 'bg-accent-500',
+    badge: 'bg-accent-100 text-accent-700 ring-1 ring-accent-200',
   },
   maintenance: {
     label: 'Maintenance',
-    tile: 'border-slate-300 bg-slate-100 hover:bg-slate-200 text-slate-600',
-    dot: 'bg-slate-400',
-    badge: 'bg-slate-200 text-slate-600',
+    tile: 'border-stone-300 bg-gradient-to-br from-stone-100 to-white hover:from-stone-200 text-stone-600 ring-1 ring-stone-200',
+    dot: 'bg-stone-400',
+    badge: 'bg-stone-200 text-stone-600 ring-1 ring-stone-300',
   },
 };
 
@@ -38,10 +38,10 @@ export function boardPlanCoversMeals(plan: BoardPlan): boolean {
 }
 
 export const BOOKING_STATUS_STYLES: Record<BookingStatus, { label: string; badge: string }> = {
-  reserved: { label: 'Reserved', badge: 'bg-violet-100 text-violet-700' },
-  checked_in: { label: 'Checked in', badge: 'bg-emerald-100 text-emerald-700' },
-  checked_out: { label: 'Checked out', badge: 'bg-slate-200 text-slate-600' },
-  cancelled: { label: 'Cancelled', badge: 'bg-red-100 text-red-700' },
+  reserved: { label: 'Reserved', badge: 'bg-purple-100 text-purple-700 ring-1 ring-purple-200' },
+  checked_in: { label: 'Checked in', badge: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200' },
+  checked_out: { label: 'Checked out', badge: 'bg-sand-200 text-slate-600 ring-1 ring-sand-300' },
+  cancelled: { label: 'Cancelled', badge: 'bg-red-100 text-red-700 ring-1 ring-red-200' },
 };
 
 export const FOLIO_SOURCE_LABELS: Record<FolioSource, string> = {

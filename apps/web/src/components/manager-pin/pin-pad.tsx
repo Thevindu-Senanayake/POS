@@ -44,7 +44,7 @@ export function PinPad({
     <div>
       <div
         className={cn(
-          'mb-4 flex h-14 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-slate-50',
+          'mb-4 flex h-14 items-center justify-center gap-2 rounded-xl border border-sand-300 bg-sand-50',
         )}
         aria-live="polite"
       >
@@ -52,7 +52,7 @@ export function PinPad({
           <span className="text-sm text-slate-400">Enter manager PIN</span>
         ) : (
           Array.from(pin).map((_, i) => (
-            <span key={i} className="h-3.5 w-3.5 rounded-full bg-slate-700" />
+            <span key={i} className="h-3.5 w-3.5 rounded-full bg-brand-600" />
           ))
         )}
       </div>
