@@ -239,7 +239,7 @@ function IngredientModal({
         </div>
         <Field label="Supplier" htmlFor="ing-supplier">
           <SelectInput id="ing-supplier" {...register('supplierId')}>
-            <option value="">— None —</option>
+            <option value="">- None -</option>
             {(suppliers.data ?? []).map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
@@ -307,7 +307,7 @@ function AdjustModal({ ingredient, onClose }: { ingredient: IngredientDTO; onClo
   });
 
   return (
-    <Modal open onClose={onClose} title={`Adjust — ${ingredient.name}`} widthClassName="max-w-md">
+    <Modal open onClose={onClose} title={`Adjust - ${ingredient.name}`} widthClassName="max-w-md">
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <p className="text-sm text-slate-500">
           Current stock:{' '}
@@ -341,7 +341,7 @@ function AdjustModal({ ingredient, onClose }: { ingredient: IngredientDTO; onClo
           <span className={projected < 0 ? 'font-bold text-red-600' : 'font-bold text-slate-800'}>
             {projected.toLocaleString('en-US')} {BASE_UNIT_SHORT[ingredient.baseUnit]}
           </span>
-          {projected < 0 ? <span className="ml-2 text-red-600">— would go negative</span> : null}
+          {projected < 0 ? <span className="ml-2 text-red-600">- would go negative</span> : null}
         </div>
         <ErrorNote message={error} />
         <div className="flex gap-2">
@@ -362,7 +362,7 @@ function AdjustModal({ ingredient, onClose }: { ingredient: IngredientDTO; onClo
 function MovementsModal({ ingredient, onClose }: { ingredient: IngredientDTO; onClose: () => void }) {
   const movements = useStockMovements(ingredient.id);
   return (
-    <Modal open onClose={onClose} title={`Stock history — ${ingredient.name}`} widthClassName="max-w-2xl">
+    <Modal open onClose={onClose} title={`Stock history - ${ingredient.name}`} widthClassName="max-w-2xl">
       {movements.isLoading ? (
         <div className="py-10 text-center text-sm text-slate-400">Loading…</div>
       ) : (
@@ -383,7 +383,7 @@ function MovementsModal({ ingredient, onClose }: { ingredient: IngredientDTO; on
                   </span>
                 ),
               },
-              { header: 'Note', cell: (m) => <span className="text-slate-500">{m.note ?? '—'}</span> },
+              { header: 'Note', cell: (m) => <span className="text-slate-500">{m.note ?? '-'}</span> },
             ]}
           />
         </div>

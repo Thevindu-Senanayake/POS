@@ -44,7 +44,7 @@ export function PrintersScreen() {
             <span className="font-bold text-red-700">
               {offline.length} printer{offline.length === 1 ? '' : 's'} offline
             </span>
-            <span className="text-red-600"> — {offline.map((p) => p.name).join(', ')}. KOTs and bills won&apos;t print until resolved.</span>
+            <span className="text-red-600"> - {offline.map((p) => p.name).join(', ')}. KOTs and bills won&apos;t print until resolved.</span>
           </div>
         </div>
       ) : null}
@@ -91,7 +91,7 @@ export function PrintersScreen() {
               </div>
               <div className="flex justify-between">
                 <dt className="text-slate-400">Last seen</dt>
-                <dd className="font-medium text-slate-700">{p.lastSeenAt ? formatDateTime(p.lastSeenAt) : '—'}</dd>
+                <dd className="font-medium text-slate-700">{p.lastSeenAt ? formatDateTime(p.lastSeenAt) : '-'}</dd>
               </div>
             </dl>
             {p.lastError ? (
@@ -182,7 +182,7 @@ function PrintJobs({
             { header: 'Created', cell: (j) => <span className="whitespace-nowrap text-xs text-slate-500">{formatDateTime(j.createdAt)}</span> },
             {
               header: 'Last error',
-              cell: (j) => (j.lastError ? <span className="text-xs text-red-600">{j.lastError}</span> : <span className="text-slate-300">—</span>),
+              cell: (j) => (j.lastError ? <span className="text-xs text-red-600">{j.lastError}</span> : <span className="text-slate-300">-</span>),
             },
             {
               header: '',

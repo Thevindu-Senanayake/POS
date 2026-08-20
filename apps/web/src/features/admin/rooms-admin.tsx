@@ -85,7 +85,7 @@ function Rooms() {
     >
       {!hasCategories ? (
         <div className="px-4 py-8 text-center text-sm text-slate-500">
-          Create a room category first — rooms inherit their default nightly rate from a category.
+          Create a room category first - rooms inherit their default nightly rate from a category.
         </div>
       ) : (
         <Table
@@ -94,7 +94,7 @@ function Rooms() {
           empty="No rooms yet."
           columns={[
             { header: 'Room', cell: (r) => <span className="font-semibold text-slate-900">{r.roomNumber}</span> },
-            { header: 'Category', cell: (r) => r.categoryName ?? '—' },
+            { header: 'Category', cell: (r) => r.categoryName ?? '-' },
             {
               header: 'Rate / night',
               align: 'right',
@@ -230,7 +230,7 @@ function RoomModal({
           <SelectInput id="rm-cat" {...register('roomCategoryId')}>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.name} — {formatMoney(c.defaultRate)}/night
+                {c.name} - {formatMoney(c.defaultRate)}/night
               </option>
             ))}
           </SelectInput>

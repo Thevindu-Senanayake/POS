@@ -306,7 +306,7 @@ export function OrderTicket({
             ) : null}
             <Row
               label="Service charge"
-              value={order.serviceCharge > 0 ? formatMoney(order.serviceCharge) : '—'}
+              value={order.serviceCharge > 0 ? formatMoney(order.serviceCharge) : '-'}
               muted
             />
             <Row label="Total" value={formatMoney(order.total)} strong />
@@ -315,7 +315,7 @@ export function OrderTicket({
 
         {cart.length > 0 ? (
           <p className="mb-2 text-center text-xs font-medium text-amber-700">
-            {formatMoney(cartSubtotal)} in this round — not sent yet
+            {formatMoney(cartSubtotal)} in this round - not sent yet
           </p>
         ) : null}
 

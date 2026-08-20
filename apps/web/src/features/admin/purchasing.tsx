@@ -107,7 +107,7 @@ function PurchaseOrders() {
               header: 'Supplier',
               cell: (o) => (
                 <div>
-                  <div className="font-semibold text-slate-900">{o.supplierName ?? '—'}</div>
+                  <div className="font-semibold text-slate-900">{o.supplierName ?? '-'}</div>
                   {o.reference ? <div className="text-xs text-slate-400">Ref: {o.reference}</div> : null}
                 </div>
               ),
@@ -229,7 +229,7 @@ function PurchaseOrderModal({ order, onClose }: { order: PurchaseOrderDTO | null
         <div className="grid grid-cols-2 gap-3">
           <Field label="Supplier" htmlFor="po-supplier" error={errors.supplierId?.message}>
             <SelectInput id="po-supplier" disabled={isEdit} {...register('supplierId')}>
-              <option value="">— Choose —</option>
+              <option value="">- Choose -</option>
               {(suppliers.data ?? []).map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -263,7 +263,7 @@ function PurchaseOrderModal({ order, onClose }: { order: PurchaseOrderDTO | null
                 <div key={f.id} className="grid grid-cols-[1fr_84px_100px_36px] items-start gap-2">
                   <div>
                     <select className={inputClass} {...register(`items.${idx}.ingredientId` as const)}>
-                      <option value="">— Ingredient —</option>
+                      <option value="">- Ingredient -</option>
                       {activeIngredients.map((i) => (
                         <option key={i.id} value={i.id}>
                           {i.name}
@@ -421,9 +421,9 @@ function Suppliers() {
         empty="No suppliers yet."
         columns={[
           { header: 'Name', cell: (s) => <span className="font-semibold text-slate-900">{s.name}</span> },
-          { header: 'Contact', cell: (s) => <span className="text-slate-500">{s.contactInfo ?? '—'}</span> },
-          { header: 'Phone', cell: (s) => <span className="text-slate-500">{s.phone ?? '—'}</span> },
-          { header: 'Email', cell: (s) => <span className="text-slate-500">{s.email ?? '—'}</span> },
+          { header: 'Contact', cell: (s) => <span className="text-slate-500">{s.contactInfo ?? '-'}</span> },
+          { header: 'Phone', cell: (s) => <span className="text-slate-500">{s.phone ?? '-'}</span> },
+          { header: 'Email', cell: (s) => <span className="text-slate-500">{s.email ?? '-'}</span> },
           {
             header: '',
             align: 'right',

@@ -36,7 +36,7 @@ export function SyncIndicator() {
         title={
           syncing
             ? 'Syncing queued orders with the server'
-            : `${pending} order round${pending === 1 ? '' : 's'} queued offline — will send when reconnected`
+            : `${pending} order round${pending === 1 ? '' : 's'} queued offline - will send when reconnected`
         }
       >
         <span

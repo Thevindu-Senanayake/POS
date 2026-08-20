@@ -182,7 +182,7 @@ function VarianceReport() {
   return (
     <SectionCard
       title="Inventory variance"
-      description="Theoretical (recipe-based) vs actual consumption. Positive variance = more stock consumed than recipes predict — shrinkage, over-pour or wastage."
+      description="Theoretical (recipe-based) vs actual consumption. Positive variance = more stock consumed than recipes predict - shrinkage, over-pour or wastage."
     >
       <div className="border-b border-slate-100 px-4 py-3">
         <DateRange from={from} to={to} onFrom={setFrom} onTo={setTo} />
@@ -251,7 +251,7 @@ function AuditReport() {
   return (
     <SectionCard
       title="Audit log"
-      description="Every void, discount, override, split/merge/transfer and goods-received event — with actor and PIN approver."
+      description="Every void, discount, override, split/merge/transfer and goods-received event - with actor and PIN approver."
       actions={
         <div className="flex items-center gap-2">
           <SelectInput value={action} onChange={(e) => setAction(e.target.value)} className="!w-auto py-1.5 text-sm">
@@ -290,10 +290,10 @@ function AuditReport() {
               header: 'Action',
               cell: (r) => <Badge tone={AUDIT_ACTION_TONE[r.action as AuditAction] ?? 'slate'}>{AUDIT_ACTION_LABELS[r.action as AuditAction] ?? r.action}</Badge>,
             },
-            { header: 'Actor', cell: (r) => r.actorName ?? '—' },
+            { header: 'Actor', cell: (r) => r.actorName ?? '-' },
             {
               header: 'Approver',
-              cell: (r) => (r.approverName ? <span className="text-amber-700">{r.approverName}</span> : <span className="text-slate-400">—</span>),
+              cell: (r) => (r.approverName ? <span className="text-amber-700">{r.approverName}</span> : <span className="text-slate-400">-</span>),
             },
             {
               header: 'Details',

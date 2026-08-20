@@ -46,7 +46,7 @@ export function PourPicker({
   return (
     <Modal open={open} onClose={onClose} title={ingredientName} widthClassName="max-w-md">
       <p className="mb-3 text-sm text-slate-500">
-        Pick a pour — the exact volume is deducted from the bottle.
+        Pick a pour - the exact volume is deducted from the bottle.
       </p>
       <div className="grid grid-cols-2 gap-2.5">
         {pours.map((pour) => {

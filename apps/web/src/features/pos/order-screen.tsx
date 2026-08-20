@@ -117,7 +117,7 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
         flashScan(`No match for ${code}`);
       }
     } catch {
-      flashScan('Scan lookup failed — is the server reachable?');
+      flashScan('Scan lookup failed - is the server reachable?');
     }
   };
 
@@ -280,7 +280,7 @@ export function OrderScreen({ tableId, orderId }: { tableId?: string; orderId?: 
 
       {queuedForCart.length > 0 ? (
         <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800">
-          {queuedForCart.length} round{queuedForCart.length === 1 ? '' : 's'} queued offline —{' '}
+          {queuedForCart.length} round{queuedForCart.length === 1 ? '' : 's'} queued offline -{' '}
           {online ? 'syncing…' : 'will send when the connection returns'}. Stock and the KOT fire only
           after the server confirms.
         </div>

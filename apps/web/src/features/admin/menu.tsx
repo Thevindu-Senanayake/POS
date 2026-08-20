@@ -277,7 +277,7 @@ function PricesModal({ item, onClose }: { item: MenuItemDTO; onClose: () => void
   };
 
   return (
-    <Modal open onClose={onClose} title={`Prices — ${item.name}`} widthClassName="max-w-md">
+    <Modal open onClose={onClose} title={`Prices - ${item.name}`} widthClassName="max-w-md">
       <div className="space-y-4">
         <p className="text-sm text-slate-500">
           Set a price per sales channel. Leave a channel blank if the item isn&apos;t offered there.
@@ -294,7 +294,7 @@ function PricesModal({ item, onClose }: { item: MenuItemDTO; onClose: () => void
                 type="number"
                 step="0.01"
                 min="0"
-                placeholder="—"
+                placeholder="-"
                 value={values[ch]}
                 onChange={(e) => setValues((v) => ({ ...v, [ch]: e.target.value }))}
               />
@@ -336,7 +336,7 @@ function RecipeModal({ item, onClose }: { item: MenuItemDTO; onClose: () => void
 
   if (recipe.isLoading || ingredients.isLoading) {
     return (
-      <Modal open onClose={onClose} title={`Recipe — ${item.name}`} widthClassName="max-w-2xl">
+      <Modal open onClose={onClose} title={`Recipe - ${item.name}`} widthClassName="max-w-2xl">
         <div className="py-10 text-center text-sm text-slate-400">Loading…</div>
       </Modal>
     );
@@ -407,7 +407,7 @@ function RecipeForm({
   });
 
   return (
-    <Modal open onClose={onClose} title={`Recipe — ${item.name}`} widthClassName="max-w-2xl">
+    <Modal open onClose={onClose} title={`Recipe - ${item.name}`} widthClassName="max-w-2xl">
       <form onSubmit={submit} className="space-y-4" noValidate>
         <p className="text-sm text-slate-500">
           Each line deducts <span className="font-medium">quantity × items sold</span> from stock when the order is
@@ -426,7 +426,7 @@ function RecipeForm({
               <div key={f.id} className="grid grid-cols-[1fr_120px_1fr_36px] items-start gap-2">
                 <div>
                   <select className={inputClass} {...register(`items.${idx}.ingredientId` as const)}>
-                    <option value="">— Ingredient —</option>
+                    <option value="">- Ingredient -</option>
                     {ingredients.map((i) => (
                       <option key={i.id} value={i.id}>
                         {i.name}

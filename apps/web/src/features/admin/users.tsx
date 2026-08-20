@@ -139,7 +139,7 @@ const userSchema = z
       ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['password'], message: 'At least 6 characters' });
     }
     if (v.pin !== '' && (v.pin.length < 4 || v.pin.length > 8 || !/^\d+$/.test(v.pin))) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['pin'], message: '4–8 digits' });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['pin'], message: '4-8 digits' });
     }
   });
 type UserValues = z.infer<typeof userSchema>;
@@ -238,7 +238,7 @@ function UserModal({ user, onClose }: { user: AuthUserDTO | null; onClose: () =>
             label="Manager PIN (optional)"
             htmlFor="u-pin"
             error={errors.pin?.message}
-            hint="4–8 digits, for override-gated actions"
+            hint="4-8 digits, for override-gated actions"
           >
             <TextInput id="u-pin" inputMode="numeric" autoComplete="off" {...register('pin')} />
           </Field>
@@ -271,7 +271,7 @@ function PinModal({ user, onClose }: { user: AuthUserDTO; onClose: () => void })
   const save = async () => {
     setError(null);
     if (!/^\d{4,8}$/.test(pin)) {
-      setError('PIN must be 4–8 digits.');
+      setError('PIN must be 4-8 digits.');
       return;
     }
     try {
@@ -283,7 +283,7 @@ function PinModal({ user, onClose }: { user: AuthUserDTO; onClose: () => void })
   };
 
   return (
-    <Modal open onClose={onClose} title={`${user.hasPin ? 'Change' : 'Set'} PIN — ${user.name}`} widthClassName="max-w-sm">
+    <Modal open onClose={onClose} title={`${user.hasPin ? 'Change' : 'Set'} PIN - ${user.name}`} widthClassName="max-w-sm">
       <div className="space-y-4">
         <p className="text-sm text-slate-500">
           The manager PIN authorises override actions (voids, discounts, split/merge) for non-admin staff.
