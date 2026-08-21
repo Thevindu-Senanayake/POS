@@ -292,8 +292,8 @@ if (!app.requestSingleInstanceLock()) {
     if (foundUiDir) {
       try {
         const handle = await startLocalPosServer(foundUiDir);
-        config.appUrl = handle.url;
-        log(`till shell loading local UI from ${handle.url} (serving ${foundUiDir})`);
+        config.appUrl = `${handle.url}?mode=pos`;
+        log(`till shell loading local UI from ${config.appUrl} (serving ${foundUiDir})`);
       } catch (err) {
         warn(`could not start local POS UI server: ${(err as Error).message}`);
       }

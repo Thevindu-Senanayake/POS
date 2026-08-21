@@ -79,7 +79,13 @@ export default function LoginPage() {
       setSession(res);
       router.replace('/');
     } catch (e) {
-      setFormError(e instanceof ApiError ? e.message : 'Unable to sign in. Is the API running?');
+      if (e instanceof ApiError) {
+        setFormError(`API Error (${e.status}): ${e.message}`);
+      } else if (e instanceof Error) {
+        setFormError(`Connection Error (${e.name}): ${e.message}`);
+      } else {
+        setFormError(`Error: ${String(e)}`);
+      }
     }
   });
 

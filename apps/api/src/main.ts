@@ -18,17 +18,7 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
-        return callback(null, true);
-      }
-      const allowedOrigins = config.get<string[]>('corsOrigin') ?? [];
-      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      callback(null, true); // Allow origin in local dev environment
-    },
+    origin: (origin, callback) => callback(null, true),
     credentials: true,
   });
 
