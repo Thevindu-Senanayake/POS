@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { CharacterSet, PrinterTypes, ThermalPrinter } from 'node-thermal-printer';
 import type { PrintJobAgentDTO } from '@pos/shared';
 import type { AgentConfig, PrinterTarget } from './config';
@@ -24,6 +25,10 @@ class ConsoleSink implements ReceiptSink {
   }
   cut(): void {}
 
+  async printLogo(): Promise<void> {
+    this.lines.push(this.centered('[ LOGO ]'));
+  }
+
   println(text: string): void {
     this.lines.push(this.align === 'center' ? this.centered(text) : text);
   }
@@ -49,7 +54,10 @@ class ConsoleSink implements ReceiptSink {
 
 /** Thin adapter over node-thermal-printer so the layout code is device-agnostic. */
 class ThermalSink implements ReceiptSink {
-  constructor(private readonly printer: ThermalPrinter) {}
+  constructor(
+    private readonly printer: ThermalPrinter,
+    private readonly logoPath: string | null = null,
+  ) {}
   alignCenter(): void {
     this.printer.alignCenter();
   }
@@ -74,6 +82,17 @@ class ThermalSink implements ReceiptSink {
   }
   newLine(): void {
     this.printer.newLine();
+  }
+  async printLogo(): Promise<void> {
+    // Logo is decorative — a missing file or a driver that can't raster must never
+    // fail the customer's bill. Awaited so the image flushes before the header text.
+    if (!this.logoPath || !existsSync(this.logoPath)) return;
+    try {
+      this.printer.alignCenter();
+      await this.printer.printImage(this.logoPath);
+    } catch (err) {
+      console.warn(`receipt logo skipped: ${(err as Error).message}`);
+    }
   }
   cut(): void {
     this.printer.cut();
@@ -124,16 +143,16 @@ function describeKind(payload: unknown): string {
   return typeof payload;
 }
 
-function renderPayload(sink: ReceiptSink, payload: unknown): void {
+async function renderPayload(sink: ReceiptSink, payload: unknown): Promise<void> {
   if (isKotPayload(payload)) renderKot(sink, payload);
-  else if (isBillPayload(payload)) renderBill(sink, payload);
+  else if (isBillPayload(payload)) await renderBill(sink, payload);
   else throw new Error(`unrecognized print payload (kind=${describeKind(payload)})`);
 }
 
 /** Render a job to stdout (the dev / no-hardware fallback); returns `note` for the log. */
-function toStdout(job: PrintJobAgentDTO, note: string): string {
+async function toStdout(job: PrintJobAgentDTO, note: string): Promise<string> {
   const sink = new ConsoleSink();
-  renderPayload(sink, job.payload);
+  await renderPayload(sink, job.payload);
   const heading = `${job.type.toUpperCase()} · ${job.station ?? 'receipt'} · #${job.id.slice(-6)}`;
   const rule = '='.repeat(CONSOLE_WIDTH);
   process.stdout.write(`\n${rule}\n${heading}\n${rule}\n${sink.render()}\n${rule}\n`);
@@ -159,7 +178,7 @@ export async function printReceipt(
   if (target.connection === 'usb' && target.device) {
     const driver = loadUsbDriver();
     if (!driver) {
-      return toStdout(job, `stdout (USB driver unavailable for printer:${target.device})`);
+      return await toStdout(job, `stdout (USB driver unavailable for printer:${target.device})`);
     }
     const printer = new ThermalPrinter({
       type: mapPrinterType(target.type),
@@ -168,7 +187,7 @@ export async function printReceipt(
       characterSet: CharacterSet.PC437_USA,
       removeSpecialCharacters: false,
     });
-    renderPayload(new ThermalSink(printer), job.payload);
+    await renderPayload(new ThermalSink(printer, config.logoPath), job.payload);
     await printer.execute();
     return `printer:${target.device} (${target.type}, USB)`;
   }
@@ -185,10 +204,10 @@ export async function printReceipt(
     if (!connected) {
       throw new Error(`printer unreachable at ${target.ip}:${target.port}`);
     }
-    renderPayload(new ThermalSink(printer), job.payload);
+    await renderPayload(new ThermalSink(printer, config.logoPath), job.payload);
     await printer.execute();
     return `tcp://${target.ip}:${target.port} (${target.type})`;
   }
 
-  return toStdout(job, 'stdout (no printer configured)');
+  return await toStdout(job, 'stdout (no printer configured)');
 }

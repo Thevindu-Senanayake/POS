@@ -15,6 +15,12 @@ export interface ReceiptSink {
   leftRight(left: string, right: string): void;
   drawLine(): void;
   newLine(): void;
+  /**
+   * Print the venue logo raster centered (bills only). Async because the thermal
+   * driver buffers the image on a promise that must resolve before the next
+   * `println`, or the logo lands at the bottom of the receipt.
+   */
+  printLogo(): Promise<void>;
   cut(): void;
 }
 
@@ -114,8 +120,12 @@ export function renderKot(sink: ReceiptSink, p: KotPayload): void {
  * editable (each line printed only when present); the currency label prefixes
  * the total and payment lines. Cash tenders print the amount handed over and the
  * change due. */
-export function renderBill(sink: ReceiptSink, p: BillPayload): void {
+export async function renderBill(sink: ReceiptSink, p: BillPayload): Promise<void> {
   const label = p.currencyLabel || p.currencySymbol || '';
+
+  // --- Logo (owner toggle) — printed above the header. Awaited so the raster is
+  // flushed to the printer buffer before any text, otherwise it sinks to the end. ---
+  if (p.logo) await sink.printLogo();
 
   // --- Business header — each line only if the API populated it (toggle on) ---
   sink.alignCenter();

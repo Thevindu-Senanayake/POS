@@ -33,6 +33,7 @@ const businessSchema = z.object({
   showTaxNumber: z.boolean(),
   showCurrencyLabel: z.boolean(),
   showFooter: z.boolean(),
+  showLogo: z.boolean(),
 });
 type BusinessValues = z.infer<typeof businessSchema>;
 
@@ -69,6 +70,7 @@ function toValues(o: OutletDTO): BusinessValues {
     showTaxNumber: o.showTaxNumber,
     showCurrencyLabel: o.showCurrencyLabel,
     showFooter: o.showFooter,
+    showLogo: o.showLogo,
   };
 }
 
@@ -127,6 +129,7 @@ function BusinessForm({ outlet }: { outlet: OutletDTO }) {
       showTaxNumber: v.showTaxNumber,
       showCurrencyLabel: v.showCurrencyLabel,
       showFooter: v.showFooter,
+      showLogo: v.showLogo,
     };
     try {
       const updated = await update.mutateAsync(body);
@@ -144,6 +147,28 @@ function BusinessForm({ outlet }: { outlet: OutletDTO }) {
     >
       <form onSubmit={onSubmit} className="grid gap-4 lg:grid-cols-3" noValidate>
         <div className="space-y-4 lg:col-span-2">
+          <SectionCard
+            title="Logo"
+            description="Printed centered at the very top of every customer bill, above the header."
+          >
+            <div className="flex flex-wrap items-center gap-4 p-4">
+              <img
+                src="/receipt-logo.png"
+                alt="Receipt logo"
+                className="h-16 w-auto rounded-lg bg-white p-2 ring-1 ring-sand-200"
+              />
+              <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <input type="checkbox" className="h-5 w-5" {...register('showLogo')} /> Show logo on
+                  receipt
+                </label>
+                <p className="mt-1 text-xs text-slate-400">
+                  The logo ships with the printer agent. Turn it off to print bills without it.
+                </p>
+              </div>
+            </div>
+          </SectionCard>
+
           <SectionCard
             title="Receipt header"
             description="Printed at the top of every customer bill. Toggle each line on or off; a line only prints when shown and not empty."
@@ -283,6 +308,11 @@ function ReceiptPreview({ values }: { values: BusinessValues }) {
   return (
     <div className="p-4">
       <div className="mx-auto max-w-[260px] rounded-lg bg-sand-50 p-4 font-mono text-[11px] leading-5 text-slate-700 ring-1 ring-sand-200">
+        {values.showLogo ? (
+          <div className="mb-2 flex justify-center">
+            <img src="/receipt-logo.png" alt="" className="h-10 w-auto" />
+          </div>
+        ) : null}
         <div className="text-center">
           {header.length === 0 ? (
             <div className="text-slate-300">(no header lines shown)</div>

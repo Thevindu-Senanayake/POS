@@ -61,4 +61,8 @@ export class UpdateOutletDto {
   @IsOptional()
   @IsBoolean()
   showCurrencyLabel?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showLogo?: boolean;
 }

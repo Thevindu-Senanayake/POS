@@ -1072,6 +1072,7 @@ export class OrdersService {
       currencySymbol: DEFAULT_CURRENCY_SYMBOL,
       currencyLabel,
       serviceChargePct,
+      logo: outlet?.showLogo ?? false,
       ...(businessName ? { businessName } : {}),
       ...(tagline ? { tagline } : {}),
       ...(address ? { address } : {}),

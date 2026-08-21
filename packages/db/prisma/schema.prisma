@@ -209,6 +209,7 @@ model Outlet {
   showTaxNumber        Boolean  @default(false)
   showFooter           Boolean  @default(true)
   showCurrencyLabel    Boolean  @default(true)
+  showLogo             Boolean  @default(true)
   createdAt DateTime @default(now())
 
   users         User[]

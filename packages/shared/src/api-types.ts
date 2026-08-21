@@ -189,6 +189,8 @@ export interface OutletDTO {
   showTaxNumber: boolean;
   showFooter: boolean;
   showCurrencyLabel: boolean;
+  /** Print the venue logo (packaged with the print-agent) at the top of the bill. */
+  showLogo: boolean;
 }
 
 export interface DiningTableDTO {

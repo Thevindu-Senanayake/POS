@@ -1,4 +1,5 @@
 import { hostname } from 'node:os';
+import { resolve } from 'node:path';
 import type { PrinterConnection } from '@pos/shared';
 
 /** A resolved print target: where (and how) to print one printer role's jobs. */
@@ -22,6 +23,8 @@ export interface AgentConfig {
   maxBackoffMs: number;
   printerRefreshMs: number;
   connectTimeoutMs: number;
+  /** Absolute path to the 1-bit logo raster printed atop bills (when the outlet toggle is on). */
+  logoPath: string;
   /** Per-role printer overrides from env (`kitchen`/`bar` KOTs, `receipt` for bills). */
   overrides: Record<string, Partial<PrinterTarget>>;
 }
@@ -84,6 +87,8 @@ export function loadConfig(env: NodeJS.ProcessEnv): AgentConfig {
     maxBackoffMs: Math.min(pollMs * 2 ** maxRetries, 120_000),
     printerRefreshMs: intEnv(env, 'PRINT_AGENT_PRINTER_REFRESH_MS', 30_000),
     connectTimeoutMs: intEnv(env, 'PRINT_AGENT_CONNECT_TIMEOUT_MS', 5000),
+    // Ships alongside the agent (assets/ is a sibling of both src/ and dist/).
+    logoPath: strEnv(env, 'RECEIPT_LOGO_PATH') ?? resolve(__dirname, '..', 'assets', 'receipt-logo.png'),
     overrides: readOverrides(env),
   };
 }

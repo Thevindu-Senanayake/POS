@@ -140,6 +140,7 @@ export interface OutletInput {
   showTaxNumber?: boolean;
   showFooter?: boolean;
   showCurrencyLabel?: boolean;
+  showLogo?: boolean;
 }
 
 // =============================================================================

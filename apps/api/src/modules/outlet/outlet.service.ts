@@ -40,6 +40,7 @@ export class OutletService {
         showTaxNumber: dto.showTaxNumber,
         showFooter: dto.showFooter,
         showCurrencyLabel: dto.showCurrencyLabel,
+        showLogo: dto.showLogo,
       },
     });
     return this.toDTO(updated);
@@ -62,6 +63,7 @@ export class OutletService {
       showTaxNumber: o.showTaxNumber,
       showFooter: o.showFooter,
       showCurrencyLabel: o.showCurrencyLabel,
+      showLogo: o.showLogo,
     };
   }
 }

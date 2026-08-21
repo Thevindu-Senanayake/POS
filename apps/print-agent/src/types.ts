@@ -47,6 +47,8 @@ export interface BillPayload {
   currencySymbol: string;
   /** Currency label prefixing the total/payment lines (e.g. `Rs.` or `₨`). */
   currencyLabel?: string;
+  /** Print the packaged venue logo at the very top of the bill (owner toggle). */
+  logo?: boolean;
   /** Business header lines — each present only when its admin toggle is on. */
   businessName?: string;
   tagline?: string;
