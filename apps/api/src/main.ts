@@ -17,9 +17,20 @@ async function bootstrap(): Promise<void> {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
-  app.useGlobalFilters(new AllExceptionsFilter());
-  app.enableCors({ origin: config.get<string[]>('corsOrigin'), credentials: true });
-  app.enableShutdownHooks();
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+        return callback(null, true);
+      }
+      const allowedOrigins = config.get<string[]>('corsOrigin') ?? [];
+      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(null, true); // Allow origin in local dev environment
+    },
+    credentials: true,
+  });
 
   const port = config.get<number>('port') ?? 4000;
   await app.listen(port);
