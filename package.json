@@ -25,6 +25,7 @@
     "docker:seed": "docker compose run --rm -e FORCE_SEED=1 migrate node packages/db/scripts/seed-if-empty.mjs",
     "till": "pnpm --filter @pos/till launch",
     "till:build": "pnpm --filter @pos/till build",
+    "till:dist": "pnpm --filter @pos/till dist",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "devDependencies": {

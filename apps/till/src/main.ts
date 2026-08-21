@@ -1,7 +1,8 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import { waitForBackend } from './backend';
 import { loadConfig } from './config';
+import { loadEnvFiles } from './env';
 import { error, log, warn } from './log';
 import { PrintAgent } from './print/agent';
 import { ApiClient } from './print/api-client';
@@ -10,6 +11,11 @@ import { buildSampleHtml, printHtmlToDevice, printJob } from './print/printing';
 import type { PrinterRole } from './print/types';
 
 // app.isPackaged is valid before `whenReady`; it drives the kiosk/login defaults.
+// A packaged till has no dotenv-cli, so pull config from a till.env dropped beside
+// the exe (or in userData) before reading it — real env vars still take precedence.
+const loadedEnvFiles = app.isPackaged
+  ? loadEnvFiles(dirname(app.getPath('exe')), app.getPath('userData'))
+  : [];
 const config = loadConfig(process.env, app.isPackaged);
 
 // Static splash + error pages live next to dist/ (dist/main.js -> ../static/*).
@@ -260,6 +266,7 @@ if (!app.requestSingleInstanceLock()) {
   });
 
   app.whenReady().then(() => {
+    for (const f of loadedEnvFiles) log(`loaded config from ${f}`);
     // Pairs with Docker Desktop's "start on sign-in": the till comes up on its own.
     app.setLoginItemSettings({ openAtLogin: config.openAtLogin });
     store = new PrinterStore();

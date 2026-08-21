@@ -1,0 +1,35 @@
+# Packaging for the POS till. There are no native modules — printing goes through
+# the installed Windows driver via webContents.print — so this is a pure-JS bundle:
+# no node-gyp, no rebuild step. That is the whole reason the till moved to Electron.
+appId: com.pos.till
+productName: POS Till
+copyright: © Restaurant POS
+
+directories:
+  output: release
+  buildResources: build
+
+# Only the compiled output and static pages ship; TypeScript sources and the
+# sourcemaps stay out of the installer.
+files:
+  - dist/**/*
+  - "!dist/**/*.map"
+  - static/**/*
+  - package.json
+
+asar: true
+
+win:
+  target: nsis
+  # Drop a 256x256 icon.ico into apps/till/build/ to brand the app + installer.
+  # icon: build/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: POS Till
+  # Produces release/POS-Till-Setup.exe (unversioned, so the download link is stable).
+  artifactName: POS-Till-Setup.${ext}
