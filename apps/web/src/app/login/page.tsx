@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import type { LoginResponseDTO } from '@pos/shared';
 import { api, ApiError } from '@/lib/api-client';
+import { getAppMode } from '@/lib/app-mode';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthStore } from '@/stores/auth-store';
@@ -25,7 +26,11 @@ export default function LoginPage() {
   const setSession = useAuthStore((s) => s.setSession);
   const hydrated = useAuthStore((s) => s.hydrated);
   const token = useAuthStore((s) => s.accessToken);
+  const clear = useAuthStore((s) => s.clear);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const mode = getAppMode();
+  const isAdminPortal = mode === 'admin';
 
   const {
     register,
@@ -36,15 +41,41 @@ export default function LoginPage() {
     defaultValues: { username: '', password: '' },
   });
 
-  // Already signed in → skip the form.
+  // Already signed in → validate role against current app mode before redirecting.
   useEffect(() => {
-    if (hydrated && token) router.replace('/');
-  }, [hydrated, token, router]);
+    if (hydrated && token) {
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        if (isAdminPortal && currentUser.role !== 'admin') {
+          clear();
+          setFormError('Only Admins can log into the Web Management Portal.');
+          return;
+        }
+        if (!isAdminPortal && currentUser.role === 'admin') {
+          clear();
+          setFormError('Admin accounts cannot log into the POS Till App. Please use the Web Portal.');
+          return;
+        }
+      }
+      router.replace('/');
+    }
+  }, [hydrated, token, router, isAdminPortal, clear]);
 
   const onSubmit = handleSubmit(async (values) => {
     setFormError(null);
     try {
       const res = await api.post<LoginResponseDTO>('/auth/login', values, { auth: false });
+      
+      // Role validation per app mode
+      if (isAdminPortal && res.user.role !== 'admin') {
+        setFormError('Only Admins can log into the Web Management Portal.');
+        return;
+      }
+      if (!isAdminPortal && res.user.role === 'admin') {
+        setFormError('Admin accounts cannot log into the POS Till App. Please use the Web Portal.');
+        return;
+      }
+
       setSession(res);
       router.replace('/');
     } catch (e) {
@@ -59,8 +90,12 @@ export default function LoginPage() {
         <div className="p-7">
           <div className="mb-6 flex flex-col items-center text-center">
             <span className="logo-mark mb-3 h-14 w-14 text-2xl">G</span>
-            <h1 className="text-2xl font-extrabold tracking-tight text-gradient">Grand&nbsp;POS</h1>
-            <p className="mt-1 text-sm text-slate-500">Sign in to your terminal</p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-gradient">
+              {isAdminPortal ? 'Grand Admin' : 'Grand POS'}
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              {isAdminPortal ? 'Sign in to Web Management Portal' : 'Sign in to POS Till Terminal'}
+            </p>
           </div>
           <form onSubmit={onSubmit} className="space-y-4" noValidate>
             <div>
@@ -94,7 +129,7 @@ export default function LoginPage() {
               ) : null}
             </div>
             {formError ? (
-              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{formError}</p>
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-700">{formError}</p>
             ) : null}
             <Button type="submit" variant="accent" size="lg" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? <Spinner /> : 'Sign in'}

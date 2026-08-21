@@ -4,25 +4,25 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { canPerform } from '@pos/shared';
 import { FullscreenSpinner } from '@/components/ui/spinner';
+import { getAppMode } from '@/lib/app-mode';
 import { useAuthStore } from '@/stores/auth-store';
 
 /**
- * Authenticated landing: send each role straight to its home workspace instead
- * of a picker. Admins land in the back office (`/admin`) — from there they can
- * step into the POS if they need to — and everyone else lands in the POS.
- * Access to `/admin` is still enforced by the admin layout + API guards; this
- * only decides where you *start*.
+ * Authenticated landing: in Admin mode, route to `/admin`; in POS mode, route to `/pos`.
  */
 export default function HomePage() {
   const router = useRouter();
   const role = useAuthStore((s) => s.user?.role);
+  const mode = getAppMode();
 
   const target = role
-    ? canPerform('view_admin', role)
+    ? mode === 'admin'
       ? '/admin'
-      : canPerform('take_orders', role)
+      : mode === 'pos'
         ? '/pos'
-        : null
+        : canPerform('view_admin', role)
+          ? '/admin'
+          : '/pos'
     : null;
 
   useEffect(() => {

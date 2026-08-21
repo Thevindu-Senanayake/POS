@@ -5,18 +5,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { canPerform, type Permission, type UserRole } from '@pos/shared';
 import { api } from '@/lib/api-client';
+import { getAppMode } from '@/lib/app-mode';
 import { cn } from '@/lib/cn';
 import { Button } from '@/components/ui/button';
 import { RealtimeIndicator } from '@/components/realtime/realtime-indicator';
 import { SyncIndicator } from '@/components/realtime/sync-indicator';
 import { useAuthStore } from '@/stores/auth-store';
 
-/**
- * Operational POS nav — the day-to-day terminal (order-taking + rooms). Admin /
- * back-office is deliberately kept OUT of this list: it's a separate workspace
- * reached from a distinct entry on the right and rendered with its own chrome
- * under `/admin`, so the operator view isn't cluttered with owner-only tools.
- */
 const NAV: { href: string; label: string; perm: Permission }[] = [
   { href: '/pos', label: 'POS', perm: 'take_orders' },
   { href: '/rooms', label: 'Rooms', perm: 'take_orders' },
@@ -31,7 +26,6 @@ const ROLE_LABELS: Record<UserRole, string> = {
   room_service_staff: 'Room Service',
 };
 
-/** Authenticated layout chrome: brand, role-filtered nav, current user + sign-out. */
 export function AppShell({ children }: { children: ReactNode }) {
   const user = useAuthStore((s) => s.user);
   const refreshToken = useAuthStore((s) => s.refreshToken);
@@ -39,11 +33,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const role = user?.role;
-  // Admin/back-office is its own view: when inside `/admin/*` we swap the
-  // operational tabs for back-office chrome, and elsewhere we expose admin only
-  // as a separated, admin-only entry (never as a peer of the POS/Rooms tabs).
-  const inAdmin = pathname === '/admin' || pathname.startsWith('/admin/');
-  const canAdmin = role ? canPerform('view_admin', role) : false;
+
+  const mode = getAppMode();
+  const isAdminPortal = mode === 'admin';
 
   const logout = async () => {
     try {
@@ -64,24 +56,18 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-accent-gradient opacity-70" />
         <Link href="/" className="flex items-center gap-2.5">
           <span className="logo-mark h-9 w-9 text-base">G</span>
-          <span className="text-lg font-extrabold tracking-tight text-gradient">Grand&nbsp;POS</span>
-          {inAdmin ? (
+          <span className="text-lg font-extrabold tracking-tight text-gradient">
+            {isAdminPortal ? 'Grand Admin' : 'Grand POS'}
+          </span>
+          {isAdminPortal ? (
             <span className="rounded-full bg-brand-gradient px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white shadow-sm">
-              Back office
+              Management Portal
             </span>
           ) : null}
         </Link>
 
-        {inAdmin ? (
-          // Back-office chrome: no operational tabs, just a way into the POS.
-          <Link
-            href="/pos"
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-sand-200/70"
-          >
-            Open POS →
-          </Link>
-        ) : (
-          // Operational chrome: POS / Rooms only.
+        {!isAdminPortal ? (
+          // Operational POS chrome: POS / Rooms tabs only.
           <nav className="flex items-center gap-1">
             {nav.map((n) => {
               const active = pathname === n.href || pathname.startsWith(`${n.href}/`);
@@ -101,18 +87,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               );
             })}
           </nav>
-        )}
+        ) : null}
         <div className="ml-auto flex items-center gap-3">
-          {!inAdmin && canAdmin ? (
-            // Admin is separated from the operational tabs: a distinct, admin-only
-            // back-office entry set apart on the right, not a peer of POS/Rooms.
-            <Link
-              href="/admin"
-              className="rounded-lg border border-sand-300 bg-white/70 px-3 py-1.5 text-sm font-semibold text-slate-700 transition-colors hover:border-brand-300 hover:bg-white hover:text-brand-700"
-            >
-              ⚙ Back office
-            </Link>
-          ) : null}
           <SyncIndicator />
           <RealtimeIndicator />
           {user ? (
