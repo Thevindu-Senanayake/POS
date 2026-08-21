@@ -1,0 +1,36 @@
+# Keep the build context small and force a clean from-source image build.
+# node_modules is host-built (Windows) — it MUST NOT leak into the Linux image;
+# the deps stage reinstalls it. dist/.next are rebuilt in the build stage.
+node_modules
+**/node_modules
+dist
+**/dist
+.next
+**/.next
+.turbo
+**/.turbo
+
+# vcs / local tooling
+.git
+.gitignore
+.claude
+
+# secrets (compose provides env inline; the image never reads .env)
+.env
+.env.*.local
+
+# logs / test artifacts
+*.log
+coverage
+**/coverage
+playwright-report
+**/playwright-report
+test-results
+**/test-results
+
+# not needed in the image
+logo-src.jpg
+DEPLOY.md
+Dockerfile
+.dockerignore
+docker-compose.yml
