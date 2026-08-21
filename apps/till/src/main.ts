@@ -273,12 +273,27 @@ if (!app.requestSingleInstanceLock()) {
     app.setLoginItemSettings({ openAtLogin: config.openAtLogin });
     store = new PrinterStore();
 
-    // Check for local bundled POS UI (dist-ui directory)
-    const localUiDir = join(__dirname, '..', 'dist-ui');
-    if (existsSync(localUiDir)) {
+    // Resolve local UI directory candidates (dist-ui, apps/web/out, or static fallback)
+    const uiCandidates = [
+      join(__dirname, '..', 'dist-ui'),
+      join(process.cwd(), 'apps', 'till', 'dist-ui'),
+      join(process.cwd(), 'apps', 'web', 'out'),
+      join(__dirname, '..', 'static'),
+    ];
+
+    let foundUiDir: string | null = null;
+    for (const dir of uiCandidates) {
+      if (dir && existsSync(dir)) {
+        foundUiDir = dir;
+        break;
+      }
+    }
+
+    if (foundUiDir) {
       try {
-        const handle = await startLocalPosServer(localUiDir);
-        config.appUrl = `${handle.url}/pos`;
+        const handle = await startLocalPosServer(foundUiDir);
+        config.appUrl = handle.url;
+        log(`till shell loading local UI from ${handle.url} (serving ${foundUiDir})`);
       } catch (err) {
         warn(`could not start local POS UI server: ${(err as Error).message}`);
       }

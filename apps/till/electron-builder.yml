@@ -14,6 +14,7 @@ directories:
 files:
   - dist/**/*
   - "!dist/**/*.map"
+  - dist-ui/**/*
   - static/**/*
   - package.json
 

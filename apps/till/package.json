@@ -6,7 +6,7 @@
   "author": "Thevindu Senanayake",
   "main": "./dist/main.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node scripts/copy-ui.mjs && tsc -p tsconfig.json",
     "start": "electron .",
     "launch": "tsc -p tsconfig.json && dotenv -e ../../.env -- electron .",
     "dist": "pnpm run build && electron-builder --config electron-builder.yml",
