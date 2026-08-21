@@ -13,17 +13,8 @@ import { useAuthStore } from '@/stores/auth-store';
 export default function HomePage() {
   const router = useRouter();
   const role = useAuthStore((s) => s.user?.role);
-  const mode = getAppMode();
 
-  const target = role
-    ? mode === 'admin'
-      ? '/admin'
-      : mode === 'pos'
-        ? '/pos'
-        : canPerform('view_admin', role)
-          ? '/admin'
-          : '/pos'
-    : null;
+  const target = role ? '/admin' : null;
 
   useEffect(() => {
     if (target) router.replace(target);

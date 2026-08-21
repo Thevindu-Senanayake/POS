@@ -1,8 +1,10 @@
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import { waitForBackend } from './backend';
 import { loadConfig } from './config';
 import { loadEnvFiles } from './env';
+import { startLocalPosServer } from './local-server';
 import { error, log, warn } from './log';
 import { PrintAgent } from './print/agent';
 import { ApiClient } from './print/api-client';
@@ -265,11 +267,23 @@ if (!app.requestSingleInstanceLock()) {
     win.focus();
   });
 
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     for (const f of loadedEnvFiles) log(`loaded config from ${f}`);
     // Pairs with Docker Desktop's "start on sign-in": the till comes up on its own.
     app.setLoginItemSettings({ openAtLogin: config.openAtLogin });
     store = new PrinterStore();
+
+    // Check for local bundled POS UI (dist-ui directory)
+    const localUiDir = join(__dirname, '..', 'dist-ui');
+    if (existsSync(localUiDir)) {
+      try {
+        const handle = await startLocalPosServer(localUiDir);
+        config.appUrl = `${handle.url}/pos`;
+      } catch (err) {
+        warn(`could not start local POS UI server: ${(err as Error).message}`);
+      }
+    }
+
     ipcMain.on('till:retry', () => void connect());
     registerSettingsIpc();
     createWindow();

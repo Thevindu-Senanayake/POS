@@ -116,9 +116,11 @@ export function loadConfig(env: NodeJS.ProcessEnv, isPackaged: boolean): TillCon
     appUrl += `${sep}mode=pos`;
   }
   const kiosk = boolEnv(env, 'POS_KIOSK', isPackaged);
+  const apiUrl = (strEnv(env, 'POS_API_URL') ?? 'http://localhost:4000').replace(/\/+$/, '');
+  const readyUrl = (strEnv(env, 'POS_READY_URL') ?? `${apiUrl}/api/health`).replace(/\/+$/, '');
   return {
     appUrl,
-    readyUrl: (strEnv(env, 'POS_READY_URL') ?? appUrl).replace(/\/+$/, ''),
+    readyUrl,
     startupTimeoutMs: intEnv(env, 'POS_STARTUP_TIMEOUT_MS', 180_000),
     probeIntervalMs: intEnv(env, 'POS_PROBE_INTERVAL_MS', 1_500),
     probeTimeoutMs: intEnv(env, 'POS_PROBE_TIMEOUT_MS', 4_000),
