@@ -88,7 +88,10 @@ export class HtmlSink implements ReceiptSink {
 <head>
 <meta charset="utf-8" />
 <style>
-  @page { margin: 0; }
+  @page {
+    size: ${widthMm}mm auto;
+    margin: 0;
+  }
   html, body { margin: 0; padding: 0; background: #fff; color: #000; }
   body {
     width: ${widthMm}mm;

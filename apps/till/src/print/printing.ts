@@ -1,6 +1,6 @@
 import { BrowserWindow } from 'electron';
 import { existsSync, readFileSync } from 'node:fs';
-import { extname } from 'node:path';
+import { extname, resolve } from 'node:path';
 import { warn } from '../log';
 import { HtmlSink } from './html-sink';
 import { renderBill, renderKot } from './receipt';
@@ -33,11 +33,26 @@ let logoCache: string | null | undefined;
 export function resolveLogoDataUri(logoPath: string): string | null {
   if (logoCache !== undefined) return logoCache;
   try {
-    if (!logoPath || !existsSync(logoPath)) {
+    const candidates = [
+      logoPath,
+      resolve(__dirname, '..', 'assets', 'receipt-logo.png'),
+      resolve(process.cwd(), 'apps', 'till', 'assets', 'receipt-logo.png'),
+      resolve(process.cwd(), 'apps', 'print-agent', 'assets', 'receipt-logo.png'),
+    ].filter(Boolean);
+
+    let targetFile: string | null = null;
+    for (const p of candidates) {
+      if (p && existsSync(p)) {
+        targetFile = p;
+        break;
+      }
+    }
+
+    if (!targetFile) {
       logoCache = null;
     } else {
-      const b64 = readFileSync(logoPath).toString('base64');
-      logoCache = `data:${logoMime(logoPath)};base64,${b64}`;
+      const b64 = readFileSync(targetFile).toString('base64');
+      logoCache = `data:${logoMime(targetFile)};base64,${b64}`;
     }
   } catch (err) {
     warn(`receipt logo skipped: ${(err as Error).message}`);
@@ -76,6 +91,7 @@ export async function printHtmlToDevice(
   html: string,
   deviceName: string,
   settleMs: number,
+  widthMm: number = 72,
 ): Promise<void> {
   const win = new BrowserWindow({
     show: false,
@@ -88,7 +104,13 @@ export async function printHtmlToDevice(
     if (settleMs > 0) await delay(settleMs);
     await new Promise<void>((resolve, reject) => {
       win.webContents.print(
-        { silent: true, deviceName, margins: { marginType: 'none' }, printBackground: false },
+        {
+          silent: true,
+          deviceName,
+          margins: { marginType: 'none' },
+          printBackground: false,
+          pageSize: { width: Math.round((widthMm || 72) * 1000), height: 2000000 },
+        },
         (success, failureReason) => {
           if (success) resolve();
           else reject(new Error(failureReason || 'print was cancelled'));
@@ -107,7 +129,7 @@ export async function printJob(
   opts: { widthMm: number; logoPath: string; settleMs: number },
 ): Promise<string> {
   const html = await renderJobHtml(job, opts);
-  await printHtmlToDevice(html, deviceName, opts.settleMs);
+  await printHtmlToDevice(html, deviceName, opts.settleMs, opts.widthMm);
   return `"${deviceName}" (${job.station ?? 'receipt'})`;
 }
 

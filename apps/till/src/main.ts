@@ -217,7 +217,7 @@ function registerSettingsIpc(): void {
   ipcMain.handle('settings:test', async (_e, arg: { role: PrinterRole; deviceName: string }) => {
     try {
       const html = buildSampleHtml(arg.role, arg.deviceName, config.printing.widthMm);
-      await printHtmlToDevice(html, arg.deviceName, config.printing.settleMs);
+      await printHtmlToDevice(html, arg.deviceName, config.printing.settleMs, config.printing.widthMm);
       log(`test print sent for "${arg.role}" -> "${arg.deviceName}"`);
       return { ok: true };
     } catch (err) {
