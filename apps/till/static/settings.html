@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'" />
+    <title>Printer Settings</title>
+    <style>
+      :root { color-scheme: dark; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 24px 28px;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+      p.sub { margin: 0 0 20px; color: #94a3b8; font-size: 13px; }
+      .row { margin-bottom: 18px; }
+      label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #cbd5e1; }
+      .controls { display: flex; gap: 10px; align-items: center; }
+      select {
+        flex: 1;
+        font: inherit;
+        color: #e2e8f0;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 9px 10px;
+      }
+      button {
+        font: inherit;
+        font-weight: 600;
+        border: 0;
+        border-radius: 8px;
+        padding: 9px 16px;
+        cursor: pointer;
+      }
+      button.ghost { background: #334155; color: #e2e8f0; }
+      button.ghost:hover { background: #475569; }
+      button.primary { color: #0f172a; background: #38bdf8; }
+      button.primary:hover { background: #7dd3fc; }
+      button:disabled { opacity: 0.5; cursor: default; }
+      .footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 28px; }
+      .status { min-height: 18px; font-size: 13px; margin-top: 4px; }
+      .status.ok { color: #4ade80; }
+      .status.err { color: #f87171; }
+      .banner { color: #f87171; font-size: 13px; margin-bottom: 16px; display: none; }
+    </style>
+  </head>
+  <body>
+    <h1>Printer Settings</h1>
+    <p class="sub">
+      Pick the installed Windows printer for each role. Choices are saved on this
+      till only. Use Test to print a sample before saving.
+    </p>
+    <div id="banner" class="banner"></div>
+
+    <div class="row" data-role="receipt">
+      <label>Receipt / bill printer</label>
+      <div class="controls">
+        <select id="sel-receipt"></select>
+        <button class="ghost" data-test="receipt" type="button">Test</button>
+      </div>
+      <div class="status" id="status-receipt"></div>
+    </div>
+
+    <div class="row" data-role="kitchen">
+      <label>Kitchen KOT printer</label>
+      <div class="controls">
+        <select id="sel-kitchen"></select>
+        <button class="ghost" data-test="kitchen" type="button">Test</button>
+      </div>
+      <div class="status" id="status-kitchen"></div>
+    </div>
+
+    <div class="row" data-role="bar">
+      <label>Bar KOT printer</label>
+      <div class="controls">
+        <select id="sel-bar"></select>
+        <button class="ghost" data-test="bar" type="button">Test</button>
+      </div>
+      <div class="status" id="status-bar"></div>
+    </div>
+
+    <div class="footer">
+      <button class="ghost" id="cancel" type="button">Close</button>
+      <button class="primary" id="save" type="button">Save</button>
+    </div>
+
+    <script>
+      const ROLES = ['receipt', 'kitchen', 'bar'];
+      const NONE = '';
+
+      function optionsHtml(printers, selected) {
+        let html = '<option value="">— not set —</option>';
+        for (const p of printers) {
+          const label = p.displayName || p.name;
+          const def = p.isDefault ? ' (default)' : '';
+          const sel = p.name === selected ? ' selected' : '';
+          html +=
+            '<option value="' + p.name.replace(/"/g, '&quot;') + '"' + sel + '>' +
+            label.replace(/</g, '&lt;') + def +
+            '</option>';
+        }
+        return html;
+      }
+
+      function setStatus(role, text, kind) {
+        const el = document.getElementById('status-' + role);
+        el.textContent = text || '';
+        el.className = 'status' + (kind ? ' ' + kind : '');
+      }
+
+      async function init() {
+        const snap = await window.tillSettings.load();
+        if (!snap.printers.length) {
+          const b = document.getElementById('banner');
+          b.style.display = 'block';
+          b.textContent =
+            'No printers found on this PC. Install the printers in Windows first, then reopen this screen.';
+        }
+        for (const role of ROLES) {
+          document.getElementById('sel-' + role).innerHTML = optionsHtml(
+            snap.printers,
+            snap.config[role] || NONE,
+          );
+        }
+      }
+
+      document.querySelectorAll('button[data-test]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const role = btn.getAttribute('data-test');
+          const device = document.getElementById('sel-' + role).value;
+          if (!device) {
+            setStatus(role, 'Choose a printer first.', 'err');
+            return;
+          }
+          setStatus(role, 'Printing test…', null);
+          const res = await window.tillSettings.test(role, device);
+          if (res.ok) setStatus(role, 'Test sent to ' + device + '.', 'ok');
+          else setStatus(role, 'Failed: ' + (res.error || 'unknown error'), 'err');
+        });
+      });
+
+      document.getElementById('save').addEventListener('click', async () => {
+        const map = {};
+        for (const role of ROLES) map[role] = document.getElementById('sel-' + role).value;
+        await window.tillSettings.save(map);
+        window.tillSettings.close();
+      });
+
+      document.getElementById('cancel').addEventListener('click', () => window.tillSettings.close());
+
+      init();
+    </script>
+  </body>
+</html>
