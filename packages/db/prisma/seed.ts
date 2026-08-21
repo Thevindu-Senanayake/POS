@@ -35,6 +35,7 @@ type SeedData = {
   ingredients: Array<{
     name: string;
     baseUnit: 'g' | 'ml' | 'pcs';
+    department?: 'bar' | 'restaurant';
     barcode: string | null;
     openingStock: number;
     reorderLevel: number;
@@ -167,11 +168,16 @@ async function main() {
   const ingredientByName = new Map<string, string>();
   let openingMovements = 0;
   for (const ing of seedData.ingredients) {
+    // Bar stock is spirits/wine/mixers — sold by the ml and/or carrying a bottle
+    // barcode; everything else is a restaurant raw material. An explicit
+    // `department` from the importer always wins.
+    const department = ing.department ?? (ing.baseUnit === 'ml' || ing.barcode ? 'bar' : 'restaurant');
     const created = await prisma.ingredient.create({
       data: {
         outletId: outlet.id,
         name: ing.name,
         baseUnit: ing.baseUnit,
+        department,
         barcode: ing.barcode, // spirit bottles carry the scannable barcode
         currentStock: ing.openingStock,
         reorderLevel: ing.reorderLevel,

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Query } from '@nestjs/common';
-import type { IngredientDTO, StockMovementDTO } from '@pos/shared';
+import { INGREDIENT_DEPARTMENTS, type IngredientDepartment, type IngredientDTO, type StockMovementDTO } from '@pos/shared';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
 import { AdjustStockDto } from './dto/adjust-stock.dto';
@@ -13,8 +13,14 @@ export class IngredientsController {
 
   // Reads are open to any authenticated user (floor staff need stock visibility).
   @Get()
-  list(@Query('includeInactive') includeInactive?: string): Promise<IngredientDTO[]> {
-    return this.ingredients.list(includeInactive === 'true');
+  list(
+    @Query('includeInactive') includeInactive?: string,
+    @Query('department') department?: string,
+  ): Promise<IngredientDTO[]> {
+    const dep = (INGREDIENT_DEPARTMENTS as readonly string[]).includes(department ?? '')
+      ? (department as IngredientDepartment)
+      : undefined;
+    return this.ingredients.list(includeInactive === 'true', dep);
   }
 
   @Get(':id')

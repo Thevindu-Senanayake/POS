@@ -99,6 +99,7 @@ export class TablesService {
     const table = await this.prisma.diningTable.update({
       where: { id },
       data: {
+        ...(dto.area !== undefined ? { area: dto.area } : {}),
         ...(dto.name !== undefined ? { name: dto.name } : {}),
         ...(dto.capacity !== undefined ? { capacity: dto.capacity } : {}),
         ...(dto.status !== undefined ? { status: dto.status } : {}),

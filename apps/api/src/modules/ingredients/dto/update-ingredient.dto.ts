@@ -1,5 +1,5 @@
 import { IsBoolean, IsIn, IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
-import { BASE_UNITS, type BaseUnit } from '@pos/shared';
+import { BASE_UNITS, INGREDIENT_DEPARTMENTS, type BaseUnit, type IngredientDepartment } from '@pos/shared';
 
 export class UpdateIngredientDto {
   @IsOptional()
@@ -10,6 +10,11 @@ export class UpdateIngredientDto {
   @IsOptional()
   @IsIn([...BASE_UNITS])
   baseUnit?: BaseUnit;
+
+  /** Move between bar stock and restaurant raw materials. */
+  @IsOptional()
+  @IsIn([...INGREDIENT_DEPARTMENTS])
+  department?: IngredientDepartment;
 
   /** Bottle/can barcode (spirits); unique when set, null clears it. */
   @IsOptional()

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { formatMoney } from '@pos/shared';
+import { formatMoney, resolveChannelPrice } from '@pos/shared';
 import type { Channel, MenuCategory, MenuItemDTO, SpiritGroupDTO } from '@pos/shared';
 import { cn } from '@/lib/cn';
 import { Spinner } from '@/components/ui/spinner';
@@ -31,9 +31,13 @@ export interface MenuPick {
   unitPrice: number;
 }
 
-/** Price for this order's channel; undefined => the item isn't sold on it. */
+/**
+ * Price for this order's channel; undefined => the item isn't sold on it.
+ * Bar orders inherit the restaurant price for food with no explicit bar price
+ * (see {@link resolveChannelPrice}), so food tiles appear on bar tables too.
+ */
 export function priceForChannel(item: MenuItemDTO, channel: Channel): number | undefined {
-  return item.prices.find((p) => p.channel === channel)?.price;
+  return resolveChannelPrice(item.prices, channel)?.price;
 }
 
 /** A tile in the grid: a normal menu item, or a spirit bottle (opens the pour picker). */

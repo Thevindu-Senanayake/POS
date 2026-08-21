@@ -2,6 +2,7 @@ import type {
   AuditAction,
   BaseUnit,
   Channel,
+  IngredientDepartment,
   MenuCategory,
   PaymentMethod,
   PrinterConnection,
@@ -10,6 +11,8 @@ import type {
   RoomStatus,
   StockReason,
   Station,
+  TableArea,
+  TableStatus,
   UserRole,
 } from '@pos/shared';
 
@@ -23,6 +26,17 @@ export const BASE_UNIT_LABELS: Record<BaseUnit, string> = {
 
 /** Short unit suffix for inline display (e.g. "1,200 g"). */
 export const BASE_UNIT_SHORT: Record<BaseUnit, string> = { g: 'g', ml: 'ml', pcs: 'pcs' };
+
+/** Which side of the operation stocks an ingredient (splits the inventory screen). */
+export const INGREDIENT_DEPARTMENT_LABELS: Record<IngredientDepartment, string> = {
+  bar: 'Bar',
+  restaurant: 'Restaurant',
+};
+
+export const INGREDIENT_DEPARTMENT_TONE: Record<IngredientDepartment, 'gold' | 'teal'> = {
+  bar: 'gold',
+  restaurant: 'teal',
+};
 
 export const STOCK_REASON_LABELS: Record<StockReason, string> = {
   purchase: 'Purchase',
@@ -84,6 +98,26 @@ export const ROOM_STATUS_TONE: Record<RoomStatus, 'green' | 'brand' | 'amber'> =
   vacant: 'green',
   occupied: 'brand',
   maintenance: 'amber',
+};
+
+/** Floor area a dining table belongs to. */
+export const AREA_LABELS: Record<TableArea, string> = {
+  restaurant: 'Restaurant',
+  bar: 'Bar',
+};
+
+export const TABLE_STATUS_LABELS: Record<TableStatus, string> = {
+  free: 'Free',
+  occupied: 'Occupied',
+  reserved: 'Reserved',
+  needs_cleaning: 'Needs cleaning',
+};
+
+export const TABLE_STATUS_TONE: Record<TableStatus, 'green' | 'brand' | 'amber' | 'red'> = {
+  free: 'green',
+  occupied: 'brand',
+  reserved: 'amber',
+  needs_cleaning: 'red',
 };
 
 export const USER_ROLE_LABELS: Record<UserRole, string> = {

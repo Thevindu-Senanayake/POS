@@ -15,7 +15,7 @@ import type {
   OrderStatus,
   PaymentMethod,
 } from '@pos/shared';
-import { DEFAULT_CURRENCY_SYMBOL, round2, sumMoney } from '@pos/shared';
+import { DEFAULT_CURRENCY_SYMBOL, resolveChannelPrice, round2, sumMoney } from '@pos/shared';
 import { decToNum } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
@@ -846,7 +846,9 @@ export class OrdersService {
           `Menu item ${input.menuItemId} not found or inactive`,
         );
       }
-      const price = menuItem.prices.find((p) => p.channel === channel);
+      // Bar orders inherit the restaurant price for food that has no explicit
+      // bar price (resolveChannelPrice falls dine_in_bar back to dine_in_restaurant).
+      const price = resolveChannelPrice(menuItem.prices, channel);
       if (!price) {
         throw new BadRequestException(
           `"${menuItem.name}" has no price for channel ${channel}`,

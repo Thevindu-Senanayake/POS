@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import type { Ingredient, Prisma } from '@pos/db';
-import type { IngredientDTO, StockMovementDTO } from '@pos/shared';
+import type { IngredientDepartment, IngredientDTO, StockMovementDTO } from '@pos/shared';
 import { decToNum, decToNumOrNull } from '../../common/decimal';
 import { PrismaService } from '../../prisma/prisma.service';
 import { StockLedgerService } from '../stock/stock-ledger.service';
@@ -15,9 +15,12 @@ export class IngredientsService {
     private readonly ledger: StockLedgerService,
   ) {}
 
-  async list(includeInactive = false): Promise<IngredientDTO[]> {
+  async list(includeInactive = false, department?: IngredientDepartment): Promise<IngredientDTO[]> {
     const rows = await this.prisma.ingredient.findMany({
-      where: includeInactive ? {} : { isActive: true },
+      where: {
+        ...(includeInactive ? {} : { isActive: true }),
+        ...(department ? { department } : {}),
+      },
       orderBy: { name: 'asc' },
     });
     return rows.map((r) => this.toDTO(r));
@@ -36,6 +39,7 @@ export class IngredientsService {
         data: {
           name: dto.name,
           baseUnit: dto.baseUnit,
+          department: dto.department ?? 'restaurant',
           barcode: dto.barcode ?? null,
           reorderLevel: dto.reorderLevel ?? 0,
           costPerUnit: dto.costPerUnit ?? 0,
@@ -64,6 +68,7 @@ export class IngredientsService {
     const data: Prisma.IngredientUncheckedUpdateInput = {};
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.baseUnit !== undefined) data.baseUnit = dto.baseUnit;
+    if (dto.department !== undefined) data.department = dto.department;
     if (dto.barcode !== undefined) data.barcode = dto.barcode;
     if (dto.reorderLevel !== undefined) data.reorderLevel = dto.reorderLevel;
     if (dto.costPerUnit !== undefined) data.costPerUnit = dto.costPerUnit;
@@ -121,6 +126,7 @@ export class IngredientsService {
       id: r.id,
       name: r.name,
       baseUnit: r.baseUnit,
+      department: r.department,
       currentStock,
       reorderLevel,
       costPerUnit: decToNum(r.costPerUnit),

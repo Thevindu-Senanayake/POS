@@ -1,5 +1,5 @@
 import { IsIn, IsNumber, IsOptional, IsString, MaxLength, Min, MinLength } from 'class-validator';
-import { BASE_UNITS, type BaseUnit } from '@pos/shared';
+import { BASE_UNITS, INGREDIENT_DEPARTMENTS, type BaseUnit, type IngredientDepartment } from '@pos/shared';
 
 export class CreateIngredientDto {
   @IsString()
@@ -8,6 +8,11 @@ export class CreateIngredientDto {
 
   @IsIn([...BASE_UNITS])
   baseUnit!: BaseUnit;
+
+  /** Bar stock vs restaurant raw material; defaults to `restaurant` when omitted. */
+  @IsOptional()
+  @IsIn([...INGREDIENT_DEPARTMENTS])
+  department?: IngredientDepartment;
 
   /** Bottle/can barcode (spirits); scanned at the bar. Unique when set. */
   @IsOptional()

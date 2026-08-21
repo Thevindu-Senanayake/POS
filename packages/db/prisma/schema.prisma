@@ -31,6 +31,11 @@ enum BaseUnit {
   pcs
 }
 
+enum IngredientDepartment {
+  bar
+  restaurant
+}
+
 enum StockReason {
   purchase
   sale
@@ -264,6 +269,9 @@ model Ingredient {
   outlet       Outlet?  @relation(fields: [outletId], references: [id])
   name         String
   baseUnit     BaseUnit
+  // Bar stock (spirits, wine, mixers) vs restaurant raw materials. Splits the
+  // inventory screen; back-filled from baseUnit/barcode for pre-existing rows.
+  department   IngredientDepartment @default(restaurant)
   // Barcode of the physical stock unit (e.g. a spirit bottle). A bar scan that
   // matches this resolves to the pour MenuItems built from this ingredient.
   barcode      String?  @unique
@@ -283,6 +291,7 @@ model Ingredient {
   purchaseOrderItems PurchaseOrderItem[]
 
   @@index([outletId])
+  @@index([department])
   @@map("ingredients")
 }
 

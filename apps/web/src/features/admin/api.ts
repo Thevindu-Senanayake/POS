@@ -7,6 +7,8 @@ import type {
   BaseUnit,
   Channel,
   DashboardSummaryDTO,
+  DiningTableDTO,
+  IngredientDepartment,
   IngredientDTO,
   LowStockRowDTO,
   MenuCategory,
@@ -24,6 +26,8 @@ import type {
   Station,
   StockMovementDTO,
   SupplierDTO,
+  TableArea,
+  TableStatus,
   UserRole,
   VarianceRowDTO,
 } from '@pos/shared';
@@ -37,10 +41,17 @@ import { qk } from '@/lib/query-keys';
 export interface IngredientInput {
   name: string;
   baseUnit: BaseUnit;
+  department: IngredientDepartment;
   reorderLevel?: number;
   costPerUnit?: number;
   supplierId?: string | null;
   openingStock?: number;
+}
+export interface TableInput {
+  area: TableArea;
+  name: string;
+  capacity?: number;
+  status?: TableStatus;
 }
 export interface AdjustStockInput {
   changeQty: number;
@@ -279,6 +290,11 @@ export function useRoomCategories() {
   });
 }
 
+// Tables admin reuses the POS floor read but under the admin cache key.
+export function useTables() {
+  return useQuery({ queryKey: qk.tables, queryFn: () => api.get<DiningTableDTO[]>('/tables') });
+}
+
 // =============================================================================
 // Mutations — each invalidates the lists it can affect
 // =============================================================================
@@ -502,6 +518,35 @@ export function useDeleteRoomCategory() {
   return useMutation({
     mutationFn: (id: string) => api.del<void>(`/room-categories/${id}`),
     onSuccess: () => invalidateRooms(qc),
+  });
+}
+
+/** Refresh the floor board (POS + admin share `qk.tables`) and the dashboard tile. */
+function invalidateTables(qc: QueryClient) {
+  void qc.invalidateQueries({ queryKey: qk.tables });
+  void qc.invalidateQueries({ queryKey: qk.dashboard });
+}
+
+export function useCreateTable() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: TableInput) => api.post<DiningTableDTO>('/tables', body),
+    onSuccess: () => invalidateTables(qc),
+  });
+}
+export function useUpdateTable() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (vars: { id: string; body: Partial<TableInput> }) =>
+      api.patch<DiningTableDTO>(`/tables/${vars.id}`, vars.body),
+    onSuccess: () => invalidateTables(qc),
+  });
+}
+export function useDeleteTable() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.del<void>(`/tables/${id}`),
+    onSuccess: () => invalidateTables(qc),
   });
 }
 

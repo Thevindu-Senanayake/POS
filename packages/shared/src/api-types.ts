@@ -7,6 +7,7 @@ import type {
   DiscountScope,
   DiscountType,
   FolioSource,
+  IngredientDepartment,
   MenuCategory,
   OrderItemStatus,
   OrderStatus,
@@ -46,6 +47,8 @@ export interface IngredientDTO {
   id: string;
   name: string;
   baseUnit: BaseUnit;
+  /** Bar stock (spirits, wine, mixers) vs restaurant raw materials. */
+  department: IngredientDepartment;
   currentStock: number;
   reorderLevel: number;
   costPerUnit: number;

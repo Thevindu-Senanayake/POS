@@ -212,6 +212,7 @@ def load_wine():
                 {
                     "name": name,
                     "baseUnit": "ml",
+                    "department": "bar",
                     "barcode": barcode,
                     "openingStock": mm or 0,
                     "reorderLevel": 0,
@@ -236,6 +237,7 @@ def load_wine():
                 {
                     "name": name,
                     "baseUnit": "pcs",
+                    "department": "bar",
                     "barcode": None,  # barcode lives on the sellable MenuItem below
                     "openingStock": qty or 0,
                     "reorderLevel": 0,
@@ -345,6 +347,7 @@ def load_kitchen():
             {
                 "name": ing_name,
                 "baseUnit": unit,
+                "department": "restaurant",
                 "barcode": None,
                 "openingStock": 0,
                 "reorderLevel": 0,

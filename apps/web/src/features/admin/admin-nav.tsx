@@ -16,6 +16,7 @@ export const ADMIN_SECTIONS: { href: string; label: string }[] = [
   { href: '/admin/purchasing', label: 'Purchasing' },
   { href: '/admin/menu', label: 'Menu & Recipes' },
   { href: '/admin/rooms', label: 'Rooms' },
+  { href: '/admin/tables', label: 'Tables' },
   { href: '/admin/reports', label: 'Reports' },
   { href: '/admin/printers', label: 'Printers' },
   { href: '/admin/users', label: 'Users' },

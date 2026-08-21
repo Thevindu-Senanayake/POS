@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { BASE_UNITS, formatMoney, type IngredientDTO } from '@pos/shared';
+import { BASE_UNITS, INGREDIENT_DEPARTMENTS, formatMoney, type IngredientDepartment, type IngredientDTO } from '@pos/shared';
 import { ApiError } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
@@ -20,6 +20,8 @@ import {
 import {
   BASE_UNIT_LABELS,
   BASE_UNIT_SHORT,
+  INGREDIENT_DEPARTMENT_LABELS,
+  INGREDIENT_DEPARTMENT_TONE,
   STOCK_REASON_LABELS,
   STOCK_REASON_TONE,
   formatDateTime,
@@ -30,6 +32,7 @@ import { AdminPage, Badge, ErrorNote, Field, SectionCard, SelectInput, Table, Te
 /** Inventory workspace (spec §2.2/§2.8): ingredients, live stock, manual adjustments. */
 export function InventoryScreen() {
   const [includeInactive, setIncludeInactive] = useState(false);
+  const [department, setDepartment] = useState<IngredientDepartment | 'all'>('all');
   const ingredients = useIngredients(includeInactive);
   const [editing, setEditing] = useState<IngredientDTO | 'new' | null>(null);
   const [adjusting, setAdjusting] = useState<IngredientDTO | null>(null);
@@ -37,14 +40,30 @@ export function InventoryScreen() {
 
   if (ingredients.isLoading) return <FullscreenSpinner label="Loading inventory…" />;
 
-  const rows = ingredients.data ?? [];
+  const rows = (ingredients.data ?? []).filter(
+    (r) => department === 'all' || r.department === department,
+  );
+  // A new ingredient defaults to the department currently in view (Bar/Restaurant).
+  const newDepartment: IngredientDepartment = department === 'all' ? 'restaurant' : department;
 
   return (
     <AdminPage
       title="Inventory"
-      subtitle="Ingredients, live stock levels and manual adjustments."
+      subtitle="Bar stock and restaurant raw materials, live stock levels and manual adjustments."
       actions={
-        <>
+        <div className="flex items-center gap-3">
+          <div className="flex rounded-xl border border-sand-200 bg-sand-100 p-1 text-sm font-semibold">
+            {(['all', 'bar', 'restaurant'] as const).map((d) => (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setDepartment(d)}
+                className={`rounded-lg px-4 py-1.5 ${department === d ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-500'}`}
+              >
+                {d === 'all' ? 'All' : INGREDIENT_DEPARTMENT_LABELS[d]}
+              </button>
+            ))}
+          </div>
           <label className="flex items-center gap-2 text-sm font-medium text-slate-600">
             <input
               type="checkbox"
@@ -55,7 +74,7 @@ export function InventoryScreen() {
             Show inactive
           </label>
           <Button onClick={() => setEditing('new')}>Add ingredient</Button>
-        </>
+        </div>
       }
     >
       <SectionCard>
@@ -74,6 +93,14 @@ export function InventoryScreen() {
               ),
             },
             { header: 'Unit', cell: (r) => BASE_UNIT_LABELS[r.baseUnit] },
+            {
+              header: 'Department',
+              cell: (r) => (
+                <Badge tone={INGREDIENT_DEPARTMENT_TONE[r.department]}>
+                  {INGREDIENT_DEPARTMENT_LABELS[r.department]}
+                </Badge>
+              ),
+            },
             {
               header: 'In stock',
               align: 'right',
@@ -113,6 +140,7 @@ export function InventoryScreen() {
       {editing ? (
         <IngredientModal
           ingredient={editing === 'new' ? null : editing}
+          defaultDepartment={newDepartment}
           onClose={() => setEditing(null)}
         />
       ) : null}
@@ -127,6 +155,7 @@ export function InventoryScreen() {
 const ingredientSchema = z.object({
   name: z.string().trim().min(1, 'Name is required'),
   baseUnit: z.enum(['g', 'ml', 'pcs']),
+  department: z.enum(['bar', 'restaurant']),
   reorderLevel: z.coerce.number().min(0, 'Must be 0 or more'),
   costPerUnit: z.coerce.number().min(0, 'Must be 0 or more'),
   supplierId: z.string(),
@@ -137,9 +166,11 @@ type IngredientValues = z.infer<typeof ingredientSchema>;
 
 function IngredientModal({
   ingredient,
+  defaultDepartment,
   onClose,
 }: {
   ingredient: IngredientDTO | null;
+  defaultDepartment: IngredientDepartment;
   onClose: () => void;
 }) {
   const isEdit = !!ingredient;
@@ -157,6 +188,7 @@ function IngredientModal({
     defaultValues: {
       name: ingredient?.name ?? '',
       baseUnit: ingredient?.baseUnit ?? 'g',
+      department: ingredient?.department ?? defaultDepartment,
       reorderLevel: ingredient?.reorderLevel ?? 0,
       costPerUnit: ingredient?.costPerUnit ?? 0,
       supplierId: ingredient?.supplierId ?? '',
@@ -174,6 +206,7 @@ function IngredientModal({
           body: {
             name: v.name,
             baseUnit: v.baseUnit,
+            department: v.department,
             reorderLevel: v.reorderLevel,
             costPerUnit: v.costPerUnit,
             supplierId: v.supplierId || null,
@@ -184,6 +217,7 @@ function IngredientModal({
         await create.mutateAsync({
           name: v.name,
           baseUnit: v.baseUnit,
+          department: v.department,
           reorderLevel: v.reorderLevel,
           costPerUnit: v.costPerUnit,
           supplierId: v.supplierId || undefined,
@@ -201,6 +235,20 @@ function IngredientModal({
       <form onSubmit={onSubmit} className="space-y-4" noValidate>
         <Field label="Name" htmlFor="ing-name" error={errors.name?.message}>
           <TextInput id="ing-name" autoFocus {...register('name')} />
+        </Field>
+        <Field
+          label="Department"
+          htmlFor="ing-dept"
+          error={errors.department?.message}
+          hint="Bar stock (spirits, wine, mixers) or restaurant raw materials"
+        >
+          <SelectInput id="ing-dept" {...register('department')}>
+            {INGREDIENT_DEPARTMENTS.map((d) => (
+              <option key={d} value={d}>
+                {INGREDIENT_DEPARTMENT_LABELS[d]}
+              </option>
+            ))}
+          </SelectInput>
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Base unit" htmlFor="ing-unit" error={errors.baseUnit?.message}>

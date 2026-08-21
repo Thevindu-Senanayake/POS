@@ -18,6 +18,12 @@ export const BaseUnitSchema = z.enum(['g', 'ml', 'pcs']);
 export type BaseUnit = z.infer<typeof BaseUnitSchema>;
 export const BASE_UNITS = BaseUnitSchema.options;
 
+// Which side of the operation an ingredient stocks for: `bar` (spirits, wine,
+// mixers) vs `restaurant` (kitchen raw materials). Splits the inventory screen.
+export const IngredientDepartmentSchema = z.enum(['bar', 'restaurant']);
+export type IngredientDepartment = z.infer<typeof IngredientDepartmentSchema>;
+export const INGREDIENT_DEPARTMENTS = IngredientDepartmentSchema.options;
+
 export const StockReasonSchema = z.enum([
   'purchase',
   'sale',
