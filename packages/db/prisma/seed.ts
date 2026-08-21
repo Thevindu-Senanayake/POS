@@ -320,7 +320,7 @@ async function main() {
 
   // --- App settings --------------------------------------------------------
   const settings: Array<[string, unknown]> = [
-    ['currency', { symbol: '₨', code: 'PKR' }],
+    ['currency', { symbol: '₨', code: 'LKR' }],
     ['service_charge_in_room_rate', false],
     ['low_stock_warn_only', true], // low stock warns but does not block sending to kitchen
     ['kot_package_tag', true], // print a "PACKAGE" tag on comped board-plan KOTs (owner UAT item)
