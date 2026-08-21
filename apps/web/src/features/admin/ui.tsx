@@ -205,6 +205,43 @@ export const TextInput = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLIn
   },
 );
 
+/** Controlled search box with a leading magnifier icon and a clear button. */
+export function SearchInput({
+  value,
+  onChange,
+  placeholder = 'Search…',
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn('relative', className)}>
+      <svg
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        aria-hidden="true"
+      >
+        <circle cx="8.5" cy="8.5" r="5.5" />
+        <path d="M13 13l4 4" strokeLinecap="round" />
+      </svg>
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        aria-label={placeholder}
+        className={cn(inputClass, 'pl-9 [&::-webkit-search-cancel-button]:cursor-pointer')}
+      />
+    </div>
+  );
+}
+
 export const SelectInput = forwardRef<HTMLSelectElement, SelectHTMLAttributes<HTMLSelectElement>>(
   function SelectInput({ className, children, ...props }, ref) {
     return (

@@ -39,6 +39,7 @@ import {
   Badge,
   ErrorNote,
   Field,
+  SearchInput,
   SectionCard,
   SelectInput,
   Table,
@@ -50,6 +51,7 @@ import {
 export function MenuScreen() {
   const [includeInactive, setIncludeInactive] = useState(false);
   const items = useMenuItems(includeInactive);
+  const [query, setQuery] = useState('');
   const [editing, setEditing] = useState<MenuItemDTO | 'new' | null>(null);
   const [pricing, setPricing] = useState<MenuItemDTO | null>(null);
   const [recipeFor, setRecipeFor] = useState<MenuItemDTO | null>(null);
@@ -57,12 +59,23 @@ export function MenuScreen() {
 
   if (items.isLoading) return <FullscreenSpinner label="Loading menu…" />;
 
+  const q = query.trim().toLowerCase();
+  const rows = (items.data ?? []).filter(
+    (m) => !q || m.name.toLowerCase().includes(q) || MENU_CATEGORY_LABELS[m.category].toLowerCase().includes(q),
+  );
+
   return (
     <AdminPage
       title="Menu & recipes"
       subtitle="Menu items, per-channel prices, and the recipe (BOM) that drives stock deduction."
       actions={
         <>
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Search items…"
+            className="w-full sm:w-56"
+          />
           <label className="flex items-center gap-2 text-sm font-medium text-slate-600">
             <input
               type="checkbox"
@@ -78,9 +91,9 @@ export function MenuScreen() {
     >
       <SectionCard>
         <Table
-          rows={items.data ?? []}
+          rows={rows}
           keyOf={(m) => m.id}
-          empty="No menu items yet."
+          empty={q ? 'No items match your search.' : 'No menu items yet.'}
           columns={[
             {
               header: 'Item',

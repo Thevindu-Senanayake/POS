@@ -27,12 +27,13 @@ import {
   formatDateTime,
   formatQty,
 } from './format';
-import { AdminPage, Badge, ErrorNote, Field, SectionCard, SelectInput, Table, TextInput } from './ui';
+import { AdminPage, Badge, ErrorNote, Field, SearchInput, SectionCard, SelectInput, Table, TextInput } from './ui';
 
 /** Inventory workspace (spec §2.2/§2.8): ingredients, live stock, manual adjustments. */
 export function InventoryScreen() {
   const [includeInactive, setIncludeInactive] = useState(false);
   const [department, setDepartment] = useState<IngredientDepartment | 'all'>('all');
+  const [query, setQuery] = useState('');
   const ingredients = useIngredients(includeInactive);
   const [editing, setEditing] = useState<IngredientDTO | 'new' | null>(null);
   const [adjusting, setAdjusting] = useState<IngredientDTO | null>(null);
@@ -40,8 +41,9 @@ export function InventoryScreen() {
 
   if (ingredients.isLoading) return <FullscreenSpinner label="Loading inventory…" />;
 
+  const q = query.trim().toLowerCase();
   const rows = (ingredients.data ?? []).filter(
-    (r) => department === 'all' || r.department === department,
+    (r) => (department === 'all' || r.department === department) && (!q || r.name.toLowerCase().includes(q)),
   );
   // A new ingredient defaults to the department currently in view (Bar/Restaurant).
   const newDepartment: IngredientDepartment = department === 'all' ? 'restaurant' : department;
@@ -51,7 +53,13 @@ export function InventoryScreen() {
       title="Inventory"
       subtitle="Bar stock and restaurant raw materials, live stock levels and manual adjustments."
       actions={
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <SearchInput
+            value={query}
+            onChange={setQuery}
+            placeholder="Search ingredients…"
+            className="w-full sm:w-56"
+          />
           <div className="flex rounded-xl border border-sand-200 bg-sand-100 p-1 text-sm font-semibold">
             {(['all', 'bar', 'restaurant'] as const).map((d) => (
               <button
@@ -81,7 +89,7 @@ export function InventoryScreen() {
         <Table
           rows={rows}
           keyOf={(r) => r.id}
-          empty="No ingredients yet. Add one to start tracking stock."
+          empty={q ? 'No ingredients match your search.' : 'No ingredients yet. Add one to start tracking stock.'}
           columns={[
             {
               header: 'Ingredient',
