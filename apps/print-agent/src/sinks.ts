@@ -116,26 +116,6 @@ function mapPrinterType(type: string): PrinterTypes {
   }
 }
 
-/**
- * The USB / OS-spooler path needs a native print module (`@thiagoelg/node-printer`).
- * It's an optional dependency — built and validated on the till host the USB
- * printer is attached to. When it's absent (dev boxes, a host without the native
- * build) we degrade to stdout rather than crashing, matching the no-IP fallback.
- * Memoized: `undefined` = not yet tried, `null` = tried and unavailable.
- */
-let usbDriver: object | null | undefined;
-function loadUsbDriver(): object | null {
-  if (usbDriver !== undefined) return usbDriver;
-  try {
-    // Resolved at runtime only; kept out of the dependency graph so a missing
-    // native build degrades gracefully instead of failing the agent's build.
-    usbDriver = require('@thiagoelg/node-printer') as object;
-  } catch {
-    usbDriver = null;
-  }
-  return usbDriver;
-}
-
 function describeKind(payload: unknown): string {
   if (payload && typeof payload === 'object' && 'kind' in payload) {
     return String((payload as { kind: unknown }).kind);
@@ -160,13 +140,12 @@ async function toStdout(job: PrintJobAgentDTO, note: string): Promise<string> {
 }
 
 /**
- * Render one job to its target (spec §3.2/§3.3):
- *  - `usb` + device → the host OS spooler via the optional native driver (the
- *    customer bill/receipt printer on the till); if the driver is missing we
- *    fall back to stdout so the job still completes.
+ * Render one job to its target:
  *  - `network` + ip → a TCP ESC/POS connection (the kitchen/bar KOT printers).
  *    Fails loudly if unreachable so the server reschedules and flips the printer
  *    offline.
+ *  - `usb` → stdout; USB / local printers moved to the Electron till, which
+ *    silent-prints them through the installed Windows driver.
  *  - otherwise → stdout (dev / no hardware configured).
  * Returns a short human description of where it printed, for the agent log.
  */
@@ -175,21 +154,11 @@ export async function printReceipt(
   target: PrinterTarget,
   config: AgentConfig,
 ): Promise<string> {
-  if (target.connection === 'usb' && target.device) {
-    const driver = loadUsbDriver();
-    if (!driver) {
-      return await toStdout(job, `stdout (USB driver unavailable for printer:${target.device})`);
-    }
-    const printer = new ThermalPrinter({
-      type: mapPrinterType(target.type),
-      interface: `printer:${target.device}`,
-      driver,
-      characterSet: CharacterSet.PC437_USA,
-      removeSpecialCharacters: false,
-    });
-    await renderPayload(new ThermalSink(printer, config.logoPath), job.payload);
-    await printer.execute();
-    return `printer:${target.device} (${target.type}, USB)`;
+  // USB / local printers are the Electron till's job now (it silent-prints via the
+  // installed Windows driver), so a USB target reaching this network agent renders
+  // to stdout rather than pretending to print.
+  if (target.connection === 'usb') {
+    return await toStdout(job, 'stdout (USB printers are handled by the till app)');
   }
 
   if (target.ip) {
