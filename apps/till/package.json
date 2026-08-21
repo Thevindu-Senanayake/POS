@@ -1,0 +1,19 @@
+{
+  "name": "@pos/till",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Electron desktop shell for the POS till — wraps the web UI in a kiosk window that auto-starts at login (the print host lands in a later phase)",
+  "main": "./dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "electron .",
+    "launch": "tsc -p tsconfig.json && electron .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@pos/tsconfig": "workspace:*",
+    "@types/node": "^22.10.5",
+    "electron": "^33.0.0",
+    "typescript": "^5.7.2"
+  }
+}

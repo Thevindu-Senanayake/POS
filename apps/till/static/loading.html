@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'" />
+    <title>POS — starting</title>
+    <style>
+      :root { color-scheme: dark; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        display: grid;
+        place-items: center;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      .box { text-align: center; }
+      .spinner {
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 24px;
+        border: 5px solid #1e293b;
+        border-top-color: #38bdf8;
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      h1 { font-size: 20px; font-weight: 600; margin: 0 0 8px; }
+      p { margin: 0; color: #94a3b8; font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <div class="box">
+      <div class="spinner"></div>
+      <h1>Starting the POS…</h1>
+      <p>Waiting for the local services to come online.</p>
+    </div>
+  </body>
+</html>

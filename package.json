@@ -23,6 +23,8 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f",
     "docker:seed": "docker compose run --rm -e FORCE_SEED=1 migrate node packages/db/scripts/seed-if-empty.mjs",
+    "till": "pnpm --filter @pos/till launch",
+    "till:build": "pnpm --filter @pos/till build",
     "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\""
   },
   "devDependencies": {

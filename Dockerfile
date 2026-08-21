@@ -30,12 +30,17 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json           apps/api/package.json
 COPY apps/web/package.json           apps/web/package.json
 COPY apps/print-agent/package.json   apps/print-agent/package.json
+COPY apps/till/package.json          apps/till/package.json
 COPY packages/db/package.json        packages/db/package.json
 COPY packages/shared/package.json    packages/shared/package.json
 COPY packages/tsconfig/package.json  packages/tsconfig/package.json
 # The Prisma schema is present so @prisma/client's postinstall has what it needs;
 # the client is regenerated authoritatively in the build stage regardless.
 COPY packages/db/prisma              packages/db/prisma
+# @pos/till (the Electron desktop shell) is a workspace member, so the frozen
+# install must see its manifest — but Electron's ~170 MB prebuilt binary is
+# useless in a Linux server image (the till runs natively on Windows). Skip it.
+ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1
 RUN pnpm install --frozen-lockfile
 
 # --- build: compile shared -> db -> api, then the web bundle ----------------
