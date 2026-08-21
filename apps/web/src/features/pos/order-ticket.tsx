@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   formatMoney,
   lineTotalOf,
@@ -68,9 +68,18 @@ export function OrderTicket({
   const requestBill = useRequestBill();
 
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [voidTarget, setVoidTarget] = useState<OrderItemDTO | null>(null);
   const [discountFor, setDiscountFor] = useState<'order' | OrderItemDTO | null>(null);
+
+  // Transient success confirmations (e.g. "Bill requested") auto-dismiss so the
+  // ticket doesn't accumulate stale banners during a shift.
+  useEffect(() => {
+    if (!note) return;
+    const t = setTimeout(() => setNote(null), 4000);
+    return () => clearTimeout(t);
+  }, [note]);
 
   const items = order?.items ?? [];
   const sentItems = items.filter((it) => it.status === 'sent_to_kitchen');
@@ -93,6 +102,7 @@ export function OrderTicket({
     opts?: { title?: string; description?: string },
   ) => {
     setError(null);
+    setNote(null);
     setBusy(key);
     try {
       await run(perm, fn, opts);
@@ -114,7 +124,31 @@ export function OrderTicket({
     );
 
   const doRequestBill = () =>
-    guard('request_bill', 'bill', () => requestBill.mutateAsync(orderId!));
+    guard('request_bill', 'bill', async () => {
+      await requestBill.mutateAsync(orderId!);
+      setNote('Bill requested. Tap Pay to print the bill and settle when the guest is ready.');
+    });
+
+  // Why the Pay button can't open the settle dialog yet — surfaced on click so a
+  // gold-but-inactive button never just "does nothing". The bill only prints on
+  // settlement (Pay / split / charge-to-room), so items must be fired first.
+  const payBlocked = !order
+    ? 'Add items and send them to the kitchen first.'
+    : !hasBillable
+      ? 'Send items to the kitchen before taking payment.'
+      : !payable
+        ? 'This order can’t be settled in its current state.'
+        : null;
+
+  const handlePay = () => {
+    setError(null);
+    setNote(null);
+    if (payBlocked) {
+      setError(payBlocked);
+      return;
+    }
+    onOpenPay();
+  };
 
   const doRemoveDiscount = (discountId: string) =>
     guard('apply_discount', `rmdisc:${discountId}`, () =>
@@ -127,6 +161,12 @@ export function OrderTicket({
         {error ? (
           <div className="m-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700">
             {error}
+          </div>
+        ) : null}
+
+        {note ? (
+          <div className="m-3 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">
+            {note}
           </div>
         ) : null}
 
@@ -329,11 +369,18 @@ export function OrderTicket({
             {sending ? <Spinner /> : `Send${cart.length ? ` (${cart.length})` : ''}`}
           </Button>
           {can('take_payment') ? (
-            <Button variant="accent" size="lg" onClick={onOpenPay} disabled={!payable || !hasBillable}>
+            <Button variant="accent" size="lg" onClick={handlePay}>
               Pay
             </Button>
           ) : (
-            <span />
+            <Button
+              variant="accent"
+              size="lg"
+              disabled
+              title="A cashier or admin login is required to take payment."
+            >
+              Pay
+            </Button>
           )}
         </div>
 
