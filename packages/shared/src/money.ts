@@ -15,6 +15,9 @@ export function percentageOf(base: number, percentage: number): number {
 
 export const DEFAULT_CURRENCY_SYMBOL = '₨';
 
+/** ISO-ish display code for the currency (Sri Lankan Rupee). */
+export const DEFAULT_CURRENCY_CODE = 'LKR';
+
 export function formatMoney(amount: number, symbol: string = DEFAULT_CURRENCY_SYMBOL): string {
   const value = round2(amount).toLocaleString('en-US', {
     minimumFractionDigits: 2,

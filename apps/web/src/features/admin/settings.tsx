@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { CHANNELS, DEFAULT_CURRENCY_SYMBOL, type Channel } from '@pos/shared';
+import { CHANNELS, DEFAULT_CURRENCY_CODE, DEFAULT_CURRENCY_SYMBOL, type Channel } from '@pos/shared';
 import { ApiError } from '@/lib/api-client';
 import { Button } from '@/components/ui/button';
 import { FullscreenSpinner, Spinner } from '@/components/ui/spinner';
@@ -119,7 +119,7 @@ export function SettingsScreen() {
         <div className="space-y-4">
           <SectionCard title="Currency">
             <div className="p-4">
-              <StatCard label="Display currency" value={`${DEFAULT_CURRENCY_SYMBOL}  ·  PKR`} />
+              <StatCard label="Display currency" value={`${DEFAULT_CURRENCY_SYMBOL}  ·  ${DEFAULT_CURRENCY_CODE}`} />
               <p className="mt-3 text-xs text-slate-400">
                 Currency is a fixed system constant. All prices, bills and reports render in {DEFAULT_CURRENCY_SYMBOL}.
               </p>
