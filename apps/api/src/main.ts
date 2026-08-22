@@ -23,8 +23,8 @@ async function bootstrap(): Promise<void> {
   });
 
   const port = config.get<number>('port') ?? 4000;
-  await app.listen(port, '0.0.0.0');
-  new Logger('Bootstrap').log(`POS API listening on http://127.0.0.1:${port}/api`);
+  await app.listen(port);
+  new Logger('Bootstrap').log(`POS API listening on http://localhost:${port}/api`);
 }
 
 void bootstrap();
