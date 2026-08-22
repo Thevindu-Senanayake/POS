@@ -40,7 +40,7 @@ export function FloorBoard() {
     })).filter((g) => g.tables.length > 0);
   }, [tablesQuery.data]);
 
-  const openOrderScreen = (tableId: string) => router.push(`/pos/table/${tableId}`);
+  const openOrderScreen = (tableId: string) => router.push(`/pos/order?table=${tableId}`);
 
   const handleTable = async (table: DiningTableDTO) => {
     setError(null);
@@ -70,7 +70,7 @@ export function FloorBoard() {
     setBusyId('takeaway');
     try {
       const order = await createOrder.mutateAsync({ channel: 'takeaway' });
-      router.push(`/pos/order/${order.id}`);
+      router.push(`/pos/order?order=${order.id}`);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Could not start a takeaway order');
       setBusyId(null);

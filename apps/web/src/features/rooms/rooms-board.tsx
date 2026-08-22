@@ -61,7 +61,7 @@ export function RoomsBoard() {
                 room={room}
                 guest={guestByRoom.get(room.id)}
                 reservation={reservationByRoom.get(room.id)}
-                onClick={() => router.push(`/rooms/${room.id}`)}
+                onClick={() => router.push(`/rooms/detail?room=${room.id}`)}
               />
             ))}
           </div>

@@ -139,7 +139,7 @@ function BookingPanel({
         channel: 'room_service',
         bookingId: booking.id,
       });
-      router.push(`/pos/order/${order.id}`);
+      router.push(`/pos/order?order=${order.id}`);
     });
 
   const busy = checkIn.isPending || cancel.isPending || createOrder.isPending;

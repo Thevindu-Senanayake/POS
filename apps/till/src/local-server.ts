@@ -37,19 +37,33 @@ export function startLocalPosServer(distUiDir: string): Promise<LocalServerHandl
       const reqUrl = req.url || '/';
       const cleanPath = reqUrl.split('?')[0];
 
+      // Resolve the request against the Next.js static export on disk
+      // (next.config `output: 'export'`, default trailingSlash: false):
+      //   /          -> index.html
+      //   /pos       -> pos.html      (NOT pos/index.html)
+      //   /pos/order -> pos/order.html
+      //   /pos.txt   -> pos.txt       (RSC payload, an exact file)
+      //   /_next/…   -> the asset itself
+      //
+      // A route such as /pos emits BOTH a `pos.html` file AND a `pos/` directory
+      // (which only holds the nested /pos/order route — it has no index.html).
+      // The `.html` sibling MUST take priority over that directory: resolving the
+      // directory first rewrites /pos to pos/index.html, which doesn't exist, and
+      // then falls back to the root index.html (the landing page). The landing
+      // page immediately redirects back to /pos, so a hard navigation to /pos,
+      // /rooms or /admin gets stuck on the "Opening your workspace…" spinner
+      // forever. Same trap for /rooms and /admin.
       let filePath = join(distUiDir, cleanPath);
 
-      // Handle directory requests -> index.html
-      if (existsSync(filePath) && statSync(filePath).isDirectory()) {
+      if (existsSync(`${filePath}.html`)) {
+        // Route page: /pos -> pos.html, /login -> login.html, /pos/order -> pos/order.html
+        filePath = `${filePath}.html`;
+      } else if (existsSync(filePath) && statSync(filePath).isDirectory()) {
+        // A real directory carrying its own index.html (e.g. the site root '/')
         filePath = join(filePath, 'index.html');
       }
 
-      // Handle extension-less HTML routes (e.g. /pos -> /pos.html)
-      if (!existsSync(filePath) && existsSync(`${filePath}.html`)) {
-        filePath = `${filePath}.html`;
-      }
-
-      // Fallback to index.html for client-side routing
+      // SPA fallback for anything still unresolved (unknown / client-only routes).
       if (!existsSync(filePath)) {
         filePath = join(distUiDir, 'index.html');
       }

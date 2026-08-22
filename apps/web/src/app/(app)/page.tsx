@@ -2,34 +2,24 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { canPerform } from '@pos/shared';
 import { FullscreenSpinner } from '@/components/ui/spinner';
 import { getAppMode } from '@/lib/app-mode';
 import { useAuthStore } from '@/stores/auth-store';
 
 /**
- * Authenticated landing: in Admin mode, route to `/admin`; in POS mode, route to `/pos`.
+ * Authenticated landing: route by app mode — Admin portal → `/admin`, POS till → `/pos`.
+ * Login already enforces that admins only sign into Admin mode and operational roles
+ * only into POS mode, so the mode alone determines the correct workspace.
  */
 export default function HomePage() {
   const router = useRouter();
   const role = useAuthStore((s) => s.user?.role);
 
-  const target = role ? '/admin' : null;
+  const target = role ? (getAppMode() === 'pos' ? '/pos' : '/admin') : null;
 
   useEffect(() => {
     if (target) router.replace(target);
   }, [target, router]);
 
-  if (!role) return <FullscreenSpinner label="Loading…" />;
-  if (target) return <FullscreenSpinner label="Opening your workspace…" />;
-
-  // Roles with neither admin nor ordering access have no workspace wired up yet.
-  return (
-    <div className="mx-auto max-w-md p-8 text-center">
-      <h1 className="mb-2 text-xl font-bold text-slate-900">No workspace available</h1>
-      <p className="text-slate-500">
-        Your role doesn’t have a workspace assigned yet. Ask an administrator for access.
-      </p>
-    </div>
-  );
+  return <FullscreenSpinner label={target ? 'Opening your workspace…' : 'Loading…'} />;
 }
