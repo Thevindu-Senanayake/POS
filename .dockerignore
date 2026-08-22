@@ -1,14 +1,20 @@
 # Keep the build context small and force a clean from-source image build.
 # node_modules is host-built (Windows) — it MUST NOT leak into the Linux image;
-# the deps stage reinstalls it. dist/.next are rebuilt in the build stage.
+# the deps stage reinstalls it. dist/.next/out are rebuilt in the build stage.
 node_modules
 **/node_modules
 dist
 **/dist
 .next
 **/.next
+out
+**/out
 .turbo
 **/.turbo
+
+# Electron till packaging output (never built in the api/web images)
+release
+**/release
 
 # vcs / local tooling
 .git
@@ -34,3 +40,4 @@ DEPLOY.md
 Dockerfile
 .dockerignore
 docker-compose.yml
+docker-compose.prod.yml

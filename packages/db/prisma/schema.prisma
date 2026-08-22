@@ -676,7 +676,7 @@ model FolioCharge {
 }
 
 // ---------------------------------------------------------------------------
-// Printing (spec §3) — the queue the print-agent polls.
+// Printing (spec §3) — the queue the till's print host polls.
 // ---------------------------------------------------------------------------
 
 model PrintJob {

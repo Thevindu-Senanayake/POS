@@ -110,11 +110,9 @@ function loadPrintingConfig(env: NodeJS.ProcessEnv): TillPrintingConfig {
 
 /** Read + normalize the shell's configuration. `isPackaged` drives the kiosk/login defaults. */
 export function loadConfig(env: NodeJS.ProcessEnv, isPackaged: boolean): TillConfig {
-  let appUrl = (strEnv(env, 'POS_APP_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
-  if (!appUrl.includes('mode=')) {
-    const sep = appUrl.includes('?') ? '&' : '?';
-    appUrl += `${sep}mode=pos`;
-  }
+  // main.ts overrides this with the in-process local-server URL; the env default
+  // only matters when pointing the shell at an external UI during development.
+  const appUrl = (strEnv(env, 'POS_APP_URL') ?? 'http://localhost:3000').replace(/\/+$/, '');
   const kiosk = boolEnv(env, 'POS_KIOSK', isPackaged);
   const apiUrl = (strEnv(env, 'POS_API_URL') ?? 'http://localhost:4000').replace(/\/+$/, '');
   const readyUrl = (strEnv(env, 'POS_READY_URL') ?? `${apiUrl}/api/health`).replace(/\/+$/, '');

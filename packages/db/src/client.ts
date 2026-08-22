@@ -1,8 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 
 /**
- * Shared PrismaClient singleton for scripts and the print-agent.
- * (NestJS uses its own lifecycle-aware PrismaService.)
+ * Shared PrismaClient singleton for standalone scripts (seed, imports, migrations).
+ * (NestJS uses its own lifecycle-aware PrismaService; the till reaches the DB only
+ * through the API, never Prisma directly.)
  */
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 

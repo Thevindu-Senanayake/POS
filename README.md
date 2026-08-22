@@ -5,28 +5,34 @@ built to the spec in [`POS_SYSTEM_INSTRUCTIONS.md`](./POS_SYSTEM_INSTRUCTIONS.md
 
 - **Backend** — NestJS REST API (`apps/api`): orders, inventory, billing, rooms/folio, auth,
   realtime gateway, print queue, reports.
-- **Frontend** — Next.js App Router + Tailwind (`apps/web`): touch-first POS terminal + admin
-  dashboard, with an offline order queue.
-- **Print agent** — Node ESC/POS worker (`apps/print-agent`): polls the print queue and renders
-  KOTs to the **network** kitchen/bar printers and the customer bill to the **USB** receipt printer
-  on the till (or stdout in dev).
+- **Till** — Electron desktop app (`apps/till`) for the counter: a kiosk shell around the
+  touch-first POS terminal + room-service UI (`apps/till/ui`, `@pos/till-ui`), with an offline
+  order queue and an **in-process print host** that claims print jobs from the API and prints
+  KOTs/bills to the till's installed Windows printers.
+- **Web admin** — Next.js App Router + Tailwind (`apps/web`): the admin management portal
+  (inventory, menu, purchasing, rooms, tables, printers, reports, users, settings). Ships as a
+  static export served by nginx.
 - **Database** — PostgreSQL via Prisma (`packages/db`): schema, migrations, seed.
-- **Shared types** — enums, DTO/response types, zod schemas, and the pure money/stock engine
-  (`packages/shared`), consumed by both the API and the web app.
+- **Shared** — `packages/shared` (enums, DTO/response types, zod schemas, the pure money/stock
+  engine) and `packages/client-core` (API client, stores & hooks shared by the web admin and the
+  till UI).
 
 ## Monorepo layout
 
 ```
 apps/
   api/          NestJS REST API + socket.io realtime gateway
-  web/          Next.js App Router POS + admin UI
-  print-agent/  Node ESC/POS print-queue worker
+  web/          Next.js App Router admin portal (static export → nginx)
+  till/         Electron kiosk shell + in-process print host
+    ui/         Next.js POS terminal + room-service UI (@pos/till-ui, static export)
 packages/
   db/           Prisma schema, client, migrations, seed
   shared/       Shared enums, DTO & response types, zod schemas, money/stock engine
+  client-core/  API client, stores & hooks shared by the web admin and the till UI
   tsconfig/     Shared TypeScript configs
-docker-compose.yml   Postgres 15 (+ Adminer)
-turbo.json           Turborepo task graph
+docker-compose.yml       Local dev stack: Postgres + api + web (+ one-shot migrate)
+docker-compose.prod.yml  Droplet stack: pulls the GHCR images (see DEPLOY.md)
+turbo.json               Turborepo task graph
 ```
 
 Managed with **pnpm workspaces + Turborepo**.
@@ -53,17 +59,23 @@ docker compose up -d
 pnpm db:migrate      # first run creates the migration/database
 pnpm db:seed         # idempotent: wipes then re-inserts the seed dataset
 
-# 5. Run everything (Turborepo runs all three apps together)
+# 5. Run the API, web admin, and till UI dev servers together (Turborepo)
 pnpm dev
+
+# 6. (optional) Launch the Electron till — the counter POS + in-process print host
+pnpm till
 ```
 
-| App          | URL / target                    | Notes                                             |
-| ------------ | ------------------------------- | ------------------------------------------------- |
-| Web POS      | http://localhost:3000           | Sign in, take orders, admin dashboard             |
-| REST API     | http://localhost:4000/api       | Health: `GET /api/health`                         |
-| Realtime     | ws://localhost:4000             | socket.io — live floor/room board, KOT, printers  |
-| Print agent  | (no port)                       | Logs claimed jobs; USB receipt + network KOT, or stdout in dev |
-| Adminer      | http://localhost:8080           | DB browser (server `db`, user/pass/db all `pos`)  |
+| App           | URL / target                    | Notes                                                        |
+| ------------- | ------------------------------- | ------------------------------------------------------------ |
+| Web admin     | http://localhost:3000           | Admin management portal — sign in `admin` / `pos1234`        |
+| Till UI       | http://localhost:3100           | POS terminal + room service (the Electron till loads this)   |
+| REST API      | http://localhost:4000/api       | Health: `GET /api/health`                                    |
+| Realtime      | ws://localhost:4000             | socket.io — live floor/room board, KOT, printers             |
+| Adminer       | http://localhost:8080           | DB browser (server `db`, user/pass/db all `pos`)             |
+
+> `pnpm dev` starts the three dev servers; `pnpm till` opens the Electron shell that loads the
+> Till UI and runs the print host. The print host stays dormant unless `PRINT_AGENT_TOKEN` is set.
 
 > Postgres is published on host port **5433** (not 5432) to avoid clashing with a native install.
 > `DATABASE_URL` uses `127.0.0.1` rather than `localhost` so Node/Prisma don't resolve to IPv6 `::1`,
@@ -102,21 +114,24 @@ change the catalog, edit the workbooks and re-run `python packages/db/scripts/im
   directly). See _Bar barcode scanner_ below.
 - Plus: 1 outlet, 6 users, 3 suppliers, service-charge rules, 10 tables (restaurant + bar), 5 rooms
   across 3 categories, one checked-in half-board booking (John Guest, room 201), and **three
-  printers** — kitchen + bar (network) and receipt (USB).
+  printers** — kitchen, bar, and receipt.
 
 ## End-to-end verification walkthrough
 
-With `docker compose up -d`, `pnpm db:seed`, and `pnpm dev` running:
+With `docker compose up -d`, `pnpm db:seed`, `pnpm dev`, and `pnpm till` running:
 
-1. **Sign in** at http://localhost:3000 as `admin` / `pos1234`, open **POS Terminal**.
+1. **Sign in** on the **till** (the Electron window from `pnpm till`, or the Till UI at
+   http://localhost:3100) as `admin` / `pos1234`, open **POS Terminal**. (The web admin at
+   http://localhost:3000 is management-only — no order taking.)
 2. **Take an order** — tap a free restaurant table (opens a session) or **+ Takeaway**. Add menu
    items to the round, then **Send**. This is the *only* point stock is deducted: the API writes
    `StockMovement(reason=sale)` rows for each recipe ingredient, decrements `currentStock`, and
    enqueues a **KOT `PrintJob`** per station — all in one transaction. At a **bar** table you can
    also **scan** a barcode instead of tapping (see _Bar barcode scanner_).
-3. **Watch the print agent** — its log renders each job as ESC/POS text to stdout in dev. KOTs route
-   to the kitchen/bar **network** printers; the bill routes to the **USB** receipt printer on the
-   till. Set `PRINTER_KITCHEN_IP` / `PRINTER_RECEIPT_DEVICE` etc. in `.env` to print to real hardware.
+3. **Watch the till's print host** — it claims each queued job from the API and prints it to the
+   matching installed Windows printer (KOTs to the kitchen/bar printers, the bill to the receipt
+   printer) via the OS print driver. With no printer configured (dev) printing simply no-ops; set
+   `PRINT_AGENT_TOKEN` so the host activates, and map jobs to real printers in **Admin → Printers**.
 4. **Watch realtime** — the floor board and admin board update live over socket.io as the table
    changes state.
 5. **Bill & pay** — tap **Pay**. Restaurant carries a 10% service charge; bar dine-in, takeaway, and
@@ -128,18 +143,18 @@ With `docker compose up -d`, `pnpm db:seed`, and `pnpm dev` running:
    fires and stock still deducts, but the folio charge is **₨0** (spec §2.7).
 7. **Low-stock alert** — receive against a purchase order, or send enough orders to drop an ingredient
    below its reorder threshold, then check **Admin → Reports / Inventory** for the low-stock warning.
-8. **Printer-offline alert** — set a bogus `PRINTER_KITCHEN_IP` (e.g. `10.255.255.1`) and restart the
-   agent: repeated send failures exhaust the capped exponential backoff, flip the printer's health to
-   offline, and raise the "printer offline" banner in **Admin → Printers**.
-9. **Offline queue** — stop the API (`Ctrl-C` the api process) and send a round: the web app durably
+8. **Printer-offline alert** — take a mapped printer offline (power it off, or remove its Windows
+   driver) and send a round: the repeated print failures flip that printer's health to offline and
+   raise the "printer offline" banner in **Admin → Printers**.
+9. **Offline queue** — stop the API (`Ctrl-C` the api process) and send a round: the till durably
    queues it (IndexedDB) with a "queued offline" indicator. Restart the API; the queue replays and the
    KOT/stock fire **only after the server confirms** — never from the local draft (spec §9).
 
 ## Bar barcode scanner
 
 The bar has a **USB barcode reader** (an HID keyboard-emulating scanner). On a **bar** order screen
-the web app listens for the scanner's fast keystroke burst + Enter (ignoring input while a text field
-is focused) and resolves the code against `GET /api/menu/scan?code=<barcode>`:
+the till's POS listens for the scanner's fast keystroke burst + Enter (ignoring input while a text
+field is focused) and resolves the code against `GET /api/menu/scan?code=<barcode>`:
 
 - **Packaged item** (barcode on a `MenuItem` — beer, cans, cigarettes) → added to the round directly.
 - **Spirit bottle** (barcode on an `Ingredient`) → opens a **pour picker** listing that bottle's
@@ -151,21 +166,22 @@ To try it without hardware, dispatch rapid `keydown` events for a seeded barcode
 screen. The barcodes live in `packages/db/data/seed-data.json` (34 of them) — e.g. grep it for a
 spirit `barcode` (opens the picker) vs. a packaged-item `barcode` (adds directly).
 
-## Printing (USB receipt + network KOT)
+## Printing
 
-Print jobs are routed by **printer role**, decoupled from the API by the print agent (`apps/print-agent`):
+Print jobs are routed by **printer role** and served by the **till's in-process print host**
+(`apps/till/src/print`) — the standalone print-agent app is retired. The API only owns the queue;
+the till claims and prints:
 
-- **KOTs** carry a `station` (`kitchen`/`bar`) and print to that role's **network** printer over
-  `tcp://ip:port`.
-- The **customer bill/receipt** is a station-less job that routes to the `receipt` role — the **USB**
-  printer attached to the till PC, printed via the host OS spooler.
+- **KOTs** carry a `station` (`kitchen`/`bar`) and print to that station's mapped printer.
+- The **customer bill/receipt** is a station-less job that routes to the `receipt` role.
 
-The DB seeds three printers (kitchen + bar network, receipt USB); env `PRINTER_<ROLE>_*` vars override
-the DB per role (see [`.env.example`](./.env.example) and the [print-agent README](./apps/print-agent/README.md)).
-The USB path uses an **optional** native module (`@thiagoelg/node-printer`) built on the till host; if
-it's absent — as in dev/CI — the agent renders to **stdout** instead of crashing, and its log names the
-intended interface (`printer:<device>` for USB, `tcp://ip:port` for network). The agent must run on the
-host the USB printer is attached to.
+The host polls the API's `/api/printing/agent/*` endpoints (authenticated with `PRINT_AGENT_TOKEN`),
+claims pending jobs, renders each as HTML, and prints it to the mapped **installed Windows printer**
+via Electron's `webContents.print({ silent, deviceName })` — i.e. the OS print driver, so any printer
+Windows can see (USB, network, or virtual) works with no ESC/POS wiring. Printer → device mapping is
+managed in **Admin → Printers**. Because it uses the host's own print stack, the print host runs where
+the printers are: **inside the Electron till on the counter PC** (`pnpm till`). With no
+`PRINT_AGENT_TOKEN` set, the host stays dormant and the till runs as a pure UI shell.
 
 ## Testing
 
@@ -208,24 +224,24 @@ variable is missing.
 | `JWT_ACCESS_SECRET`                    | api          |   yes    | —                          | Access-token signing secret                         |
 | `JWT_REFRESH_SECRET`                   | api          |   yes    | —                          | Refresh-token signing secret                        |
 | `JWT_ACCESS_TTL` / `JWT_REFRESH_TTL`   | api          |    no    | `15m` / `7d`               | Token lifetimes                                     |
-| `PRINT_AGENT_TOKEN`                    | api, agent   |   yes    | —                          | Shared secret the agent uses to authenticate        |
+| `PRINT_AGENT_TOKEN`                    | api, till    |   yes    | —                          | Shared secret the till's print host authenticates with |
 | `CURRENCY_SYMBOL`                      | api          |    no    | `₨`                        | Symbol on bills/receipts                            |
-| `NEXT_PUBLIC_API_URL`                  | web          |    no    | `http://localhost:4000`    | REST base the browser calls                         |
-| `NEXT_PUBLIC_WS_URL`                   | web          |    no    | `http://localhost:4000`    | socket.io endpoint                                  |
-| `PRINT_AGENT_API_URL`                  | agent        |    no    | `http://localhost:4000`    | API origin the agent polls                          |
-| `PRINT_AGENT_POLL_MS`                  | agent        |    no    | `2000`                     | Queue poll interval                                 |
-| `PRINT_AGENT_MAX_RETRIES`              | agent        |    no    | `6`                        | Backoff doublings (capped at 2 min) when API is down |
-| `PRINTER_<ROLE>_CONNECTION`            | agent        |    no    | `network` (`usb` for receipt) | Per-role transport: `network` (TCP) or `usb` (OS spooler)        |
-| `PRINTER_<ROLE>_{IP,PORT,DEVICE,TYPE}` | agent        |    no    | — / `9100` / — / `epson`   | Per-role printer (`KITCHEN`/`BAR`/`RECEIPT`); IP for network, DEVICE for USB; unset → stdout |
+| `NEXT_PUBLIC_API_URL`                  | web          |    no    | `http://localhost:4000`    | REST base the browser calls (baked in at build time) |
+| `NEXT_PUBLIC_WS_URL`                   | web          |    no    | `http://localhost:4000`    | socket.io endpoint (baked in at build time)         |
+| `PRINT_AGENT_API_URL`                  | till         |    no    | `http://localhost:4000`    | API origin the till's print host polls              |
+| `PRINT_AGENT_POLL_MS`                  | till         |    no    | `2000`                     | Queue poll interval                                 |
+| `PRINT_AGENT_MAX_RETRIES`              | till         |    no    | `6`                        | Backoff doublings (capped at 2 min) when API is down |
 
-Optional agent tuning (`PRINT_AGENT_ID`, `PRINT_AGENT_CLAIM_LIMIT`, `PRINT_AGENT_PRINTER_REFRESH_MS`,
-`PRINT_AGENT_CONNECT_TIMEOUT_MS`) is documented inline in `.env.example`.
+Optional till print-host tuning (`PRINT_AGENT_ID`, `PRINT_AGENT_CLAIM_LIMIT`, `POS_RECEIPT_WIDTH_MM`,
+`POS_PRINT_SETTLE_MS`, `RECEIPT_LOGO_PATH`) and the Electron shell/kiosk vars (`POS_*`) are documented
+inline in `.env.example`.
 
 ## Useful scripts
 
 | Command                | What it does                                                        |
 | ---------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`             | Run api + web + print-agent together (Turborepo)                    |
+| `pnpm dev`             | Run the api, web admin & till UI dev servers together (Turborepo)   |
+| `pnpm till`            | Launch the Electron till (counter POS + in-process print host)      |
 | `pnpm build`           | Build every workspace                                               |
 | `pnpm typecheck`       | Type-check every workspace                                          |
 | `pnpm test`            | Run all package test tasks                                          |
@@ -249,22 +265,27 @@ Optional agent tuning (`PRINT_AGENT_ID`, `PRINT_AGENT_CLAIM_LIMIT`, `PRINT_AGENT
 
 ## Production / go-live notes
 
+**Deploying the web admin + API to a server:** see [`DEPLOY.md`](./DEPLOY.md) — CI/CD to a
+DigitalOcean droplet (push `main` → GitHub Actions builds the two images → GHCR → the droplet pulls
+and rolls the stack over). The till is packaged separately for the counter PC (`pnpm till:dist`).
+
 This is a complete, runnable system with automated tests on the money/stock critical paths. Before a
 real go-live, the spec §12 UAT items still need on-site confirmation — they are **flagged, not
 skipped**:
 
-- **Real printer hardware** must be validated on-site: **network** KOT printers (kitchen/bar) reachable
-  at their configured IPs, and the **USB** receipt printer on the till. The USB path needs the optional
-  native `@thiagoelg/node-printer` module built on that host; dev/CI use the stdout sink.
+- **Real printer hardware** must be validated on-site: each printer mapped in **Admin → Printers**
+  must be installed on the till PC and reachable through its Windows driver, so the till's print host
+  can drive it via `webContents.print`. Confirm KOTs land on the kitchen/bar printers and the bill on
+  the receipt printer.
 - **USB barcode scanner** — keystroke timing is tuned for a generic HID reader; confirm against the
-  bar's actual scanner on-site (adjust the inter-key threshold in the web scanner hook if needed).
+  bar's actual scanner on-site (adjust the inter-key threshold in the till's scanner hook if needed).
 - **Exact permission matrix** — implemented to the spec §7 default table; confirm with the owner.
 - **Sheet-imported stock units** — opening quantities came from the venue's workbooks (spirits by ml);
   confirm the unit/column interpretation with the owner before go-live.
 - **Bar dine-in 0% service charge** is intentional (spec §2.5) and surfaced in the UI — confirm.
 - Whether comped board-plan meals should print a **"PACKAGE"** tag on the KOT.
 - If the venue's internet is unreliable and the DB is cloud-hosted, decide on a local DB cache for the
-  print path (the agent already talks to the API over the LAN so KOT/bill printing survives an internet
+  print path (the till already talks to the API over the LAN, so KOT/bill printing survives an internet
   blip — spec §9).
 
 ## Spec

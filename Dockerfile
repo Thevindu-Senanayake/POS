@@ -1,14 +1,15 @@
 # ---------------------------------------------------------------------------
-# Hospitality POS — one multi-stage image shared by the api, web and migrate
-# compose services (see docker-compose.yml). The print-agent is deliberately
-# NOT built here: it runs natively on the Windows till so it can drive the USB
-# print spooler (see scripts/install-print-agent.ps1 and DEPLOY.md).
+# Hospitality POS — one multi-stage Dockerfile producing TWO images via targets:
+#   --target api : Node runtime for @pos/api (also used by the one-shot migrate)
+#   --target web : nginx serving the @pos/web admin portal's static export (out/)
 #
-# Build order follows the workspace graph:
-#   @pos/shared -> @pos/db (prisma generate + tsc) -> @pos/api -> @pos/web
-# The web bundle inlines NEXT_PUBLIC_* at build time, so those URLs arrive as
-# build ARGs. The browser runs on the host, so they point at the host-published
-# API port (http://localhost:4000), not the in-network service name.
+# CI (.github/workflows/deploy.yml) builds both targets, pushes them to GHCR, and
+# the droplet pulls them (docker-compose.prod.yml). Locally, docker-compose.yml
+# builds both targets too. The print host is folded into the Electron till
+# (apps/till) and runs natively on Windows — nothing print-related is built here.
+#
+# The web bundle inlines NEXT_PUBLIC_* at BUILD time, so those URLs arrive as build
+# ARGs on the `web` target (the browser runs on the host / the droplet's public IP).
 # ---------------------------------------------------------------------------
 
 # --- base: node + pnpm, shared by every stage -------------------------------
@@ -20,7 +21,7 @@ RUN apt-get update \
 RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
 WORKDIR /app
 # NB: NODE_ENV is intentionally NOT set to production here — the build needs
-# devDependencies (nest cli, tsc, next, tsx, prisma). It is set in `runtime`.
+# devDependencies (nest cli, tsc, next, tsx, prisma). It is set in the `api` stage.
 
 # --- deps: install once, cached on the manifests + lockfile -----------------
 FROM base AS deps
@@ -29,7 +30,6 @@ FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY apps/api/package.json           apps/api/package.json
 COPY apps/web/package.json           apps/web/package.json
-COPY apps/print-agent/package.json   apps/print-agent/package.json
 COPY apps/till/package.json          apps/till/package.json
 COPY apps/till/ui/package.json       apps/till/ui/package.json
 COPY packages/db/package.json        packages/db/package.json
@@ -45,26 +45,38 @@ COPY packages/db/prisma              packages/db/prisma
 ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1
 RUN pnpm install --frozen-lockfile
 
-# --- build: compile shared -> db -> api, then the web bundle ----------------
-FROM deps AS build
+# --- build-base: full source + @pos/shared (needed by BOTH api and web) -----
+FROM deps AS build-base
 COPY . .
-# NEXT_PUBLIC_* are inlined into the web bundle at build time; the browser runs
-# on the host and reaches the API on the host-published port.
+RUN pnpm --filter @pos/shared build
+
+# --- build-api: compile @pos/db (prisma generate + tsc) then @pos/api -------
+FROM build-base AS build-api
+RUN pnpm --filter @pos/db build \
+  && pnpm --filter @pos/api build
+
+# --- api: Node runtime, run by the api AND the one-shot migrate service ------
+FROM base AS api
+ENV NODE_ENV=production
+# Bring the built workspace: node_modules (incl. the generated Prisma client),
+# apps/api/dist, packages/*/dist, and the prisma migrations `migrate` applies.
+COPY --from=build-api /app /app
+# Default command; the migrate service overrides `command`.
+CMD ["node", "apps/api/dist/main.js"]
+
+# --- build-web: static export (out/) of the @pos/web admin portal -----------
+FROM build-base AS build-web
+# NEXT_PUBLIC_* are inlined into the bundle here. `exec next build` bypasses the
+# package's dotenv wrapper (there is no .env in the image) and uses these ENV vars.
 ARG NEXT_PUBLIC_API_URL=http://localhost:4000
 ARG NEXT_PUBLIC_WS_URL=http://localhost:4000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_WS_URL=$NEXT_PUBLIC_WS_URL
-RUN pnpm --filter @pos/shared build \
-  && pnpm --filter @pos/db build \
-  && pnpm --filter @pos/api build \
-  && pnpm --filter @pos/web exec next build
+RUN pnpm --filter @pos/web exec next build
 
-# --- runtime: the built workspace, run by the api/web/migrate services ------
-FROM base AS runtime
-ENV NODE_ENV=production
-# Bring the whole built workspace: node_modules (incl. the generated Prisma
-# client), apps/*/dist, apps/web/.next, packages/*/dist, and the prisma
-# migrations the `migrate` service needs.
-COPY --from=build /app /app
-# Default command; each compose service overrides `command`.
-CMD ["node", "apps/api/dist/main.js"]
+# --- web: nginx serving the static export ------------------------------------
+FROM nginx:alpine AS web
+# Replace the stock server block with our SPA/deep-link routing for the flat export.
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build-web /app/apps/web/out /usr/share/nginx/html
+EXPOSE 80

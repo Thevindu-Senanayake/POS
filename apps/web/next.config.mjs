@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // This admin portal is served by `next start` (a normal Node server), so NO
-  // `output: 'export'` here — the operational POS/Rooms UI that needed a static
-  // export now lives in apps/till/ui, not this app.
+  // Admin-only portal shipped as a STATIC export (out/), served by nginx on :80 in
+  // production (see deploy/nginx.conf + docker-compose.prod.yml). It is a client-side
+  // SPA — every screen is 'use client', all data is fetched in the browser — so it
+  // has no server-only features and exports cleanly. `next build` emits out/.
+  output: 'export',
+  // No next/image today; set defensively so adding <Image> later can't silently
+  // break the export (static export requires unoptimized images).
+  images: { unoptimized: true },
   //
   // @pos/client-core ships raw TS/TSX with NO build step, so Next must transpile
   // it. That is the correct use of transpilePackages (raw source).

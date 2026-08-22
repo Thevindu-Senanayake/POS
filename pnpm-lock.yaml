@@ -133,31 +133,6 @@ importers:
         specifier: ^5.7.2
         version: 5.9.3
 
-  apps/print-agent:
-    dependencies:
-      '@pos/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
-      node-thermal-printer:
-        specifier: ^4.4.4
-        version: 4.6.1
-    devDependencies:
-      '@pos/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/node':
-        specifier: ^22.10.5
-        version: 22.20.1
-      dotenv-cli:
-        specifier: ^7.4.4
-        version: 7.4.4
-      tsx:
-        specifier: ^4.19.2
-        version: 4.23.12
-      typescript:
-        specifier: ^5.7.2
-        version: 5.9.3
-
   apps/till:
     devDependencies:
       '@pos/tsconfig':
@@ -2042,9 +2017,6 @@ packages:
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
 
-  dank-do-while@0.1.2:
-    resolution: {integrity: sha512-pyMrgXfugjvdernLCcXNixYqGijUZzYxrb+hAeED2EBpNbctCCxdA/O6NIQXn6vIjwzY1IMmV29d2Y6vaayrwQ==}
-
   debug@2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
     peerDependencies:
@@ -3384,9 +3356,6 @@ packages:
     resolution: {integrity: sha512-D9UOmYG3UH1V+ENW56t5QXBwJw1YEY18ruVeus89Rw+SyIgjPkCO84bRzO3uNIYosJbNwiabWVn48o3uJLjxFQ==}
     engines: {node: '>=18'}
 
-  node-thermal-printer@4.6.1:
-    resolution: {integrity: sha512-1suzv26np5eBWkdy2INszPNjd7mgqXISY5qVHgszge6VMWZ485GWsvOUCNWZbVhQVw9QtUzV1dHoCFKg9mIPPg==}
-
   nopt@6.0.0:
     resolution: {integrity: sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -3598,10 +3567,6 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
-
-  pngjs@7.0.0:
-    resolution: {integrity: sha512-LKWqWJRhstyYo9pGvgor/ivk2w94eSjE3RGVuzLGlr3NmD8bf7RcYGze1mNdEHRP6TRP6rMuDHk5t44hnTRyow==}
-    engines: {node: '>=14.19.0'}
 
   postcss-import@15.1.0:
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
@@ -4375,10 +4340,6 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
-  unorm@1.6.0:
-    resolution: {integrity: sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA==}
-    engines: {node: '>= 0.4.0'}
-
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
     engines: {node: '>= 0.8'}
@@ -4481,9 +4442,6 @@ packages:
   write-file-atomic@4.0.2:
     resolution: {integrity: sha512-7KxauUdBmSdWnmpaGFg+ppNjKF8uNLry8LyzjauQDOVONfFLNKrKvQOxZ/VuTIcS/gge/YNahf5RIIQWTSarlg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-
-  write-file-queue@0.0.1:
-    resolution: {integrity: sha512-uUInKYzJjhvZ5UJA27tsqbw6s9EEpwe6r4mdpN95t2E4aKzJEJbZg2EvIleTGaja+xtZYx376Jd2WWu5LEQP0w==}
 
   ws@8.21.3:
     resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
@@ -6504,8 +6462,6 @@ snapshots:
 
   csstype@3.2.3: {}
 
-  dank-do-while@0.1.2: {}
-
   debug@2.6.9:
     dependencies:
       ms: 2.0.0
@@ -8192,13 +8148,6 @@ snapshots:
 
   node-releases@2.0.53: {}
 
-  node-thermal-printer@4.6.1:
-    dependencies:
-      iconv-lite: 0.6.3
-      pngjs: 7.0.0
-      unorm: 1.6.0
-      write-file-queue: 0.0.1
-
   nopt@6.0.0:
     dependencies:
       abbrev: 1.1.1
@@ -8379,8 +8328,6 @@ snapshots:
       xmlbuilder: 15.1.1
 
   pluralize@8.0.0: {}
-
-  pngjs@7.0.0: {}
 
   postcss-import@15.1.0(postcss@8.5.26):
     dependencies:
@@ -9177,8 +9124,6 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unorm@1.6.0: {}
-
   unpipe@1.0.0: {}
 
   update-browserslist-db@1.3.1(browserslist@4.28.8):
@@ -9310,10 +9255,6 @@ snapshots:
     dependencies:
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
-
-  write-file-queue@0.0.1:
-    dependencies:
-      dank-do-while: 0.1.2
 
   ws@8.21.3: {}
 

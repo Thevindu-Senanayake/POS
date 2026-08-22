@@ -1,0 +1,106 @@
+# ---------------------------------------------------------------------------
+# Hospitality POS — PRODUCTION stack for the DigitalOcean droplet.
+#
+# Unlike docker-compose.yml (which BUILDS the two images locally for dev), this
+# file PULLS them from GHCR — CI (.github/workflows/deploy.yml) builds & pushes
+# ghcr.io/<owner>/pos-api and ghcr.io/<owner>/pos-web on every push to main, then
+# SSHes in and runs `docker compose -f docker-compose.prod.yml pull && up -d` here.
+#
+#   Public web:  http://<droplet-ip>/            (nginx serving the static admin export)
+#   Public API:  http://<droplet-ip>:4000/api    (exposed directly — no reverse proxy)
+#   Postgres  :  NOT published — only the api/migrate containers reach it over the
+#                compose network (tighter than dev, which publishes 5433 for tools).
+#
+# Runtime secrets live in a droplet-side .env (NEVER committed — see DEPLOY.md):
+#   POSTGRES_USER / POSTGRES_PASSWORD / POSTGRES_DB   (must agree with DATABASE_URL below)
+#   JWT_ACCESS_SECRET / JWT_REFRESH_SECRET / JWT_*_TTL
+#   PRINT_AGENT_TOKEN                                 (must equal the till's token)
+#   CORS_ORIGIN=http://<droplet-ip>                  (port-80 origin has NO port suffix!)
+#   CURRENCY_SYMBOL
+# NEXT_PUBLIC_* are NOT needed here — they are baked into the pos-web image at CI build
+# time from GitHub Actions *variables* (NEXT_PUBLIC_API_URL/WS_URL = http://<ip>:4000).
+#
+# IMAGE_TAG selects which build to run (defaults to :latest; CI sets it to the commit
+# SHA so a deploy is pinned and rollback is `IMAGE_TAG=<old-sha> docker compose … up -d`).
+# GHCR_OWNER defaults to the repo owner (lowercased for GHCR); override in .env if forked.
+# ---------------------------------------------------------------------------
+
+x-api-image: &api-image "ghcr.io/${GHCR_OWNER:-thevindu-senanayake}/pos-api:${IMAGE_TAG:-latest}"
+
+# In-network DB URL (service name `db`, internal port 5432). Credentials come from
+# the droplet .env; keep POSTGRES_* there in sync with these interpolations.
+x-db-url: &db-url "postgresql://${POSTGRES_USER:-pos}:${POSTGRES_PASSWORD:-pos}@db:5432/${POSTGRES_DB:-pos}?schema=public"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: pos-db
+    restart: always
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-pos}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-pos}"
+      POSTGRES_DB: "${POSTGRES_DB:-pos}"
+    volumes:
+      - pos_pgdata:/var/lib/postgresql/data
+    # No `ports:` — Postgres is reachable only inside the compose network.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pos} -d ${POSTGRES_DB:-pos}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # One-shot on every deploy: apply migrations, then seed demo data ONLY if the DB
+  # is empty (guarded — re-runs never wipe live data). Must exit 0 before api starts.
+  migrate:
+    image: *api-image
+    container_name: pos-migrate
+    command: >
+      sh -lc "pnpm --filter @pos/db exec prisma migrate deploy &&
+              node packages/db/scripts/seed-if-empty.mjs"
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: *db-url
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: *api-image
+    container_name: pos-api
+    command: node apps/api/dist/main.js
+    env_file:
+      - .env
+    environment:
+      # Override any host-facing DATABASE_URL from .env with the compose-network one.
+      DATABASE_URL: *db-url
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://localhost:4000/api/health',r=>process.exit(r.statusCode<400?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: always
+
+  web:
+    # nginx serving @pos/web's static export. NEXT_PUBLIC_* were baked at CI build
+    # time (http://<droplet-ip>:4000), so this image is environment-specific.
+    image: "ghcr.io/${GHCR_OWNER:-thevindu-senanayake}/pos-web:${IMAGE_TAG:-latest}"
+    container_name: pos-web
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  pos_pgdata:

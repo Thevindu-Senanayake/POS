@@ -15,7 +15,7 @@ import { AdminPage, ErrorNote, SectionCard, TextInput, inputClass } from './ui';
  * Business tab (spec: owner-editable receipt). Edits the singleton outlet's
  * identity and every customer-receipt header/footer line. Each line pairs a text
  * value with a "Show on receipt" toggle; the live preview mirrors exactly what
- * the print-agent renders (a line prints only when its toggle is on and the
+ * the till's print host renders (a line prints only when its toggle is on and the
  * value is non-empty). Currency label prefixes the total on the printed bill.
  */
 const businessSchema = z.object({
@@ -291,7 +291,7 @@ function LineField({
   );
 }
 
-/** Live monospace preview mirroring the print-agent's header/footer rules. */
+/** Live monospace preview mirroring the till print host's header/footer rules. */
 function ReceiptPreview({ values }: { values: BusinessValues }) {
   const line = (show: boolean, value: string) => (show && value.trim() !== '' ? value.trim() : null);
   const currency =
