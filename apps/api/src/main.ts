@@ -18,8 +18,11 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.enableCors({
-    origin: (origin, callback) => callback(null, true),
+    origin: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'x-manager-pin', 'X-Requested-With'],
     credentials: true,
+    optionsSuccessStatus: 204,
   });
 
   const port = config.get<number>('port') ?? 4000;
