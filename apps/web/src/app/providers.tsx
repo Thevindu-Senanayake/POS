@@ -2,9 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
-import { ManagerPinProvider } from '@/components/manager-pin/pin-provider';
 
-/** App-wide client providers: TanStack Query cache + the manager-PIN modal. */
+/** App-wide client providers: the TanStack Query cache. */
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
     () =>
@@ -15,9 +14,5 @@ export function Providers({ children }: { children: ReactNode }) {
       }),
   );
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ManagerPinProvider>{children}</ManagerPinProvider>
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

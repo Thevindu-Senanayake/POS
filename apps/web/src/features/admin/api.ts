@@ -31,8 +31,8 @@ import type {
   UserRole,
   VarianceRowDTO,
 } from '@pos/shared';
-import { api } from '@/lib/api-client';
-import { qk } from '@/lib/query-keys';
+import { api } from '@pos/client-core';
+import { qk } from '@pos/client-core';
 
 // =============================================================================
 // Request payload shapes (mirror the api DTOs, apps/api/src/modules/**)

@@ -273,11 +273,13 @@ if (!app.requestSingleInstanceLock()) {
     app.setLoginItemSettings({ openAtLogin: config.openAtLogin });
     store = new PrinterStore();
 
-    // Resolve local UI directory candidates (dist-ui, apps/web/out, or static fallback)
+    // Resolve the till POS UI (the @pos/till-ui Next static export). `..` from
+    // dist/main.js is apps/till, so this covers both dev (apps/till/ui/out) and
+    // the packaged app (ui/out shipped alongside dist/). Static splash pages are
+    // the last-resort fallback if the UI export is missing.
     const uiCandidates = [
-      join(__dirname, '..', 'dist-ui'),
-      join(process.cwd(), 'apps', 'till', 'dist-ui'),
-      join(process.cwd(), 'apps', 'web', 'out'),
+      join(__dirname, '..', 'ui', 'out'),
+      join(process.cwd(), 'apps', 'till', 'ui', 'out'),
       join(__dirname, '..', 'static'),
     ];
 
@@ -292,7 +294,7 @@ if (!app.requestSingleInstanceLock()) {
     if (foundUiDir) {
       try {
         const handle = await startLocalPosServer(foundUiDir);
-        config.appUrl = `${handle.url}?mode=pos`;
+        config.appUrl = handle.url;
         log(`till shell loading local UI from ${config.appUrl} (serving ${foundUiDir})`);
       } catch (err) {
         warn(`could not start local POS UI server: ${(err as Error).message}`);

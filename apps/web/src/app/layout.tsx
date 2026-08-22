@@ -4,8 +4,8 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-  title: 'Grand Hospitality POS',
-  description: 'Restaurant, bar & room-service point of sale',
+  title: 'Grand Admin',
+  description: 'Hospitality Web Management Portal',
 };
 
 export const viewport: Viewport = {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { formatMoney, type AuditAction } from '@pos/shared';
-import { Spinner } from '@/components/ui/spinner';
+import { Spinner } from '@pos/client-core';
 import { useAuditLog, useSalesReport, useVarianceReport } from './api';
 import {
   AUDIT_ACTION_LABELS,

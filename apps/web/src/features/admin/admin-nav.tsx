@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/cn';
+import { cn } from '@pos/client-core';
 
 /**
  * Admin section sub-navigation (spec §5). Every admin workspace lives under

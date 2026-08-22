@@ -2,11 +2,11 @@
   "name": "@pos/till",
   "version": "1.0.0",
   "private": true,
-  "description": "Electron desktop shell for the POS till — wraps the web UI in a kiosk window that auto-starts at login and hosts the printer (silent-prints bills/KOTs via the installed Windows drivers)",
+  "description": "Electron desktop shell for the POS till — hosts the POS UI (@pos/till-ui) in a kiosk window that auto-starts at login and drives the printer (silent-prints bills/KOTs via the installed Windows drivers)",
   "author": "Thevindu Senanayake",
   "main": "./dist/main.js",
   "scripts": {
-    "build": "node scripts/copy-ui.mjs && tsc -p tsconfig.json",
+    "build": "pnpm --filter @pos/till-ui build && tsc -p tsconfig.json",
     "start": "electron .",
     "launch": "tsc -p tsconfig.json && dotenv -e ../../.env -- electron .",
     "dist": "pnpm run build && electron-builder --config electron-builder.yml",

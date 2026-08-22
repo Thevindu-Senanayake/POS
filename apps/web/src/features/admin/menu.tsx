@@ -13,10 +13,10 @@ import {
   type IngredientDTO,
   type MenuItemDTO,
 } from '@pos/shared';
-import { ApiError } from '@/lib/api-client';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
-import { FullscreenSpinner, Spinner } from '@/components/ui/spinner';
+import { ApiError } from '@pos/client-core';
+import { Button } from '@pos/client-core';
+import { Modal } from '@pos/client-core';
+import { FullscreenSpinner, Spinner } from '@pos/client-core';
 import {
   useCreateMenuItem,
   useDeleteMenuItem,

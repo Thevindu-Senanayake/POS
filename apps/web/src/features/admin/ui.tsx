@@ -1,7 +1,7 @@
 'use client';
 
 import { forwardRef, type ReactNode, type InputHTMLAttributes, type SelectHTMLAttributes } from 'react';
-import { cn } from '@/lib/cn';
+import { cn } from '@pos/client-core';
 
 /** Standard admin page frame: centered column with a header row. */
 export function AdminPage({

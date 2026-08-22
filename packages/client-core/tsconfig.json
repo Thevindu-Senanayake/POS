@@ -1,0 +1,7 @@
+{
+  "extends": "@pos/tsconfig/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src"]
+}

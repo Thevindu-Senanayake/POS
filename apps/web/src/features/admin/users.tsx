@@ -5,11 +5,11 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { USER_ROLES, type AuthUserDTO } from '@pos/shared';
-import { ApiError } from '@/lib/api-client';
-import { useAuthStore } from '@/stores/auth-store';
-import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
-import { FullscreenSpinner, Spinner } from '@/components/ui/spinner';
+import { ApiError } from '@pos/client-core';
+import { useAuthStore } from '@pos/client-core';
+import { Button } from '@pos/client-core';
+import { Modal } from '@pos/client-core';
+import { FullscreenSpinner, Spinner } from '@pos/client-core';
 import {
   useCreateUser,
   useDeleteUser,

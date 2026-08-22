@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 import { useForm, type UseFormRegister } from 'react-hook-form';
 import { z } from 'zod';
 import { DEFAULT_CURRENCY_SYMBOL, type OutletDTO } from '@pos/shared';
-import { ApiError } from '@/lib/api-client';
-import { Button } from '@/components/ui/button';
-import { FullscreenSpinner, Spinner } from '@/components/ui/spinner';
+import { ApiError } from '@pos/client-core';
+import { Button } from '@pos/client-core';
+import { FullscreenSpinner, Spinner } from '@pos/client-core';
 import { useOutlet, useUpdateOutlet, type OutletInput } from './api';
 import { AdminPage, ErrorNote, SectionCard, TextInput, inputClass } from './ui';
 

@@ -9,12 +9,12 @@ directories:
   output: release
   buildResources: build
 
-# Only the compiled output and static pages ship; TypeScript sources and the
-# sourcemaps stay out of the installer.
+# Only the compiled output, the POS UI export and static pages ship; TypeScript
+# sources and the sourcemaps stay out of the installer.
 files:
   - dist/**/*
   - "!dist/**/*.map"
-  - dist-ui/**/*
+  - ui/out/**/*
   - static/**/*
   - package.json
 

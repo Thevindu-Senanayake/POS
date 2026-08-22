@@ -1,3 +1,6 @@
 packages:
   - "apps/*"
+  # Nested Next app that ships the POS/Rooms UI inside the Electron till.
+  # `apps/*` only matches direct children, so this member is listed explicitly.
+  - "apps/till/ui"
   - "packages/*"

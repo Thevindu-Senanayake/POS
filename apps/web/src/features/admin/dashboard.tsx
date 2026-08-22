@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { formatMoney } from '@pos/shared';
-import { FullscreenSpinner } from '@/components/ui/spinner';
+import { FullscreenSpinner } from '@pos/client-core';
 import { useDashboard, useLowStock } from './api';
 import { BASE_UNIT_SHORT } from './format';
 import { AdminPage, SectionCard, StatCard, Table } from './ui';

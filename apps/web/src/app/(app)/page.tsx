@@ -2,24 +2,20 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { FullscreenSpinner } from '@/components/ui/spinner';
-import { getAppMode } from '@/lib/app-mode';
-import { useAuthStore } from '@/stores/auth-store';
+import { FullscreenSpinner, useAuthStore } from '@pos/client-core';
 
 /**
- * Authenticated landing: route by app mode — Admin portal → `/admin`, POS till → `/pos`.
- * Login already enforces that admins only sign into Admin mode and operational roles
- * only into POS mode, so the mode alone determines the correct workspace.
+ * Authenticated landing for the Web Management Portal: always open the Admin
+ * workspace once a session exists. Login already blocks non-admins, so the only
+ * destination here is `/admin`.
  */
 export default function HomePage() {
   const router = useRouter();
   const role = useAuthStore((s) => s.user?.role);
 
-  const target = role ? (getAppMode() === 'pos' ? '/pos' : '/admin') : null;
-
   useEffect(() => {
-    if (target) router.replace(target);
-  }, [target, router]);
+    if (role) router.replace('/admin');
+  }, [role, router]);
 
-  return <FullscreenSpinner label={target ? 'Opening your workspace…' : 'Loading…'} />;
+  return <FullscreenSpinner label={role ? 'Opening your workspace…' : 'Loading…'} />;
 }

@@ -111,7 +111,10 @@ services:
   web:
     <<: *app
     container_name: pos-web
-    command: pnpm --filter @pos/web exec next start -p 3000 -H 0.0.0.0
+    # Admin-only Web Management Portal. The operational POS/Rooms UI now lives in
+    # the Electron till (apps/till/ui), so this app dropped `output: 'export'`
+    # and is served normally by `next start`.
+    command: pnpm --filter @pos/web start
     ports:
       - "3000:3000"
     depends_on:
