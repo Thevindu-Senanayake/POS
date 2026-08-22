@@ -30,6 +30,10 @@ jobs:
   build-and-push:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.image_tag == '' }}
     runs-on: ubuntu-latest
+    # SSH_*, GHCR_*, and the NEXT_PUBLIC_* vars are configured under the `prod`
+    # GitHub Environment. A job must reference the environment to read its
+    # secrets/variables — env-scoped ones are invisible to jobs without this.
+    environment: prod
     permissions:
       contents: read
       packages: write
@@ -89,6 +93,7 @@ jobs:
     needs: build-and-push
     if: ${{ always() && needs.build-and-push.result != 'failure' && needs.build-and-push.result != 'cancelled' }}
     runs-on: ubuntu-latest
+    environment: prod
     steps:
       - name: Checkout
         uses: actions/checkout@v4
